@@ -62,5 +62,9 @@
         "xtr1common": "cpp",
         "xutility": "cpp",
         "random": "cpp"
+    },
+
+    "files.exclude": {
+        "**/.git": false
     }
 }
