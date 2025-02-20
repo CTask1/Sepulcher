@@ -94,8 +94,13 @@ void gameLoop(Player& player, int hitdie) {
                 r = random number between 1.0 and 1.5
                 */
                time--;
-            } else
-                return;
+            } else {
+                Choice quitChoice;
+                do quitChoice = input("Are you sure you want to quit (1. Yes / 2. No)? ");
+                while (!quitChoice.isChoice(true, "yes", 1, "no", 2));
+                if (quitChoice.isChoice("yes", 1))
+                    return;
+            }
 
             levelUp(player, hitdie);
         }
@@ -103,15 +108,14 @@ void gameLoop(Player& player, int hitdie) {
 }
 
 void start() {
-    std::string pName = inputline("Hello! Welcome to the game.\nPlease enter a name for your character: ");
     Player::RACE pRace;
     Player::CLASS pClass;
     uint16_t hitdie = 0;
     uint16_t str, con, def = 0;
-
+    
     { // Get the player's choice of race
         type (
-            "Select a race:"
+            "Hello! Welcome to the game.\nPlease select a race for your character:"
             "\n1. Elf       - Elves are a magical people with strong ties to nature. They are proficient with magical items."
             "\n2. Human     - Humans are adaptable and resilient, thriving in any environment. They are proficient with heavy weapons and armor."
             "\n3. Drakonian - Drakonians are a proud, ancient race born from the blood of dragons. They are known for their great strength and fiery breath.\n"
@@ -132,17 +136,17 @@ void start() {
             def = 1;
         }
     }
-
+    
     { // Get the player's choice of class
         type (
-            "Select a class:"
-            "\n1. Fighter - Trained with blades of all sorts"
-            "\n2. Rogue   - A silent assassin\n"
+            "\nNow select a class:"
+            "\n1. Fighter   - Trained with blades of all sorts"
+            "\n2. Rogue     - A silent assassin\n"
         );
         Choice classChoice;
         do classChoice = input("Please enter your choice: ");
         while (!classChoice.isChoice(true, "fighter", 1, "rogue", 2));
-
+        
         if (classChoice.isChoice("fighter", 1)) {
             pClass = Player::FIGHTER;
             hitdie = 10;
@@ -154,6 +158,8 @@ void start() {
         }
     }
 
+    std::string pName = inputline("\nPlease enter a name for your character: ");
+    
     type("\nNice to meet you, ", pName, ". Here are your stats:\n");
     Player player(pName, pRace, pClass, hitdie + con, str, con);
     player.defense += def;
