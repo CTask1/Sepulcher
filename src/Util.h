@@ -41,6 +41,36 @@ _NODISCARD inline const uint16_t randint(const uint16_t min, const uint16_t max)
     return distrib(gen);
 }
 
+inline void print() {}
+
+template<typename T, typename... Args>
+inline void print(const T& arg, const Args&... args) {
+    std::cout << arg;
+    print(args...);
+}
+
+template<typename... Args>
+inline void type(const bool options, const Args&... args) {
+    std::string text = tostring(args...);
+    if (options) [[unlikely]] {
+        while (text.length() > 0) {
+            print(text.substr(0, text.find('\n', 1)));
+            text.erase(0, text.find('\n', 1));
+            std::this_thread::sleep_for(std::chrono::milliseconds(150));
+        }
+    } else {
+        for (char character : text) {
+            print(character);
+            std::this_thread::sleep_for(std::chrono::milliseconds(2));
+        }
+    }
+}
+
+template<typename... Args>
+inline void type(const Args&... args) {
+    type(false, args...);
+}
+
 class Choice {
 public:
     std::string choice;
@@ -81,42 +111,12 @@ _NODISCARD inline const bool isPos(const std::string& s) {
     return s.find_first_not_of("0123456789") == std::string::npos;
 }
 
-inline void print() {}
-
-template<typename T, typename... Args>
-inline void print(const T& arg, const Args&... args) {
-    std::cout << arg;
-    print(args...);
-}
-
-template<typename... Args>
-inline void type(const bool options, const Args&... args) {
-    std::string text = tostring(args...);
-    if (options) {
-        while (text.length() > 0) {
-            print(text.substr(0, text.find('\n', 1)));
-            text.erase(0, text.find('\n', 1));
-            std::this_thread::sleep_for(std::chrono::milliseconds(150));
-        }
-    } else {
-        for (char character : text) {
-            print(character);
-            std::this_thread::sleep_for(std::chrono::milliseconds(2));
-        }
-    }
-}
-
-template<typename... Args>
-inline void type(const Args&... args) {
-    type(false, args...);
-}
-
 namespace {
     template<typename... Args>
     inline std::string inputHelper(const bool isLine, const Args&... args) {
         std::string entry;
         type(args...);
-        if (isLine)
+        if (isLine) [[unlikely]]
             std::getline(std::cin >> std::ws, entry);
         else
             std::cin >> entry;

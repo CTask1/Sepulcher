@@ -17,7 +17,7 @@ public:
         } while (resources.empty());
 
         for (std::pair<std::string, uint16_t> pair : resources)
-            if (pair.first == "crystals" || pair.first == "iron")
+            if (pair.first == "crystals" || pair.first == "iron") [[unlikely]]
                 prices[pair.first] = 5;
             else
                 prices[pair.first] = 1;

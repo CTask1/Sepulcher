@@ -118,7 +118,7 @@ void Events::combat(Enemy::Enemy& enemy, const bool surprised) {
             break;
         } else if (enemy.health > 0) {
             // Enemy's turn
-            if (player.special == Item::Special::A_SHADOW && randint(1, 10) == 1) {
+            if (player.special == Item::Special::A_SHADOW && randint(1, 10) == 1) [[unlikely]] {
                 type (
                     "\nAs the enemy swings to attack, their weapon passes through you, as if you weren't even there.\n"
                     "Your amulet has spared you from harm!\n"

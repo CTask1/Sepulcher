@@ -37,7 +37,7 @@ void gameLoop(Player& player, int hitdie) {
     // Main game loop
     while (true) {
         Choice choice;
-        if (time == 0) {
+        if (time == 0) [[unlikely]] {
             type (
                 "\nIt's getting late. You should get some sleep...unless you want to challenge the darkness."
                 "\nWhat would you like to do?"
@@ -47,7 +47,7 @@ void gameLoop(Player& player, int hitdie) {
             do choice = input("Enter choice: ");
             while (!choice.isChoice(true, "sleep", 1, "continue", 2));
 
-            if (true) { // (choice.isChoice("sleep", "1")) {
+            if (true) [[likely]] { // (choice.isChoice("sleep", "1")) {
                 type("\nYou find a place to sleep through the night.\n");
                 player.health = player.maxhealth;
                 player.raceAbilityReady = true;
