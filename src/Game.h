@@ -39,23 +39,27 @@ void gameLoop(Player& player, int hitdie) {
         Choice choice;
         if (time == 0) [[unlikely]] {
             type (
+                "\nAs the sun dips below the horizon, you find a safe place to make camp and sleep through the night."
+                "\nYour health has been restored", (player.hasAbility ? " and your abilites have recharged!\n" : "!\n")
+            );
+            /*type (
                 "\nIt's getting late. You should get some sleep...unless you want to challenge the darkness."
                 "\nWhat would you like to do?"
                 "\n1. Sleep"
                 "\n2. Continue", (player.level < 5 || energy < 3) ? " (not recommended)\n" : "\n"
             );
             do choice = input("Enter choice: ");
-            while (!choice.isChoice(true, "sleep", 1, "continue", 2));
+            while (!choice.isChoice(true, "sleep", 1, "continue", 2));*/
 
-            if (true) [[likely]] { // (choice.isChoice("sleep", "1")) {
-                type("\nYou find a place to sleep through the night.\n");
+            //if (choice.isChoice("sleep", 1)) {
+                //type("\nYou find a place to sleep through the night.\n");
                 player.health = player.maxhealth;
                 player.raceAbilityReady = true;
                 player.classAbilityReady = true;
                 time = 5;
                 energy = 5;
-            } else 
-                type("You decide to continue on into the night. Good luck!\n");
+            //} else 
+            //    type("You decide to continue on into the night. Good luck!\n");
         } else {
             type ( true,
                 "\nWhat would you like to do?"

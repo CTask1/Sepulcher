@@ -10,6 +10,7 @@
                 "/EHsc",
                 "/nologo",
                 "/Fe${fileDirname}\\RPG.exe",
+                //"${fileDirname}\\Util.ifc",
                 "${fileDirname}\\RPG.cpp",
                 "${fileDirname}\\Events.cpp",
                 "${fileDirname}\\EventsS.cpp",

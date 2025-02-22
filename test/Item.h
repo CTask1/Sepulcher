@@ -2,200 +2,182 @@
 #include<unordered_map>
 #include<string>
 #include"Util.h"
+//import Util;
 
 namespace Item {
 
     enum Source {
+        NONE,
         FIND,
-        CRAFT
+        CRAFT,
+        DROP
     };
 
-    class Potion {
+    enum class TYPE {
+        NONE,
+        FOCUS,
+        ARM_LEATHER,
+        ARM_DRAKONIAN,
+        ARM_IRON,
+        ARM_STEEL,
+        WPN_LONG,
+        WPN_MAGIC,
+        WPN_GREAT,
+        WPN_CROSSBOW,
+        WPN_ST_WARBORN,
+        WPN_ST_GUARDIAN,
+        WPN_ST_SHADOW,
+        WPN_ST_FURY,
+        WPN_ST_WEEPING,
+        SPL_AM_WARBORN,
+        SPL_AM_GUARDIAN,
+        SPL_AM_SHADOW,
+        SPL_AM_FURY,
+        SPL_AM_WEEPING
+    };
+
+    const struct Info {
+        std::string name;
+        float defMod = 0.f;
+        float strMod = 0.f;
+        bool nDef = false;
+        bool nStr = false;
+    };
+
+    const std::unordered_map<TYPE, Info> Data = {
+        // General
+        { TYPE::NONE           , { "None"                                                   }},
+        { TYPE::FOCUS          , { "Arcane Focus"                                           }},
+        // Armor
+        { TYPE::ARM_LEATHER    , { "Leather Armor"               , 1.15f                    }},
+        { TYPE::ARM_DRAKONIAN  , { "Drakonian Armor"             , 1.15f                    }},
+        { TYPE::ARM_IRON       , { "Iron Armor"                  , 1.20f                    }},
+        { TYPE::ARM_STEEL      , { "Steel Armor"                 , 1.30f                    }},
+        // Weapons
+        { TYPE::WPN_LONG       , { "Longsword"                   , 0.00f, 1.25f             }},
+        { TYPE::WPN_MAGIC      , { "Magic Sword"                 , 0.00f, 1.25f             }},
+        { TYPE::WPN_GREAT      , { "Greatsword"                  , 0.00f, 1.25f             }},
+        { TYPE::WPN_CROSSBOW   , { "Crossbow"                    , 0.00f, 1.25f             }},
+        { TYPE::WPN_ST_WARBORN , { "Staff of the Warborn"        , 0.00f, 1.25f             }},
+        { TYPE::WPN_ST_GUARDIAN, { "Staff of the Guardian"       , 0.00f, 1.25f             }},
+        { TYPE::WPN_ST_SHADOW  , { "Staff of the Shadow"         , 0.00f, 1.25f             }},
+        { TYPE::WPN_ST_FURY    , { "Staff of Fury"               , 0.00f, 1.35f             }},
+        { TYPE::WPN_ST_WEEPING , { "Staff of the Weeping Spirit" , 0.00f, 1.10f             }},
+        // Special
+        { TYPE::SPL_AM_WARBORN , { "Amulet of the Warborn"       , 1.20f, 1.20f             }},
+        { TYPE::SPL_AM_GUARDIAN, { "Amulet of the Guardian"      , 1.30f                    }},
+        { TYPE::SPL_AM_SHADOW  , { "Amulet of the Shadow"                                   }},
+        { TYPE::SPL_AM_FURY    , { "Amulet of Fury"              , 1.25f, 1.25f, true       }},
+        { TYPE::SPL_AM_WEEPING , { "Amulet of the Weeping Spirit", 1.20f, 1.20f, true, true }}
+    };
+
+    class Item {
     public:
         std::string name;
+        TYPE itemType;
+        
+        Item(const TYPE t = TYPE::NONE, const std::string n = "None") : itemType(t), name(n) {}
+
+        virtual ~Item() {}
+        
+        virtual void displayInfo(const Source source = Source::NONE) const {}
+        
+        const bool operator!=(const TYPE Type) const {
+            return itemType != Type;
+        }
+        
+        const bool operator==(const TYPE Type) const {
+            return itemType == Type;
+        }
+
+    };
     
-        Potion(std::string n) : name(n) {}
+    class Potion : public Item {
+    public:
     
-        void displayInfo(const Item::Source source = Item::FIND) const {
+        Potion(const TYPE t = TYPE::NONE, const std::string n = "None") : Item(t, n) {}
+    
+        void displayInfo(const Source source = Source::NONE) const {
             
         }
     
     };
     
-    class Leveled {
+    class Leveled : public Item {
     public:
-        std::string name;
         uint16_t level;
-        
-        Leveled() {}
 
-        Leveled(std::string n) : name(n), level(1) {}
+        Leveled(const TYPE t = TYPE::NONE, const std::string n = "None") : Item(t, n), level(1) {}
     
         void levelUp() {
             level++;
         }
     
-        virtual void displayInfo(const std::string source = "") const {}
+        virtual void displayInfo(const Source source = Source::NONE) const {}
     
     };
     
     class Armor : public Leveled {
     public:
         short defenseBonus;
-    
-        enum TYPE {
-            NONE,
-            LEATHER,
-            DRAKONIAN,
-            IRON,
-            STEEL,
-            COUNT
-        };
-    
-        struct Info {
-            std::string name;
-            float defMod;
-        };
 
-        inline static const Info aType[COUNT] = {
-            { "None",            0.f   },
-            { "Leather Armor",   1.15f },
-            { "Drakonian Armor", 1.15f },
-            { "Iron Armor",      1.2f  },
-            { "Steel Armor",     1.3f  }
-        };
-
-        Armor() : Leveled("None"), defenseBonus(0) {}
+        Armor() : defenseBonus(0) {}
     
-        Armor(const TYPE t, const uint16_t l, const uint16_t a = 1, const bool c = false) :
-            Leveled(aType[t].name), defenseBonus(c ? std::round(pow(l + a, aType[t].defMod)) : randint(1, std::round(pow(l + a, aType[t].defMod)))) {}
+        Armor(const TYPE t, const uint16_t l, const short a = 1, const bool c = false) :
+            Leveled(t, Data.at(t).name), defenseBonus(c ? std::round(pow(l + a, Data.at(t).defMod)) : randint(1, std::round(pow(l + a, Data.at(t).defMod)))) {}
     
-        void displayInfo(const std::string source = "") const override {
-            if (source == "find")
+        void displayInfo(const Source source = Source::NONE) const override {
+            if (source == FIND)
                 type("\nYou found an item: ");
-            else if (source == "craft")
+            else if (source == CRAFT)
                 type("You crafted an item: ");
-            else if (source == "drop")
+            else if (source == DROP)
                 type("The enemy dropped an item: ");
-            type(name, " (Defense Bonus: ", defenseBonus, ", Attack Bonus: 0)\n");
-        }
-
-        const bool operator!=(const TYPE armType) const {
-            return name != aType[armType].name;
-        }
-
-        const bool operator==(const TYPE armType) const {
-            return name == aType[armType].name;
+            type(name, " (Defense Bonus: ", defenseBonus, ")\n");
         }
     
     };
     
     class Weapon : public Leveled {
     public:
-        short attackBonus;
+        short strengthBonus;
 
-        enum TYPE {
-            NONE,
-            LONG,
-            MAGIC,
-            GREAT,
-            CROSSBOW,
-            COUNT
-        };
+        Weapon() : strengthBonus(0) {}
     
-        struct Info {
-            std::string name;
-            float atkMod;
-        };
-
-        inline static const Info wType[COUNT] = {
-            { "None",        0.f   },
-            { "Longsword",   1.25f },
-            { "Magic Sword", 1.3f  },
-            { "Greatsword",  1.3f  },
-            { "Crossbow",    1.3f  }
-        };
-
-        Weapon() : Leveled("None"), attackBonus(0) {}
+        Weapon(const TYPE t, const uint16_t l, const short a = 1, const bool c = false) :
+            Leveled(t, Data.at(t).name), strengthBonus(c ? std::round(pow(l + a, Data.at(t).strMod)) : randint(1, std::round(pow(l + a, Data.at(t).strMod)))) {}
     
-        Weapon(const TYPE t, const uint16_t l, const uint16_t a = 1, const bool c = false) :
-            Leveled(wType[t].name), attackBonus(c ? std::round(pow(l + a, wType[t].atkMod)) : randint(1, std::round(pow(l + a, wType[t].atkMod)))) {}
-    
-        void displayInfo(const std::string source = "") const override {
-            if (source == "find")
+        void displayInfo(const Source source = Source::NONE) const override {
+            if (source == FIND)
                 type("\nYou found an item: ");
-            else if (source == "craft")
+            else if (source == CRAFT)
                 type("You crafted an item: ");
-            else if (source == "drop")
+            else if (source == DROP)
                 type("The enemy dropped an item: ");
-            type(name, " (Defense Bonus: 0, Attack Bonus: ", attackBonus, ")\n");
-        }
-
-        const bool operator!=(const TYPE wpnType) {
-            return name != wType[wpnType].name;
-        }
-
-        const bool operator==(const TYPE wpnType) {
-            return name == wType[wpnType].name;
+            type(name, " (Strength Bonus: ", strengthBonus, ")\n");
         }
     
     };
     
-    class Special {
+    class Special : public Item {
     public:
-        std::string name;
         short defenseBonus,
-              attackBonus;
+              strengthBonus;
 
-        enum TYPE {
-            NONE,
-            A_WARBORN,
-            A_GUARDIAN,
-            A_SHADOW,
-            A_FURY,
-            A_WEEPING,
-            COUNT
-        };
-
-        struct Info {
-            std::string name;
-            float defMod,
-                  atkMod;
-            bool nDef,
-                 nAtk;
-        };
-
-        inline static const Info sType[COUNT] = {
-            { "None",                           0.f, 0.f, false, false },
-            { "Amulet of the Warborn",        1.2f, 1.2f, false, false },
-            { "Amulet of the Guardian",        1.3f, 0.f, false, false },
-            { "Amulet of the Shadow",           0.f, 0.f, false, false },
-            { "Amulet of Fury",             1.25f, 1.25f, true,  false },
-            { "Amulet of the Weeping Spirit", 1.2f, 1.2f, true,  true  }
-        };
-
-        Special() : name("None"), defenseBonus(0), attackBonus(0) {}
+        Special() : defenseBonus(0), strengthBonus(0) {}
     
-        Special(const TYPE t, const uint16_t l) : name(sType[t].name),
-            defenseBonus(sType[t].defMod == 0 ? 0 : randint(1, std::round(pow(l, sType[t].defMod))) * (sType[t].nDef ? -1 : 1)),
-            attackBonus (sType[t].atkMod == 0 ? 0 : randint(1, std::round(pow(l, sType[t].atkMod))) * (sType[t].nAtk ? -1 : 1)) {}
+        Special(const TYPE t, const uint16_t l) : Item(t, Data.at(t).name),
+            defenseBonus(Data.at(t).defMod == 0 ? 0 : randint(1, std::round(pow(l, Data.at(t).defMod))) * (Data.at(t).nDef ? -1 : 1)),
+            strengthBonus(Data.at(t).strMod == 0 ? 0 : randint(1, std::round(pow(l, Data.at(t).strMod))) * (Data.at(t).nStr ? -1 : 1)) {}
     
-        void displayInfo(const std::string source = "") const {
-            if (source == "find")
+        void displayInfo(const Source source = Source::NONE) const {
+            if (source == FIND)
                 type("\nYou found an item: ");
-            else if (source == "craft")
+            else if (source == CRAFT)
                 type("\nYou crafted an item: ");
-            else if (source == "drop")
+            else if (source == DROP)
                 type("The enemy dropped an item: ");
-            type(name, " (Defense Bonus: ", defenseBonus, ", Attack Bonus: ", attackBonus, ")\n");
-        }
-
-        const bool operator!=(const TYPE splType) {
-            return name != sType[splType].name;
-        }
-
-        const bool operator==(const TYPE splType) {
-            return name == sType[splType].name;
+            type(name, " (Defense Bonus: ", defenseBonus, ", Strength Bonus: ", strengthBonus, ")\n");
         }
         
     };

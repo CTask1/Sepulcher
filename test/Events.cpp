@@ -1,9 +1,10 @@
 #include"Events.h"
 #include"Item.h"
 #include"Util.h"
+//import Util;
 
 void Events::initCombat(const Enemy::TYPE eType, const bool surprise) {
-    Enemy::Enemy enemy(eType, player.maxhealth, player.STR, player.level);
+    Enemy::Enemy enemy(eType, player.maxHealth, player.strength, player.level);
     combat(enemy, surprise);
 }
 
@@ -15,7 +16,7 @@ void Events::combat(Enemy::Enemy& enemy, const bool surprised) {
     bool run   = false; // Is the player trying to run?
     uint16_t surprise = 0;
     if (player.Class == Player::ROGUE)
-        surprise = (player.armor == Item::Armor::STEEL) ? 1 : randint(1, player.level + 1); // The player cannot surprise if they are wearing steel armor
+        surprise = (player.armor == Item::TYPE::ARM_STEEL) ? 1 : randint(1, player.level + 1); // The player cannot surprise if they are wearing steel armor
     while (player.health > 0 && enemy.health > 0) { // While both the player and the enemy are alive
         if (surprised && first) {
             type("\nThe enemy surprised you!\n");
@@ -26,9 +27,9 @@ void Events::combat(Enemy::Enemy& enemy, const bool surprised) {
                 type ( true,
                     "\nWhat would you like to do?"
                     "\n1. Attack"
-                    "\n2. Abilities"
-                    "\n3. Display Stats"
-                    "\n4. Display Enemy Stats"
+                    "\n2. Display Stats"
+                    "\n3. Display Enemy Stats"
+                    "\n4. Abilities"
                     "\n5. Run\n"
                 );
                 Choice choice;
@@ -36,10 +37,16 @@ void Events::combat(Enemy::Enemy& enemy, const bool surprised) {
                 while (!choice.isChoice(true, "attack", 1, "abilities", 2, "display stats", 3, "display enemy stats", 4, "run", 5));
 
                 if (choice.isChoice("attack", 1)) {
-                    int damage = player.STR + randint(1, 6);  // Player's attack based on STR + a six-sided die–roll
+                    int damage = player.strength + randint(1, 6);  // Player's attack based on STR + a six-sided die–roll
                     enemy.health = std::max(enemy.health - damage, 0);
                     type("\nYou dealt ", damage, " damage to the ", enemy.name, "!\nIts health is now ", enemy.health, ".\n");
-                } else if (choice.isChoice("abilities", 2)) {
+                } else if (choice.isChoice("display stats", 2)) {
+                    player.displayStats();
+                    continue;
+                } else if (choice.isChoice("display enemy stats", 3)) {
+                    enemy.displayStats();
+                    continue;
+                } else if (choice.isChoice("abilities", 4)) {
                     if (!player.hasAbility) {
                         type("\nYou don't have any abilities.\n");
                         continue;
@@ -73,7 +80,7 @@ void Events::combat(Enemy::Enemy& enemy, const bool surprised) {
                     } while (!(isValidChoice || abilityChoice.isChoice(true, "(go back)", i)));
 
                     if (abilities[choiceNum] == "Dragon's Breath") {
-                        const uint16_t damage = player.STR + randint(1, 6);
+                        const uint16_t damage = player.strength + randint(1, 6);
                         const uint16_t burn = randint(1, 4);
                         enemy.health = std::max(enemy.health - damage - burn, 0);
                         type (
@@ -81,10 +88,12 @@ void Events::combat(Enemy::Enemy& enemy, const bool surprised) {
                             "\nThe ", enemy.name, " is burned for an additional ", burn, " damage!"
                             "\nIts health is now ", enemy.health, ".\n"
                         );
+                        if (enemy.health == 0)
+                            break;
                         player.raceAbilityReady = false;
                     } else if (abilities[choiceNum] == "Second Wind") {
                         const float HEALING_MULTIPLIER = randint(10, 15) / 10.f;
-                        const uint16_t healing = (player.maxhealth * HEALING_MULTIPLIER - player.health * HEALING_MULTIPLIER) / 2;
+                        const uint16_t healing = (player.maxHealth * HEALING_MULTIPLIER - player.health * HEALING_MULTIPLIER) / 2;
                         player.health += healing;
                         type (
                             "\nYou get a surge of adrenaline and heal ", healing, " points!"
@@ -92,12 +101,6 @@ void Events::combat(Enemy::Enemy& enemy, const bool surprised) {
                         );
                         player.classAbilityReady = false;
                     }
-                    continue;
-                } else if (choice.isChoice("display stats", 3)) {
-                    player.displayStats();
-                    continue;
-                } else if (choice.isChoice("display enemy stats", 4)) {
-                    enemy.displayStats();
                     continue;
                 } else {
                     run = true;
@@ -118,7 +121,7 @@ void Events::combat(Enemy::Enemy& enemy, const bool surprised) {
             break;
         } else if (enemy.health > 0) {
             // Enemy's turn
-            if (player.special == Item::Special::A_SHADOW && randint(1, 10) == 1) [[unlikely]] {
+            if (player.special == Item::TYPE::SPL_AM_SHADOW && randint(1, 10) == 1) [[unlikely]] {
                 type (
                     "\nAs the enemy swings to attack, their weapon passes through you, as if you weren't even there.\n"
                     "Your amulet has spared you from harm!\n"
@@ -136,12 +139,12 @@ void Events::combat(Enemy::Enemy& enemy, const bool surprised) {
 
     // Check the outcome of the battle
     if (run == false) {
-        if (player.health > 0) {
+        if (player.health > 0) [[likely]] {
             uint16_t expGain = randint(5, player.level * 8);
             type("\nYou defeated the ", enemy.name, "! You earned ", expGain, " experience points.\n");
             player.exp += expGain;
             if (enemy.name == Enemy::eType[Enemy::GOBLIN].name && randint(1, 2) == 1)
-                player.initWeapon(Item::Weapon::CROSSBOW, "drop");
+                player.initWeapon(Item::TYPE::WPN_CROSSBOW, Item::Source::DROP, (player.Class == Player::WIZARD ? -1 : 1));
         } else {
             type("\nYou were defeated by the ", enemy.name, ". Game over.\n\n");
             std::cout << "Press any key to continue . . .";
@@ -176,11 +179,11 @@ void explore(Player& player) {
             break;
         case 5:
             type("You discover a peaceful meadow. The serene environment helps you relax.\n");
-            player.health = std::min((uint16_t)(player.health + randint(5, 10)), player.maxhealth);
+            player.health = std::min((uint16_t)(player.health + randint(5, 10)), player.maxHealth);
             break;
         case 6:
             type("You find a hidden garden with medicinal herbs. You gather some and regain health.\n");
-            player.health = std::min((uint16_t)(player.health + randint(5, 15)), player.maxhealth);
+            player.health = std::min((uint16_t)(player.health + randint(5, 15)), player.maxHealth);
             break;
         case 7:
             events.travelingTrader();

@@ -1,13 +1,15 @@
 #pragma once
-#include"Util.h"
 #include<unordered_map>
+#include"Util.h"
+//import Util;
+
 class Resources {
 public:
     std::unordered_map<std::string, uint16_t> resources;
 
     Resources() {}
 
-    Resources* addResource(const std::string& resource, const uint16_t amount) {
+    Resources* addResource(const std::string& resource, const uint16_t amount = 1) {
         if (amount > 0)
             resources[resource] += amount;
         return this;

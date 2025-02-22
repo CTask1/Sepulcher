@@ -3,19 +3,18 @@
 #include<string>
 #include"Events.h"
 #include"Player.h"
-#include"Item.h"
-#include"Util.h"
 #include"Enemy.h"
+//import Util;
 
 void levelUp(Player& player, int hitdie) {
     uint16_t levels = 0;
     while (player.exp >= player.nextLevel) {
         player.level++;
         player.exp -= player.nextLevel;
-        player.maxhealth += player.level + hitdie;
-        player.health = player.maxhealth;
-        player.STR += 3;
-        player.baseSTR += 3;
+        player.maxHealth += player.level + hitdie;
+        player.health = player.maxHealth;
+        player.strength += 3;
+        player.baseStrength += 3;
         if (player.Race == Player::DRAKONIAN)
             player.defense += 1;
         player.nextLevel = 10 + static_cast<uint32_t>(pow(player.level, 2));
@@ -39,23 +38,27 @@ void gameLoop(Player& player, int hitdie) {
         Choice choice;
         if (time == 0) [[unlikely]] {
             type (
+                "\nAs the sun dips below the horizon, you find a safe place to make camp and sleep through the night."
+                "\nYour health has been restored", (player.hasAbility ? " and your abilites have recharged!\n" : "!\n")
+            );
+            /*type (
                 "\nIt's getting late. You should get some sleep...unless you want to challenge the darkness."
                 "\nWhat would you like to do?"
                 "\n1. Sleep"
                 "\n2. Continue", (player.level < 5 || energy < 3) ? " (not recommended)\n" : "\n"
             );
             do choice = input("Enter choice: ");
-            while (!choice.isChoice(true, "sleep", 1, "continue", 2));
+            while (!choice.isChoice(true, "sleep", 1, "continue", 2));*/
 
-            if (true) [[likely]] { // (choice.isChoice("sleep", "1")) {
-                type("\nYou find a place to sleep through the night.\n");
-                player.health = player.maxhealth;
+            //if (choice.isChoice("sleep", 1)) {
+                //type("\nYou find a place to sleep through the night.\n");
+                player.health = player.maxHealth;
                 player.raceAbilityReady = true;
                 player.classAbilityReady = true;
                 time = 5;
                 energy = 5;
-            } else 
-                type("You decide to continue on into the night. Good luck!\n");
+            //} else 
+            //    type("You decide to continue on into the night. Good luck!\n");
         } else {
             type ( true,
                 "\nWhat would you like to do?"
@@ -85,7 +88,7 @@ void gameLoop(Player& player, int hitdie) {
             } else if (choice.isChoice("rest", 5)) {
                 type("You find a place to rest and gain some health.\n");
                 const float HEALING_MULTIPLIER = randint(10, 15) / 10.f;
-                player.health += (player.maxhealth - player.health) * HEALING_MULTIPLIER / 2;
+                player.health += (player.maxHealth - player.health) * HEALING_MULTIPLIER / 2;
                 /*
                 function: f(h) = r(m - h) / 2 where
                 f(h) = healing
@@ -141,18 +144,23 @@ void start() {
         type (
             "\nNow select a class:"
             "\n1. Fighter   - Trained with blades of all sorts"
-            "\n2. Rogue     - A silent assassin\n"
+            "\n2. Rogue     - A silent assassin"
+            "\n3. Wizard    - A scholar in the arcane arts\n"
         );
         Choice classChoice;
         do classChoice = input("Please enter your choice: ");
-        while (!classChoice.isChoice(true, "fighter", 1, "rogue", 2));
+        while (!classChoice.isChoice(true, "fighter", 1, "rogue", 2, "wizard", 3));
         
         if (classChoice.isChoice("fighter", 1)) {
             pClass = Player::FIGHTER;
             hitdie = 10;
             str = 5;
-        } else {
+        } else if (classChoice.isChoice("rogue", 2)) {
             pClass = Player::ROGUE;
+            hitdie = 8;
+            str = 4;
+        } else {
+            pClass = Player::WIZARD;
             hitdie = 8;
             str = 4;
         }

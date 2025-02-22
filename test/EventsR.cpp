@@ -1,5 +1,6 @@
 #include"EventsR.h"
 #include"Events.h"
+//import Util;
 
 void EventsR::lostTraveler() { // Lost Traveler
     type (
@@ -14,12 +15,12 @@ void EventsR::lostTraveler() { // Lost Traveler
     
     if (travelerChoice.isChoice("offer help", 1)) {
         type("You offer help to the lost traveler.");
-        int hostile = randint(1, 3);
+        int hostile = randint(1, 3); // 33% chance the traveler is hostile and attacks
         if (hostile == 1) {
             type(" As you assist the traveler, they turn around and attack you!\n");
             events.initCombat(Enemy::TRAVELER, true);
         } else {
-            int expGain = (randint(1, 100) == 1) ? randint(35, 75) : randint(10, 20);
+            int expGain = (randint(1, 100) == 1) ? randint(35, 75) : randint(10, 20); // 1% chance of extra exp
             type(" They are grateful and share a bit of their wisdom.\nYou gained ", expGain, " experience points!\n");
             player.exp += expGain;
         }
@@ -42,12 +43,12 @@ void EventsR::mountainPass() { // Mountain Pass
     
     if (climbChoice.isChoice("attempt the climb", 1)) {
         type("You decide to attempt the climb. It's steep and dangerous, but you press on.\n");
-        int success = randint(1, 3);
+        int success = randint(1, 3); // 33% chance of failure
         if (success != 1)
             type("You successfully navigate the mountain pass without incident.\n");
         else {
             type("The climb proves challenging. You slip and fall, losing some health.\n");
-            player.health -= randint(int(player.maxhealth / 4), int(player.maxhealth / 3));
+            player.health -= randint(player.maxHealth / 4, player.maxHealth / 3);
         }
     } else {
         type("\nYou opt to find an alternate route, avoiding the dangerous climb.\n");
@@ -99,7 +100,7 @@ void EventsR::mountainPass() { // Mountain Pass
                     int outcome = randint(1, 2);
                     if (outcome == 1) {
                         type("\nThe right path leads to a dense forest with unique flora.\nYou collect rare herbs with medicinal properties and regain health!\n");
-                        player.health = std::min((uint16_t)(player.health + randint(5, 15)), player.maxhealth);
+                        player.health = std::min((uint16_t)(player.health + randint(5, 15)), player.maxHealth);
                     } else {
                         type("\nAs you venture down the right path, you encounter a wild animal. How will you react?\n");
                         type (
@@ -133,7 +134,7 @@ void EventsR::mysteriousCave() { // Mysterious Cave
     
     if (caveChoice.isChoice("enter the cave", 1)) {
         type("You decide to enter the mysterious cave, drawn by its allure.\n");
-        int encounter = randint(1, 2);
+        int encounter = randint(1, 2); // 50% chance for each event
         if (encounter == 1) {
             type("The cave is filled with valuable crystals. You gain some resources!\n");
             player.resources["crystals"] += randint(1, player.level);
@@ -148,10 +149,10 @@ void EventsR::mysteriousCave() { // Mysterious Cave
 
 void EventsR::strangeAmulet() { // Strange Amulet
     type (
-        "You notice something glimmering beneath a pile of fallen leaves.\n"
-        "Brushing away the dirt, you uncover an ornate amulet, its surface engraved with swirling patterns.\n"
-        "A faint hum resonates from the artifact, and you get the feeling that it is calling to you.\n"
-        "There's no telling if it's blessed or cursed. What would you like to do?\n"
+        "You spot a glimmer beneath a pile of fallen leaves and uncover an ornate amulet.\n"
+        "Its surface is engraved with swirling patterns and a faint hum resonates from within.\n"
+        "Something about it draws you in, but its nature is uncertain.\n"
+        "What would you like to do?\n"
         "1. Pick it up\n"
         "2. Leave it\n"
     );
@@ -167,35 +168,40 @@ void EventsR::strangeAmulet() { // Strange Amulet
                 "The amulet pulses with powerful energy.\n"
                 "You feel stronger, faster, and ready for anything.\n"
             );
-            player.initSpecial(Item::Special::A_WARBORN, "find");
+            player.initSpecial(Item::TYPE::SPL_AM_WARBORN, Item::Source::FIND);
+            player.resources.addResource("Amulet of the Warborn");
             break;
         } case 2: {
             type (
                 "A soothing presence envelops you, as if unseen hands are guiding your movements.\n"
                 "Your reflexes feel sharper, and your stance more solid.\n"
             );
-            player.initSpecial(Item::Special::A_GUARDIAN, "find");
+            player.initSpecial(Item::TYPE::SPL_AM_GUARDIAN, Item::Source::FIND);
+            player.resources.addResource("Amulet of the Guardian");
             break;
         } case 3: {
             type (
                 "Your vision flickers, and for a moment you feel detached from reality.\n"
                 "The world seems... quieter.\n"
             );
-            player.initSpecial(Item::Special::A_SHADOW, "find");
+            player.initSpecial(Item::TYPE::SPL_AM_SHADOW, Item::Source::FIND);
+            player.resources.addResource("Amulet of the Shadow");
             break;
         } case 4: {
             type (
                 "The amulet pulses, filling you with an insatiable hunger.\n"
                 "You feel stronger, but your sense of caution wanes.\n"
             );
-            player.initSpecial(Item::Special::A_FURY, "find");
+            player.initSpecial(Item::TYPE::SPL_AM_FURY, Item::Source::FIND);
+            player.resources.addResource("Amulet of Fury");
             break;
         } case 5: {
             type (
                 "A sharp pain strikes your chest, and a dreadful chill spreads through your body.\n"
                 "The weight of unseen sorrow presses against your heart.\n"
             );
-            player.initSpecial(Item::Special::A_WEEPING, "find");
+            player.initSpecial(Item::TYPE::SPL_AM_WEEPING, Item::Source::FIND);
+            player.resources.addResource("Amulet of the Weeping Spirit");
             break;
         }
         }

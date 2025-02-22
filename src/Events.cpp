@@ -81,6 +81,8 @@ void Events::combat(Enemy::Enemy& enemy, const bool surprised) {
                             "\nThe ", enemy.name, " is burned for an additional ", burn, " damage!"
                             "\nIts health is now ", enemy.health, ".\n"
                         );
+                        if (enemy.health == 0)
+                            break;
                         player.raceAbilityReady = false;
                     } else if (abilities[choiceNum] == "Second Wind") {
                         const float HEALING_MULTIPLIER = randint(10, 15) / 10.f;
