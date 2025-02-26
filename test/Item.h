@@ -76,11 +76,19 @@ namespace Item {
         std::string name;
         TYPE itemType;
         
-        Item(const TYPE t = TYPE::NONE, const std::string n = "None") : itemType(t), name(n) {}
+        Item(const TYPE t = TYPE::NONE) : itemType(t), name(Data.at(t).name) {}
 
         virtual ~Item() {}
         
-        virtual void displayInfo(const Source source = Source::NONE) const {}
+        virtual void displayInfo(const Source source = Source::NONE) const {
+            if (source == FIND)
+                type("\nYou found an item: ");
+            else if (source == CRAFT)
+                type("You crafted an item: ");
+            else if (source == DROP)
+                type("The enemy dropped an item: ");
+            type(name, "\n");
+        }
         
         const bool operator!=(const TYPE Type) const {
             return itemType != Type;
@@ -95,7 +103,7 @@ namespace Item {
     class Potion : public Item {
     public:
     
-        Potion(const TYPE t = TYPE::NONE, const std::string n = "None") : Item(t, n) {}
+        Potion(const TYPE t = TYPE::NONE) : Item(t) {}
     
         void displayInfo(const Source source = Source::NONE) const {
             
@@ -107,7 +115,7 @@ namespace Item {
     public:
         uint16_t level;
 
-        Leveled(const TYPE t = TYPE::NONE, const std::string n = "None") : Item(t, n), level(1) {}
+        Leveled(const TYPE t = TYPE::NONE) : Item(t), level(1) {}
     
         void levelUp() {
             level++;
@@ -124,7 +132,7 @@ namespace Item {
         Armor() : defenseBonus(0) {}
     
         Armor(const TYPE t, const uint16_t l, const short a = 1, const bool c = false) :
-            Leveled(t, Data.at(t).name), defenseBonus(c ? std::round(pow(l + a, Data.at(t).defMod)) : randint(1, std::round(pow(l + a, Data.at(t).defMod)))) {}
+            Leveled(t), defenseBonus(c ? std::round(pow(l + a, Data.at(t).defMod)) : randint(1, std::round(pow(l + a, Data.at(t).defMod)))) {}
     
         void displayInfo(const Source source = Source::NONE) const override {
             if (source == FIND)
@@ -145,7 +153,7 @@ namespace Item {
         Weapon() : strengthBonus(0) {}
     
         Weapon(const TYPE t, const uint16_t l, const short a = 1, const bool c = false) :
-            Leveled(t, Data.at(t).name), strengthBonus(c ? std::round(pow(l + a, Data.at(t).strMod)) : randint(1, std::round(pow(l + a, Data.at(t).strMod)))) {}
+            Leveled(t), strengthBonus(c ? std::abs(std::round(pow(l + a, Data.at(t).strMod))) : randint(1, std::abs(std::round(pow(l + a, Data.at(t).strMod))))) {}
     
         void displayInfo(const Source source = Source::NONE) const override {
             if (source == FIND)
@@ -166,7 +174,7 @@ namespace Item {
 
         Special() : defenseBonus(0), strengthBonus(0) {}
     
-        Special(const TYPE t, const uint16_t l) : Item(t, Data.at(t).name),
+        Special(const TYPE t, const uint16_t l) : Item(t),
             defenseBonus(Data.at(t).defMod == 0 ? 0 : randint(1, std::round(pow(l, Data.at(t).defMod))) * (Data.at(t).nDef ? -1 : 1)),
             strengthBonus(Data.at(t).strMod == 0 ? 0 : randint(1, std::round(pow(l, Data.at(t).strMod))) * (Data.at(t).nStr ? -1 : 1)) {}
     

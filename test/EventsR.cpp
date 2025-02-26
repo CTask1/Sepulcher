@@ -101,6 +101,8 @@ void EventsR::mountainPass() { // Mountain Pass
                     if (outcome == 1) {
                         type("\nThe right path leads to a dense forest with unique flora.\nYou collect rare herbs with medicinal properties and regain health!\n");
                         player.health = std::min((uint16_t)(player.health + randint(5, 15)), player.maxHealth);
+                        if (player.Class == Player::WIZARD && player.mana != player.maxMana)
+                            player.mana++;
                     } else {
                         type("\nAs you venture down the right path, you encounter a wild animal. How will you react?\n");
                         type (

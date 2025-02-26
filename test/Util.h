@@ -34,7 +34,9 @@ _NODISCARD inline std::string toLower(std::string str) {
     return str;
 }
 
-_NODISCARD inline const uint16_t randint(const uint16_t min, const uint16_t max) {
+_NODISCARD inline const uint16_t randint(uint16_t min, uint16_t max) {
+    if (min > max) [[unlikely]]
+        return 0;
     static std::random_device rd;
     static std::mt19937 gen(rd());
     std::uniform_int_distribution<> distrib(min, max);

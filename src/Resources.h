@@ -7,7 +7,7 @@ public:
 
     Resources() {}
 
-    Resources* addResource(const std::string& resource, const uint16_t amount) {
+    Resources* addResource(const std::string& resource, const uint16_t amount = 1) {
         if (amount > 0)
             resources[resource] += amount;
         return this;

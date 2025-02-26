@@ -8,19 +8,26 @@ void Events::initCombat(const Enemy::TYPE eType, const bool surprise) {
     combat(enemy, surprise);
 }
 
-void Events::combat(Enemy::Enemy& enemy, const bool surprised) {
+void Events::combat(Enemy::Enemy& enemy, bool surprised) {
     type("\nYou encounter a ", enemy.name, "!\n");
     enemy.displayStats();
     type("\nPrepare for battle!\n");
     bool first = true; // Is it the first round of combat?
     bool run   = false; // Is the player trying to run?
+    short mirrorImage = 0;
     uint16_t surprise = 0;
     if (player.Class == Player::ROGUE)
         surprise = (player.armor == Item::TYPE::ARM_STEEL) ? 1 : randint(1, player.level + 1); // The player cannot surprise if they are wearing steel armor
     while (player.health > 0 && enemy.health > 0) { // While both the player and the enemy are alive
         if (surprised && first) {
-            type("\nThe enemy surprised you!\n");
-            surprise = 1;
+            if (!player.arcaneEye) {
+                type("\nThe enemy surprised you!\n");
+                surprise = 1;
+            } else {
+                surprised = false;
+                type("\nYour arcane eye spotted the enemy before they could strike!\n");
+                continue;
+            }
         } else {
             // Player's turn
             while (true) {
@@ -47,37 +54,50 @@ void Events::combat(Enemy::Enemy& enemy, const bool surprised) {
                     enemy.displayStats();
                     continue;
                 } else if (choice.isChoice("abilities", 4)) {
-                    if (!player.hasAbility) {
+                    if (!player.hasAbility && player.Class != Player::WIZARD) {
                         type("\nYou don't have any abilities.\n");
                         continue;
                     }
-                    if (!player.raceAbilityReady && !player.classAbilityReady) {
+                    if (!player.raceAbilityReady && !player.classAbilityReady && player.mana == 0) {
                         type("\nYour abilities are currently unavailable.\nYou must sleep first.\n");
                         continue;
                     }
                     type("\nAbilities:\n");
                     std::unordered_map<uint16_t, std::string> abilities;
-                    uint16_t i = 0;
+                    uint16_t abilityNum= 0;
                     if (player.Race == Player::DRAKONIAN && player.raceAbilityReady) {
-                        abilities[i++] = "Dragon's Breath";
-                        type("\t", i, ". Dragon's Breath (Drakonian)\n");
+                        abilities[abilityNum++] = "Dragon's Breath";
+                        type("\t", abilityNum, ". Dragon's Breath (Drakonian)\n");
                     }
                     if (player.Class == Player::FIGHTER && player.classAbilityReady) {
-                        abilities[i++] = "Second Wind";
-                        type("\t", i, ". Second Wind (Fighter)\n");
+                        abilities[abilityNum++] = "Second Wind";
+                        type("\t", abilityNum, ". Second Wind (Fighter)\n");
                     }
-                    type(++i, ". (go back)\n");
+                    if (player.Class == Player::WIZARD) {
+                        type("Spells (You have ", player.mana, " mana points):\n");
+                        abilities[abilityNum++] = "Fire Bolt";
+                        type("\t", abilityNum, ". Fire Bolt (Wizard) - 1 MP\n");
+                        abilities[abilityNum++] = "Mirror Image";
+                        type("\t", abilityNum, ". Mirror Image (Wizard) - 2 MP\n");
+                        abilities[abilityNum++] = "Mage Armor";
+                        type("\t", abilityNum, ". Mage Armor (Wizard) - 5 MP\n");
+                        if (player.weapon == Item::TYPE::WPN_ST_GUARDIAN) {
+                            abilities[abilityNum++] = "Recovery";
+                            type("\t", abilityNum, ". Recovery (Staff of the Guardian) - 2 MP\n");
+                        }
+                    }
+                    type(++abilityNum, ". (go back)\n");
                     Choice abilityChoice;
-                    uint16_t choiceNum;
+                    uint16_t choiceNum = abilityNum;
                     bool isValidChoice = false;
                     do {
                         abilityChoice = input("Enter choice: ");
-                        for (uint16_t j = 0; j < i && !isValidChoice; j++) {
-                            isValidChoice = abilityChoice.isChoice(abilities[j], j + 1);
+                        for (uint16_t i = 0; i < abilityNum && !isValidChoice; i++) {
+                            isValidChoice = abilityChoice.isChoice(abilities[i], i + 1);
                             if (isValidChoice)
-                                choiceNum = j;
+                                choiceNum = i;
                         }
-                    } while (!(isValidChoice || abilityChoice.isChoice(true, "(go back)", i)));
+                    } while (!(isValidChoice || abilityChoice.isChoice(true, "(go back)", abilityNum)));
 
                     if (abilities[choiceNum] == "Dragon's Breath") {
                         const uint16_t damage = player.strength + randint(1, 6);
@@ -100,12 +120,73 @@ void Events::combat(Enemy::Enemy& enemy, const bool surprised) {
                             "\nYour health is now ", player.health, ".\n"
                         );
                         player.classAbilityReady = false;
+                    } else if (abilities[choiceNum] == "Fire Bolt") {
+                        if (player.mana < 1) {
+                            type("\nYou don't have enough mana points!\n");
+                            continue;
+                        }
+                        const uint16_t damage = player.strength + randint(1, 8);
+                        const uint16_t burn = randint(1, 4);
+                        enemy.health = std::max(enemy.health - damage - burn, 0);
+                        player.mana--;
+                        player.health = std::min((uint16_t)(player.health + 1), player.maxHealth);
+                        type (
+                            "\nYou conjure a blazing ember in your palm and hurl it forward."
+                            "\nThe fire bolt streaks through the air, striking the ", enemy.name, " with a burst of flames for ", damage, " damage!"
+                            "\nThe ", enemy.name, " is burned for an additional ", burn, " damage!"
+                            "\nIts health is now ", enemy.health, ".\n"
+                        );
+                        break;
+                    } else if (abilities[choiceNum] == "Mirror Image") {
+                        if (player.mana < 2) {
+                            type("\nYou don't have enough mana points!\n");
+                            continue;
+                        }
+                        mirrorImage = 2;
+                        player.mana -= 2;
+                        player.health = std::min((uint16_t)(player.health + 2), player.maxHealth);
+                        type (
+                            "\nYou weave an illusion, creating shimmering duplicates of yourself."
+                            "\nThey flicker and shift, making it difficult for the enemy to land its strikes.\n"
+                        );
+                        break;
+                    } else if (abilities[choiceNum] == "Mage Armor") {
+                        if (player.mageArmorDefense > 0) {
+                            type("\nThis spell is already active!\n");
+                            continue;
+                        }
+                        if (player.mana < 5) {
+                            type("\nYou don't have enough mana points!\n");
+                            continue;
+                        }
+                        player.mageArmorDefense = pow(player.level + 1, 1.2f);
+                        player.defense += player.mageArmorDefense;
+                        player.mana -= 5;
+                        player.health = std::min((uint16_t)(player.health + 5), player.maxHealth);
+                        type ("\nA protective shielding aura surrounds you, boosting your defense by ", player.mageArmorDefense, "!\n");
+                        break;
+                    } else if (abilities[choiceNum] == "Recovery") {
+                        if (player.mana < 2) {
+                            type("\nYou don't have enough mana points!\n");
+                            continue;
+                        }
+                        const float HEALING_MULTIPLIER = randint(10, 15) / 10.f;
+                        const uint16_t healing = (player.maxHealth - player.health) * HEALING_MULTIPLIER / 3;
+                        player.health += healing;
+                        player.mana -= 2;
+                        player.health = std::min((uint16_t)(player.health + 2), player.maxHealth);
+                        type (
+                            "\nYou channel magical energy into a healing aura, wrapping yourself in a warm, sooting light."
+                            "\nYour wounds are mended and you heal ", healing, " points!"
+                            "\nYour health is now ", player.health, ".\n"
+                        );
+                        break;
                     }
                     continue;
                 } else {
                     run = true;
                     type("You try to run away.\n");
-                    if (randint(1, 10) == 1) {
+                    if (randint(1, 10) == 1 && player.weapon != Item::TYPE::WPN_ST_SHADOW) {
                         run = false;
                         type("The ", enemy.name, " stopped you!\n");
                     }
@@ -114,17 +195,23 @@ void Events::combat(Enemy::Enemy& enemy, const bool surprised) {
             }
         }
 
-        if (player.Class == Player::ROGUE && first == true && surprise > 1 && enemy.name != Enemy::eType[Enemy::TRAVELER].name && run == false)
+        if (player.Class == Player::ROGUE && first && surprise > 1 && enemy.name != Enemy::eType[Enemy::TRAVELER].name && !run)
             type("You surprised the enemy!\n");
-        else if (run == true) {
+        else if (run) {
             type("You successfully ran away!\n");
             break;
         } else if (enemy.health > 0) {
             // Enemy's turn
             if (player.special == Item::TYPE::SPL_AM_SHADOW && randint(1, 10) == 1) [[unlikely]] {
                 type (
-                    "\nAs the enemy swings to attack, their weapon passes through you, as if you weren't even there.\n"
-                    "Your amulet has spared you from harm!\n"
+                    "\nAs the enemy swings to attack, their weapon passes through you, as if you weren't even there."
+                    "\nYour amulet has spared you from harm!\n"
+                );
+            } else if (mirrorImage > 0 && randint(1, 2) == 1 || mirrorImage == 2) {
+                mirrorImage--;
+                type (
+                    "\nThe enemy's precise attack finds its mark, only for the image to shimmer and dissolve."
+                    "\nThey stare in confusion, momentarily thrown off their attack.\n"
                 );
             } else {
                 uint16_t enemyDamage = std::max(enemy.attack + randint(1, 6) - player.CON - player.defense, 0);  // Enemy's attack based on its attack stat + a six-sided die roll - player's CON and defense
@@ -159,62 +246,89 @@ void explore(Player& player) {
 
     Events events(player);
 
-    // Generate a random number to determine the exploration event
-    int eventType = randint(1, 10);
+    uint16_t eventType,
+             prevEvent = 0,
+             event;
 
-    if (eventType <= 6) { // Safe - 60%
-        int event = randint(1, 7);
-        switch (event) {
-        case 1:
-            events.friendlyTraveler();
-            break;
-        case 2:
-            events.oldChest();
-            break;
-        case 3:
-            events.hiddenArmory();
-            break;
-        case 4:
-            type("You found nothing worth taking note of.\n");
-            break;
-        case 5:
-            type("You discover a peaceful meadow. The serene environment helps you relax.\n");
-            player.health = std::min((uint16_t)(player.health + randint(5, 10)), player.maxHealth);
-            break;
-        case 6:
-            type("You find a hidden garden with medicinal herbs. You gather some and regain health.\n");
-            player.health = std::min((uint16_t)(player.health + randint(5, 15)), player.maxHealth);
-            break;
-        case 7:
-            events.travelingTrader();
-            break;
+    do {
+        // Generate a random number to determine the exploration event
+        eventType = randint(1, 10);
+
+        if (eventType <= 6) { // Safe - 60%
+            event = randint(1, 7);
+            if (event == prevEvent)
+                continue;
+            prevEvent = event;
+            switch (event) {
+            case 1:
+                events.friendlyTraveler();
+                break;
+            case 2:
+                events.oldChest();
+                break;
+            case 3:
+                events.hiddenArmory();
+                break;
+            case 4:
+                type("You found nothing worth taking note of.\n");
+                break;
+            case 5:
+                type("You discover a peaceful meadow. The serene environment helps you relax.\n");
+                player.health = std::min((uint16_t)(player.health + randint(5, 10)), player.maxHealth);
+                if (player.Class == Player::WIZARD && player.mana != player.maxMana)
+                    player.mana++;
+                break;
+            case 6:
+                type("You find a hidden garden with medicinal herbs. You gather some and regain health.\n");
+                player.health = std::min((uint16_t)(player.health + randint(5, 15)), player.maxHealth);
+                if (player.Class == Player::WIZARD && player.mana != player.maxMana)
+                    player.mana++;
+                break;
+            case 7:
+                events.travelingTrader();
+                break;
+            }
+        } else if (eventType <= 9) { // Risky - 30%
+            event = randint(1, 4);
+            if (event == prevEvent)
+                continue;
+            prevEvent = event;
+            switch (event) {
+            case 1:
+                events.lostTraveler();
+                break;
+            case 2:
+                events.mountainPass();
+                break;
+            case 3:
+                events.mysteriousCave();
+                break;
+            case 4:
+                events.strangeAmulet();
+            }
+        } else { // Dangerous - 10%
+            event = randint(1, 2);
+            if (event == prevEvent)
+                continue;
+            prevEvent = event;
+            switch (event) {
+            case 1:
+                events.enemyEncounter();
+                break;
+            case 2:
+                if (player.arcaneEye) {
+                    type (
+                        "\nYour arcane eye reveals a trap hidden in the underbrush."
+                        "\nYou halt just in time, avoiding danger.\n"
+                    );
+                    break;
+                }
+                events.hunterTrap();
+                break;
+            }
         }
-    } else if (eventType <= 9) { // Risky - 30%
-        int event = randint(1, 4);
-        switch (event) {
-        case 1:
-            events.lostTraveler();
-            break;
-        case 2:
-            events.mountainPass();
-            break;
-        case 3:
-            events.mysteriousCave();
-            break;
-        case 4:
-            events.strangeAmulet();
-        }
-    } else { // Dangerous - 10%
-        int event = randint(1, 2);
-        switch (event) {
-        case 1:
-            events.enemyEncounter();
-            break;
-        case 2:
-            events.hunterTrap();
-            break;
-        }
-    }
+        break;
+    } while (true);
     /* Other events
      * Risky:
      *   Enchanted fountain -- Drink from it? It could grant a buff...or a curse
