@@ -17,17 +17,16 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
     short mirrorImage = 0;
     uint16_t surprise = 0;
     if (player.Class == Player::ROGUE)
-        surprise = (player.armor == Item::TYPE::ARM_STEEL) ? 1 : randint(1, player.level + 1); // The player cannot surprise if they are wearing steel armor
-    while (player.health > 0 && enemy.health > 0) { // While both the player and the enemy are alive
-        if (surprised && first) {
-            if (!player.arcaneEye) {
-                type("\nThe enemy surprised you!\n");
-                surprise = 1;
-            } else {
+        surprise = (player.armor == Item::TYPE::ARM_STEEL || player.armor == Item::TYPE::ARM_IRON) ? 1 : randint(1, player.level + 1); // The player cannot surprise if they are wearing steel armor
+    while (player.health > 0 && enemy.health > 0) {
+        if (surprised && first) { // If the player is surprised
+            if (player.arcaneEye) { // If the player has the Arcane Eye spell active
                 surprised = false;
                 type("\nYour arcane eye spotted the enemy before they could strike!\n");
                 continue;
             }
+            type("\nThe enemy surprised you!\n");
+            surprise = 1;
         } else {
             // Player's turn
             while (true) {
@@ -44,7 +43,7 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
                 while (!choice.isChoice(true, "attack", 1, "abilities", 2, "display stats", 3, "display enemy stats", 4, "run", 5));
 
                 if (choice.isChoice("attack", 1)) {
-                    int damage = player.strength + randint(1, 6);  // Player's attack based on STR + a six-sided die–roll
+                    int damage = player.strength + randint(1, 6);  // Player's attack based on strength + a six-sided die–roll
                     enemy.health = std::max(enemy.health - damage, 0);
                     type("\nYou dealt ", damage, " damage to the ", enemy.name, "!\nIts health is now ", enemy.health, ".\n");
                 } else if (choice.isChoice("display stats", 2)) {
@@ -54,134 +53,8 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
                     enemy.displayStats();
                     continue;
                 } else if (choice.isChoice("abilities", 4)) {
-                    if (!player.hasAbility && player.Class != Player::WIZARD) {
-                        type("\nYou don't have any abilities.\n");
-                        continue;
-                    }
-                    if (!player.raceAbilityReady && !player.classAbilityReady && player.mana == 0) {
-                        type("\nYour abilities are currently unavailable.\nYou must sleep first.\n");
-                        continue;
-                    }
-                    type("\nAbilities:\n");
-                    std::unordered_map<uint16_t, std::string> abilities;
-                    uint16_t abilityNum= 0;
-                    if (player.Race == Player::DRAKONIAN && player.raceAbilityReady) {
-                        abilities[abilityNum++] = "Dragon's Breath";
-                        type("\t", abilityNum, ". Dragon's Breath (Drakonian)\n");
-                    }
-                    if (player.Class == Player::FIGHTER && player.classAbilityReady) {
-                        abilities[abilityNum++] = "Second Wind";
-                        type("\t", abilityNum, ". Second Wind (Fighter)\n");
-                    }
-                    if (player.Class == Player::WIZARD) {
-                        type("Spells (You have ", player.mana, " mana points):\n");
-                        abilities[abilityNum++] = "Fire Bolt";
-                        type("\t", abilityNum, ". Fire Bolt (Wizard) - 1 MP\n");
-                        abilities[abilityNum++] = "Mirror Image";
-                        type("\t", abilityNum, ". Mirror Image (Wizard) - 2 MP\n");
-                        abilities[abilityNum++] = "Mage Armor";
-                        type("\t", abilityNum, ". Mage Armor (Wizard) - 5 MP\n");
-                        if (player.weapon == Item::TYPE::WPN_ST_GUARDIAN) {
-                            abilities[abilityNum++] = "Recovery";
-                            type("\t", abilityNum, ". Recovery (Staff of the Guardian) - 2 MP\n");
-                        }
-                    }
-                    type(++abilityNum, ". (go back)\n");
-                    Choice abilityChoice;
-                    uint16_t choiceNum = abilityNum;
-                    bool isValidChoice = false;
-                    do {
-                        abilityChoice = input("Enter choice: ");
-                        for (uint16_t i = 0; i < abilityNum && !isValidChoice; i++) {
-                            isValidChoice = abilityChoice.isChoice(abilities[i], i + 1);
-                            if (isValidChoice)
-                                choiceNum = i;
-                        }
-                    } while (!(isValidChoice || abilityChoice.isChoice(true, "(go back)", abilityNum)));
-
-                    if (abilities[choiceNum] == "Dragon's Breath") {
-                        const uint16_t damage = player.strength + randint(1, 6);
-                        const uint16_t burn = randint(1, 4);
-                        enemy.health = std::max(enemy.health - damage - burn, 0);
-                        type (
-                            "\nYou take a deep breath, and with a powerful exhale, a torrent of searing flames erupts from your mouth, searing the ", enemy.name, " for ", damage, " damage!"
-                            "\nThe ", enemy.name, " is burned for an additional ", burn, " damage!"
-                            "\nIts health is now ", enemy.health, ".\n"
-                        );
-                        if (enemy.health == 0)
-                            break;
-                        player.raceAbilityReady = false;
-                    } else if (abilities[choiceNum] == "Second Wind") {
-                        const float HEALING_MULTIPLIER = randint(10, 15) / 10.f;
-                        const uint16_t healing = (player.maxHealth * HEALING_MULTIPLIER - player.health * HEALING_MULTIPLIER) / 2;
-                        player.health += healing;
-                        type (
-                            "\nYou get a surge of adrenaline and heal ", healing, " points!"
-                            "\nYour health is now ", player.health, ".\n"
-                        );
-                        player.classAbilityReady = false;
-                    } else if (abilities[choiceNum] == "Fire Bolt") {
-                        if (player.mana < 1) {
-                            type("\nYou don't have enough mana points!\n");
-                            continue;
-                        }
-                        const uint16_t damage = player.strength + randint(1, 8);
-                        const uint16_t burn = randint(1, 4);
-                        enemy.health = std::max(enemy.health - damage - burn, 0);
-                        player.mana--;
-                        player.health = std::min((uint16_t)(player.health + 1), player.maxHealth);
-                        type (
-                            "\nYou conjure a blazing ember in your palm and hurl it forward."
-                            "\nThe fire bolt streaks through the air, striking the ", enemy.name, " with a burst of flames for ", damage, " damage!"
-                            "\nThe ", enemy.name, " is burned for an additional ", burn, " damage!"
-                            "\nIts health is now ", enemy.health, ".\n"
-                        );
+                    if (player.abilities(&enemy, mirrorImage))
                         break;
-                    } else if (abilities[choiceNum] == "Mirror Image") {
-                        if (player.mana < 2) {
-                            type("\nYou don't have enough mana points!\n");
-                            continue;
-                        }
-                        mirrorImage = 2;
-                        player.mana -= 2;
-                        player.health = std::min((uint16_t)(player.health + 2), player.maxHealth);
-                        type (
-                            "\nYou weave an illusion, creating shimmering duplicates of yourself."
-                            "\nThey flicker and shift, making it difficult for the enemy to land its strikes.\n"
-                        );
-                        break;
-                    } else if (abilities[choiceNum] == "Mage Armor") {
-                        if (player.mageArmorDefense > 0) {
-                            type("\nThis spell is already active!\n");
-                            continue;
-                        }
-                        if (player.mana < 5) {
-                            type("\nYou don't have enough mana points!\n");
-                            continue;
-                        }
-                        player.mageArmorDefense = pow(player.level + 1, 1.2f);
-                        player.defense += player.mageArmorDefense;
-                        player.mana -= 5;
-                        player.health = std::min((uint16_t)(player.health + 5), player.maxHealth);
-                        type ("\nA protective shielding aura surrounds you, boosting your defense by ", player.mageArmorDefense, "!\n");
-                        break;
-                    } else if (abilities[choiceNum] == "Recovery") {
-                        if (player.mana < 2) {
-                            type("\nYou don't have enough mana points!\n");
-                            continue;
-                        }
-                        const float HEALING_MULTIPLIER = randint(10, 15) / 10.f;
-                        const uint16_t healing = (player.maxHealth - player.health) * HEALING_MULTIPLIER / 3;
-                        player.health += healing;
-                        player.mana -= 2;
-                        player.health = std::min((uint16_t)(player.health + 2), player.maxHealth);
-                        type (
-                            "\nYou channel magical energy into a healing aura, wrapping yourself in a warm, sooting light."
-                            "\nYour wounds are mended and you heal ", healing, " points!"
-                            "\nYour health is now ", player.health, ".\n"
-                        );
-                        break;
-                    }
                     continue;
                 } else {
                     run = true;

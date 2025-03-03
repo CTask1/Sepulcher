@@ -2,6 +2,7 @@
 #include<string>
 #include<cmath>
 #include"Resources.h"
+#include"Enemy.h"
 #include"Item.h"
 //import Util;
 
@@ -47,6 +48,191 @@ public:
         ->addResource("fiber", randint(1, 3))
         ->addResource("leather", randint(1, 3));
         exp += randint(5, 15);
+    }
+
+    const bool rituals() {
+        if (!classAbilityReady) {
+            type("\nYou cannot perform any more rituals today.\n");
+            return 0;
+        }
+        std::unordered_map<uint16_t, std::string> rituals;
+        uint16_t ritualNum = 0;
+        rituals[ritualNum++] = "Mana Restoration";
+        type("\t", ritualNum, ". Mana Restoration\n");
+        type(++ritualNum, ". (go back)\n");
+        Choice ritualChoice;
+        uint16_t ritualChoiceNum = ritualNum;
+        bool isValidRitualChoice = false;
+        do {
+            ritualChoice = input("Enter choice: ");
+            for (uint16_t i = 0; i < ritualNum && !isValidRitualChoice; i++) {
+                isValidRitualChoice = ritualChoice.isChoice(rituals[i], i + 1);
+                if (isValidRitualChoice)
+                    ritualChoiceNum = i;
+            }
+        } while (!(isValidRitualChoice || ritualChoice.isChoice(true, "(go back)", ritualNum)));
+        
+        if (rituals[ritualChoiceNum] == "Mana Restoration") {
+            if (resources["Arcane Focus"] < 1) {
+                type("\nThis ritual requires an arcane focus.\n");
+                return 0;
+            }
+            resources["Arcane Focus"]--;
+            mana = std::min((uint16_t)(mana + 4), maxMana);
+            type (
+                "\nYou channel the energy of your Arcane Focus."
+                "\nAs it dissolves, its energy seeps into you, leaving you refreshed and ready to cast once more.\n"
+            );
+            classAbilityReady = false;
+        }
+        return 1;
+    }
+
+    const bool abilities(Enemy::Enemy* enemy = nullptr, short mirrorImage = 0) {
+        if (!hasAbility && Class != Player::WIZARD) {
+            type("\nYou don't have any abilities.\n");
+            return 0;
+        }
+        if (!raceAbilityReady && !classAbilityReady && mana == 0) {
+            type("\nYour abilities are currently unavailable.\nYou must sleep first.\n");
+            return 0;
+        }
+        type("\nAbilities:\n");
+        std::unordered_map<uint16_t, std::string> abilities;
+        uint16_t abilityNum = 0;
+        if (enemy != nullptr && Race == Player::DRAKONIAN && raceAbilityReady) {
+            abilities[abilityNum++] = "Dragon's Breath";
+            type("\t", abilityNum, ". Dragon's Breath (Drakonian)\n");
+        }
+        if (Class == Player::FIGHTER && classAbilityReady) {
+            abilities[abilityNum++] = "Second Wind";
+            type("\t", abilityNum, ". Second Wind (Fighter)\n");
+        }
+        if (Class == Player::WIZARD) {
+            type("Spells (You have ", mana, " mana points):\n");
+            if (enemy != nullptr) {
+                abilities[abilityNum++] = "Fire Bolt";
+                type("\t", abilityNum, ". Fire Bolt (Wizard) - 1 MP\n");
+                abilities[abilityNum++] = "Mirror Image";
+                type("\t", abilityNum, ". Mirror Image (Wizard) - 2 MP\n");
+            }
+            abilities[abilityNum++] = "Mage Armor";
+            type("\t", abilityNum, ". Mage Armor (Wizard) - 5 MP\n");
+            if (enemy == nullptr) {
+                abilities[abilityNum++] = "Arcane Eye";
+                type("\t", abilityNum, ". Arcane Eye (Wizard) - 3 MP\n");
+            }
+            if (weapon == Item::TYPE::WPN_ST_GUARDIAN) {
+                abilities[abilityNum++] = "Recovery";
+                type("\t", abilityNum, ". Recovery (Staff of the Guardian) - 2 MP\n");
+            }
+        }
+        type(++abilityNum, ". (go back)\n");
+        Choice abilityChoice;
+        uint16_t choiceNum = abilityNum;
+        bool isValidChoice = false;
+        do {
+            abilityChoice = input("Enter choice: ");
+            for (uint16_t i = 0; i < abilityNum && !isValidChoice; i++) {
+                isValidChoice = abilityChoice.isChoice(abilities[i], i + 1);
+                if (isValidChoice)
+                    choiceNum = i;
+            }
+        } while (!(isValidChoice || abilityChoice.isChoice(true, "(go back)", abilityNum)));
+
+        if (abilities[choiceNum] == "Dragon's Breath") {
+            const uint16_t damage = strength + randint(1, 6);
+            const uint16_t burn = randint(1, 4);
+            (*enemy).health = std::max((*enemy).health - damage - burn, 0);
+            type (
+                "\nYou take a deep breath, and with a powerful exhale, a torrent of searing flames erupts from your mouth, searing the ", (*enemy).name, " for ", damage, " damage!"
+                "\nThe ", (*enemy).name, " is burned for an additional ", burn, " damage!"
+                "\nIts health is now ", (*enemy).health, ".\n"
+            );
+            raceAbilityReady = false;
+        } else if (abilities[choiceNum] == "Second Wind") {
+            const uint16_t healing = heal();
+            type (
+                "\nYou get a surge of adrenaline and heal ", healing, " points!"
+                "\nYour health is now ", health, ".\n"
+            );
+            classAbilityReady = false;
+        } else if (abilities[choiceNum] == "Fire Bolt") {
+            if (mana < 1) {
+                type("\nYou don't have enough mana points!\n");
+                return 0;
+            }
+            const uint16_t damage = strength + randint(1, 8);
+            const uint16_t burn = randint(1, 4);
+            (*enemy).health = std::max((*enemy).health - damage - burn, 0);
+            mana--;
+            health = std::min((uint16_t)(health + 1), maxHealth);
+            type (
+                "\nYou conjure a blazing ember in your palm and hurl it forward."
+                "\nThe fire bolt streaks through the air, striking the ", (*enemy).name, " with a burst of flames for ", damage, " damage!"
+                "\nThe ", (*enemy).name, " is burned for an additional ", burn, " damage!"
+                "\nIts health is now ", (*enemy).health, ".\n"
+            );
+        } else if (abilities[choiceNum] == "Mirror Image") {
+            if (mana < 2) {
+                type("\nYou don't have enough mana points!\n");
+                return 0;
+            }
+            mirrorImage = 2;
+            mana -= 2;
+            health = std::min((uint16_t)(health + 2), maxHealth);
+            type (
+                "\nYou weave an illusion, creating shimmering duplicates of yourself."
+                "\nThey flicker and shift, making it difficult for the enemy to land its strikes.\n"
+            );
+        } else if (abilities[choiceNum] == "Mage Armor") {
+            if (mageArmorDefense > 0) {
+                type("\nThis spell is already active!\n");
+                return 0;
+            }
+            if (mana < 5) {
+                type("\nYou don't have enough mana points!\n");
+                return 0;
+            }
+            mageArmorDefense = pow(level + 1, 1.2f);
+            defense += mageArmorDefense;
+            mana -= 5;
+            health = std::min((uint16_t)(health + 5), maxHealth);
+            type ("\nA protective shielding aura surrounds you, boosting your defense by ", mageArmorDefense, "!\n");
+        } else if (abilities[choiceNum] == "Arcane Eye") {
+            if (mana < 3) {
+                type("\nYou don't have enough mana points!\n");
+                return 0;
+            }
+            arcaneEye = true;
+            mana -= 3;
+            health = std::min((uint16_t)(health + 3), maxHealth);
+            type (
+                "\nYou materialize your magic, forming an invisible, floating eye."
+                "\nIt scouts ahead, ensuring you are never caught off guard.\n"
+            );
+        } else if (abilities[choiceNum] == "Recovery") {
+            if (mana < 2) {
+                type("\nYou don't have enough mana points!\n");
+                return 0;
+            }
+            const uint16_t healing = heal(3);
+            mana -= 2;
+            health = std::min((uint16_t)(health + 2), maxHealth);
+            type (
+                "\nYou channel magical energy into a healing aura, wrapping yourself in a warm, sooting light."
+                "\nYour wounds are mended and you heal ", healing, " points!"
+                "\nYour health is now ", health, ".\n"
+            );
+        }
+        return 1;
+    }
+
+    const uint16_t heal(const uint16_t div = 2) {
+        static const float HEALING_MULTIPLIER = randint(10, 15) / 10.f;
+        const uint16_t healing = (maxHealth - health) * HEALING_MULTIPLIER / div;
+        health += healing;
+        return healing;
     }
 
     void initItem(const Item::Item& item, const Item::Source source) {
@@ -139,215 +325,75 @@ public:
     }
 
     void craft() {
-        std::unordered_map<uint16_t, std::unique_ptr<Item::Item>> items;
-        uint16_t i = 0;
-        const bool drak = (Race == DRAKONIAN);
-        const bool wiz = (Class == WIZARD);
-        type("What do you want to craft?\n");
-        if (!wiz) {
-            if (drak) {
-                Item::Armor drakArmor(Item::TYPE::ARM_DRAKONIAN, level, 1, true);
-                items[i] = std::move(std::make_unique<Item::Armor>(drakArmor));
-                type (
-                    ++i, ". Drakonian Armor (Defense Bonus: ", drakArmor.defenseBonus, ")"
-                    "\nComponents:",
-                    getComponents("leather", 6, "fiber", 2), "\n"
-                );
-            } else {
-                Item::Armor leatherArmor(Item::TYPE::ARM_LEATHER, level, 1, true);
-                items[i] = std::move(std::make_unique<Item::Armor>(leatherArmor));
-                type (
-                    ++i, ". Leather Armor (Defense Bonus: ", leatherArmor.defenseBonus, ")"
-                    "\nComponents:",
-                    getComponents("leather", 6, "fiber", 2), "\n"
-                );
+        do {
+            std::unordered_map<uint16_t, std::unique_ptr<Item::Item>> items;
+            uint16_t i = 0;
+            type (
+                "\nWhat do you want to craft?"
+                "\n1. Armor"
+                "\n2. Weapons"
+                "\n3. Items"
+                "\n4. (go back)\n"
+            );
+            Choice typeChoice;
+            do typeChoice = input("Enter choice: ");
+            while (!typeChoice.isChoice(true, "armor", 1, "weapons", 2, "items", 3, "(go back)", "go back", 4));
+
+            if (typeChoice.isChoice("(go back)", "go back", 4))
+                return;
+
+            std::cout << '\n';
+
+            if (typeChoice.isChoice("armor", 1))
+                if (!initCraftArmor(items, i))
+                    continue;
+            else if (typeChoice.isChoice("weapons", 2))
+                if (!initCraftWeapons(items, i)) [[unlikely]]
+                    continue;
+            else if (typeChoice.isChoice("items", 3))
+                if (!initCraftItems(items, i))
+                    continue;
+            type(i + 1, ". (go back)\n");
+
+            while (true) {
+                Choice craftChoice;
+                uint16_t choiceNum = i;
+                bool isValidChoice = false;
+                do {
+                    craftChoice = input("Enter choice: ");
+                    for (uint16_t j = 0; j < i && !isValidChoice; j++) {
+                        isValidChoice = craftChoice.isChoice(items[j]->name, j + 1);
+                        if (isValidChoice)
+                            choiceNum = j;
+                    }
+                } while (!(isValidChoice || craftChoice.isChoice(true, "(go back)", i + 1)));
+
+                if (choiceNum == i)
+                    break;
+
+                switch ((*items[choiceNum]).itemType) {
+                case Item::TYPE::ARM_DRAKONIAN: // Drakonian Armor
+                craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), "fiber", 2, "leather", 6);
+                case Item::TYPE::ARM_LEATHER: // Leather Armor
+                    craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), "fiber", 2, "leather", 6);
+                case Item::TYPE::WPN_LONG: // Longsword
+                    craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), "fiber", 2, "iron", 3, "wood", 2);
+                case Item::TYPE::WPN_ST_WARBORN: // Staff of the Warborn
+                    craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), "Amulet of the Warborn", 1, "fiber", 2, "wood", 4);
+                case Item::TYPE::WPN_ST_GUARDIAN: // Staff of the Guardian
+                    craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), "Amulet of the Guardian", 1, "fiber", 2, "wood", 4);
+                case Item::TYPE::WPN_ST_SHADOW: // Staff of the Shadow
+                    craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), "Amulet of the Shadow", 1, "fiber", 2, "wood", 4);
+                case Item::TYPE::WPN_ST_FURY: // Staff of Fury
+                    craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), "Amulet of Fury", 1, "fiber", 2, "wood", 4);
+                case Item::TYPE::WPN_ST_WEEPING: // Staff of the Weeping Spirit
+                    craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), "Amulet of the Weeping Spirit", 1, "fiber", 2, "wood", 4);
+                case Item::TYPE::FOCUS: // Arcane Focus
+                    craftItem(*items[choiceNum], "crystals", 4);
+                }
+                return;
             }
-        } {
-            Item::Weapon longsword(Item::TYPE::WPN_LONG, level, (wiz ? -1 : 1), true);
-            items[i] = std::move(std::make_unique<Item::Weapon>(longsword));
-            type (
-                ++i, ". Longsword (Strength Bonus: ", longsword.strengthBonus, ")"
-                "\nComponents:",
-                getComponents("wood", 2, "fiber", 2, "Iron", 3), "\n"
-            );
-        } if (wiz) {
-            Item::Weapon stWarborn(Item::TYPE::WPN_ST_WARBORN, level, 1, true);
-            items[i] = std::move(std::make_unique<Item::Weapon>(stWarborn));
-            type (
-                ++i, ". Staff of the Warborn (Strength Bonus: ", stWarborn.strengthBonus, ")"
-                "\nComponents:",
-                getComponents("wood", 4, "fiber", 2, "Amulet of the Warborn", 1), "\n"
-            );
-            Item::Weapon stGuardian(Item::TYPE::WPN_ST_GUARDIAN, level, 1, true);
-            items[i] = std::move(std::make_unique<Item::Weapon>(stGuardian));
-            type (
-                ++i, ". Staff of the Guardian (Strength Bonus: ", stGuardian.strengthBonus, ")"
-                "\nComponents:",
-                getComponents("wood", 4, "fiber", 2, "Amulet of the Guardian", 1), "\n"
-            );
-            Item::Weapon stShadow(Item::TYPE::WPN_ST_SHADOW, level, 1, true);
-            items[i] = std::move(std::make_unique<Item::Weapon>(stShadow));
-            type (
-                ++i, ". Staff of the Shadow (Strength Bonus: ", stShadow.strengthBonus, ")"
-                "\nComponents:",
-                getComponents("wood", 4, "fiber", 2, "Amulet of the Shadow", 1), "\n"
-            );
-            Item::Weapon stFury(Item::TYPE::WPN_ST_FURY, level, 1, true);
-            items[i] = std::move(std::make_unique<Item::Weapon>(stFury));
-            type (
-                ++i, ". Staff of Fury (Strength Bonus: ", stFury.strengthBonus, ")"
-                "\nComponents:",
-                getComponents("wood", 4, "fiber", 2, "Amulet of Fury", 1), "\n"
-            );
-            Item::Weapon stWeeping(Item::TYPE::WPN_ST_WEEPING, level, 1, true);
-            items[i] = std::move(std::make_unique<Item::Weapon>(stWeeping));
-            type (
-                ++i, ". Staff of the Weeping Spirit (Strength Bonus: ", stWeeping.strengthBonus, ")"
-                "\nComponents:",
-                getComponents("wood", 4, "fiber", 2, "Amulet of the Weeping Spirit", 1), "\n"
-            );
-            Item::Item focus(Item::TYPE::FOCUS);
-            items[i] = std::move(std::make_unique<Item::Item>(focus));
-            type (
-                ++i, ". Arcane Focus"
-                "\nComponents:",
-                getComponents("crystals", 4), "\n"
-            );
-        }
-        type(i + 1, ". (go back)\n");
-
-        while (true) {
-            Choice craftChoice;
-            uint16_t choiceNum = i;
-            bool isValidChoice = false;
-            do {
-                craftChoice = input("Enter choice: ");
-                for (uint16_t j = 0; j < i && !isValidChoice; j++) {
-                    isValidChoice = craftChoice.isChoice(items[j]->name, j + 1);
-                    if (isValidChoice)
-                        choiceNum = j;
-                }
-            } while (!(isValidChoice || craftChoice.isChoice(true, "(go back)", i + 1)));
-
-            if (choiceNum == i)
-                break;
-
-            const bool drakChoice = (*items[choiceNum] == Item::TYPE::ARM_DRAKONIAN);
-            const bool normChoice = (*items[choiceNum] == Item::TYPE::ARM_LEATHER);
-            const bool univChoice = (*items[choiceNum] == Item::TYPE::WPN_LONG);
-            if (drakChoice) { // Drakonian Armor
-                if (resources["fiber"] < 2 || resources["leather"] < 6) {
-                    type("You don't have enough resources!\n");
-                    continue;
-                }
-                type("\nCrafting Drakonian Armor...\n");
-                wheel();
-                resources["leather"] -= 6;
-                resources["fiber"] -= 2;
-                initArmor(static_cast<Item::Armor&>(*items[choiceNum]), Item::Source::CRAFT);
-            } else if (normChoice) { // Leather Armor
-                if (resources["fiber"] < 2 || resources["leather"] < 6) {
-                    type("You don't have enough resources!\n");
-                    continue;
-                }
-                type("\nCrafting Leather Armor...\n");
-                wheel();
-                resources["leather"] -= 6;
-                resources["fiber"] -= 2;
-                initArmor(static_cast<Item::Armor&>(*items[choiceNum]), Item::Source::CRAFT);
-            } else if (univChoice) { // Longsword
-                if (resources["fiber"] < 2 || resources["wood"] < 2 || resources["iron"] < 3) {
-                    type("You don't have enough resources!\n");
-                    continue;
-                }
-                type("\nCrafting Longsword...\n");
-                wheel();
-                resources["wood"] -= 2;
-                resources["fiber"] -= 2;
-                resources["iron"] -= 3;
-                initWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), Item::Source::CRAFT);
-            } else if (*items[choiceNum] == Item::TYPE::WPN_ST_WARBORN) { // Staff of the Warborn
-                if (resources["fiber"] < 2 || resources["wood"] < 4 || resources["Amulet of the Warborn"] < 1) {
-                    type("You don't have enough resources!\n");
-                    continue;
-                }
-                type("\nCrafting Staff of the Warborn...\n");
-                wheel();
-                resources["wood"] -= 4;
-                resources["fiber"] -= 2;
-                resources["Amulet of the Warborn"] -= 1;
-                defense -= special.defenseBonus;
-                strength -= special.strengthBonus;
-                special = Item::Special();
-                initWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), Item::Source::CRAFT);
-            } else if (*items[choiceNum] == Item::TYPE::WPN_ST_GUARDIAN) { // Staff of the Guardian
-                if (resources["fiber"] < 2 || resources["wood"] < 4 || resources["Amulet of the Guardian"] < 1) {
-                    type("You don't have enough resources!\n");
-                    continue;
-                }
-                type("\nCrafting Staff of the Guardian...\n");
-                wheel();
-                resources["wood"] -= 4;
-                resources["fiber"] -= 2;
-                resources["Amulet of the Guardian"] -= 1;
-                defense -= special.defenseBonus;
-                strength -= special.strengthBonus;
-                special = Item::Special();
-                initWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), Item::Source::CRAFT);
-            } else if (*items[choiceNum] == Item::TYPE::WPN_ST_SHADOW) { // Staff of the Shadow
-                if (resources["fiber"] < 2 || resources["wood"] < 4 || resources["Amulet of the Shadow"] < 1) {
-                    type("You don't have enough resources!\n");
-                    continue;
-                }
-                type("\nCrafting Staff of the Shadow...\n");
-                wheel();
-                resources["wood"] -= 4;
-                resources["fiber"] -= 2;
-                resources["Amulet of the Shadow"] -= 1;
-                defense -= special.defenseBonus;
-                strength -= special.strengthBonus;
-                special = Item::Special();
-                initWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), Item::Source::CRAFT);
-            } else if (*items[choiceNum] == Item::TYPE::WPN_ST_FURY) { // Staff of Fury
-                if (resources["fiber"] < 2 || resources["wood"] < 4 || resources["Amulet of Fury"] < 1) {
-                    type("You don't have enough resources!\n");
-                    continue;
-                }
-                type("\nCrafting Staff of Fury...\n");
-                wheel();
-                resources["wood"] -= 4;
-                resources["fiber"] -= 2;
-                resources["Amulet of Fury"] -= 1;
-                defense -= special.defenseBonus;
-                strength -= special.strengthBonus;
-                special = Item::Special();
-                initWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), Item::Source::CRAFT);
-            } else if (*items[choiceNum] == Item::TYPE::WPN_ST_WEEPING) { // Staff of the Weeping Spirit
-                if (resources["fiber"] < 2 || resources["wood"] < 4 || resources["Amulet of the Weeping Spirit"] < 1) {
-                    type("You don't have enough resources!\n");
-                    continue;
-                }
-                type("\nCrafting Staff of the Weeping Spirit...\n");
-                wheel();
-                resources["wood"] -= 4;
-                resources["fiber"] -= 2;
-                resources["Amulet of the Weeping Spirit"] -= 1;
-                defense -= special.defenseBonus;
-                strength -= special.strengthBonus;
-                special = Item::Special();
-                initWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), Item::Source::CRAFT);
-            } else if (*items[choiceNum] == Item::TYPE::FOCUS) { // Arcane Focus
-                if (resources["crystals"] < 4) {
-                    type("You don't have enough resources!\n");
-                    continue;
-                }
-                type("\nCrafting Arcane Focus...\n");
-                wheel();
-                resources["crystals"] -= 4;
-                initItem(*items[choiceNum], Item::Source::CRAFT);
-            }
-            break;
-        }
+        } while (true);
     }
     
 private:
@@ -386,6 +432,138 @@ private:
         { WIZARD,  "Wizard"  }
     };
 
+    const bool initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) {
+        if (Class == WIZARD) {
+            type("There is no armor available to craft.\n");
+            return 0;
+        }
+        if (Race == DRAKONIAN) {
+            Item::Armor drakArmor(Item::TYPE::ARM_DRAKONIAN, level, 1, true);
+            items[i] = std::move(std::make_unique<Item::Armor>(drakArmor));
+            type (
+                ++i, ". Drakonian Armor (Defense Bonus: ", drakArmor.defenseBonus, ")",
+                displayComponents("fiber", 2, "leather", 6), "\n"
+            );
+        } else {
+            Item::Armor leatherArmor(Item::TYPE::ARM_LEATHER, level, 1, true);
+            items[i] = std::move(std::make_unique<Item::Armor>(leatherArmor));
+            type (
+                ++i, ". Leather Armor (Defense Bonus: ", leatherArmor.defenseBonus, ")",
+                displayComponents("fiber", 2, "leather", 6), "\n"
+            );
+        }
+        return 1;
+    }
+
+    const bool initCraftWeapons(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) {
+        Item::Weapon longsword(Item::TYPE::WPN_LONG, level, (Class == WIZARD ? -1 : 1), true);
+        items[i] = std::move(std::make_unique<Item::Weapon>(longsword));
+        type (
+            ++i, ". Longsword (Strength Bonus: ", longsword.strengthBonus, ")",
+            displayComponents("fiber", 2, "iron", 3, "wood", 2), "\n"
+        );
+        if (Class == WIZARD) {
+            Item::Weapon stWarborn(Item::TYPE::WPN_ST_WARBORN, level, (Race == ELF ? 2 : 1), true);
+            items[i] = std::move(std::make_unique<Item::Weapon>(stWarborn));
+            type (
+                ++i, ". Staff of the Warborn (Strength Bonus: ", stWarborn.strengthBonus, ")",
+                displayComponents("Amulet of the Warborn", 1, "fiber", 2, "wood", 4), "\n"
+            );
+            Item::Weapon stGuardian(Item::TYPE::WPN_ST_GUARDIAN, level, (Race == ELF ? 2 : 1), true);
+            items[i] = std::move(std::make_unique<Item::Weapon>(stGuardian));
+            type (
+                ++i, ". Staff of the Guardian (Strength Bonus: ", stGuardian.strengthBonus, ")",
+                displayComponents("Amulet of the Guardian", 1, "fiber", 2, "wood", 4), "\n"
+            );
+            Item::Weapon stShadow(Item::TYPE::WPN_ST_SHADOW, level, 1, true);
+            items[i] = std::move(std::make_unique<Item::Weapon>(stShadow));
+            type (
+                ++i, ". Staff of the Shadow (Strength Bonus: ", stShadow.strengthBonus, ")",
+                displayComponents("Amulet of the Shadow", 1, "fiber", 2, "wood", 4), "\n"
+            );
+            Item::Weapon stFury(Item::TYPE::WPN_ST_FURY, level, (Race == ELF ? 2 : 1), true);
+            items[i] = std::move(std::make_unique<Item::Weapon>(stFury));
+            type (
+                ++i, ". Staff of Fury (Strength Bonus: ", stFury.strengthBonus, ")",
+                displayComponents("Amulet of Fury", 1, "fiber", 2, "wood", 4), "\n"
+            );
+            Item::Weapon stWeeping(Item::TYPE::WPN_ST_WEEPING, level, (Race == ELF ? 2 : 1), true);
+            items[i] = std::move(std::make_unique<Item::Weapon>(stWeeping));
+            type (
+                ++i, ". Staff of the Weeping Spirit (Strength Bonus: ", stWeeping.strengthBonus, ")",
+                displayComponents("Amulet of the Weeping Spirit", 1, "fiber", 2, "wood", 4), "\n"
+            );
+        }
+        return 1;
+    }
+
+    const bool initCraftItems(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) {
+        if (Class != WIZARD) {
+            type("There are no items available to craft.\n");
+            return 0;
+        }
+        Item::Item focus(Item::TYPE::FOCUS);
+        items[i] = std::move(std::make_unique<Item::Item>(focus));
+        type (
+            ++i, ". Arcane Focus",
+            displayComponents("crystals", 4), "\n"
+        );
+        return 1;
+    }
+
+    const bool checkComponents() const {
+        return true;
+    }
+
+    template<typename... Args>
+    const bool checkComponents(const std::string& resource, const uint16_t amount, const Args&... args) {
+        return resources[resource] >= amount && checkComponents(args...);
+    }
+
+    void useComponents() {}
+    
+    template<typename... Args>
+    void useComponents(const std::string& resource, const uint16_t amount, const Args&... args) {
+        resources[resource] -= amount;
+        useComponents(args...);
+    }
+    
+    template<typename... Args>
+    const bool initCraft(const Item::Item* const& item, const Args&... args) {
+        if (!checkComponents(args...)) {
+            type("You don't have enough resources!\n");
+            return 0;
+        }
+        useComponents(args...);
+        type("\nCrafting ", (*item).name, "...\n");
+        wheel();
+        return 1;
+    }
+
+    template<typename... Args>
+    const bool craftArmor(Item::Armor& armor, const Args&... args) {
+        if (!initCraft(&armor, args...))
+            return 0;
+        initArmor(armor, Item::Source::CRAFT);
+        return 1;
+    }
+
+    template<typename... Args>
+    const bool craftWeapon(const Item::Weapon& weapon, const Args&... args) {
+        if (!initCraft(&weapon, args...))
+            return 0;
+        initWeapon(weapon, Item::Source::CRAFT);
+        return 1;
+    }
+
+    template<typename... Args>
+    const bool craftItem(const Item::Item& item, const Args&... args) {
+        if (!initCraft(&item, args...))
+            return 0;
+        initItem(item, Item::Source::CRAFT);
+        return 1;
+    }
+
     void equipArmor(const Item::Armor& armorItem) {
         if (Race == DRAKONIAN && armorItem != Item::TYPE::ARM_DRAKONIAN) {
             type("Your unique body shape renders you unable to wear this armor.\n");
@@ -405,7 +583,7 @@ private:
 
         if (choice.isChoice("yes", 1)) {
             type("You equip the ", armorItem.name, ".\n");
-            defense -= armor.defenseBonus;
+            unequipArmor(false);
             defense += armorItem.defenseBonus;
             armor = armorItem;
         } else
@@ -448,12 +626,17 @@ private:
         strength += special.strengthBonus;
         special = specialItem;
     }
-
+    
     const std::string getComponents() const { return ""; }
-
+    
     template<typename... Args>
     const std::string getComponents(const std::string& name, const uint16_t& amt, const Args&... args) {
         return "\n\t" + ((resources.resources.count(name) != 0) ? (name + ": " + std::to_string(resources[name]) + '/' + std::to_string(amt)) : "??") + getComponents(args...);
+    }
+    
+    template<typename... Args>
+    const std::string displayComponents(const Args&... args) {
+        return "\nComponents:" + getComponents(args...);
     }
 
 public:

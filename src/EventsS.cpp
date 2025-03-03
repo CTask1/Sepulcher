@@ -5,18 +5,18 @@ void EventsS::oldChest() { // Old Chest
     type("You find an old chest. Let's see what's inside...\n");
     int itemType = randint(1, 2);
     if (itemType == 1)
-        player.initArmor(Item::Armor::IRON, "find");
+        player.initArmor(Item::TYPE::ARM_IRON, Item::Source::FIND, (player.Race == Player::HUMAN ? 2 : 1));
     else
-        player.initWeapon(Item::Weapon::MAGIC, "find", (player.Race == Player::ELF) ? 2 : 1);
+        player.initWeapon(Item::TYPE::WPN_MAGIC, Item::Source::FIND, (player.Race == Player::ELF ? 2 : 1));
 }
 
 void EventsS::hiddenArmory() { // Hidden Armory
     type("You find a hidden armory. Let's see what equipment is available...\n");
     int itemType = randint(1, 2);
     if (itemType == 1)
-        player.initArmor(Item::Armor::STEEL, "find", (player.Race == Player::HUMAN) ? 2 : 1);
+        player.initArmor(Item::TYPE::ARM_STEEL, Item::Source::FIND, (player.Race == Player::HUMAN ? 2 : 1));
     else
-        player.initWeapon(Item::Weapon::GREAT, "find", (player.Class == Player::FIGHTER) ? 2 : 1);
+        player.initWeapon(Item::TYPE::WPN_GREAT, Item::Source::FIND, (player.Class == Player::FIGHTER ? 2 : (player.Class == Player::WIZARD ? -1 : 1)));
 }
 
 void EventsS::friendlyTraveler() { // Friendly Traveler
@@ -25,7 +25,7 @@ void EventsS::friendlyTraveler() { // Friendly Traveler
         int giftType = randint(1, 2);
         if (giftType == 1) {
             type("The traveler gives you a health potion. Your health has been restored!\n");
-            player.health = player.maxhealth;
+            player.health = player.maxHealth;
         }
         else {
             int expGain = (randint(1, 100) == 1) ? randint(25, 50) : randint(5, 15);

@@ -93,8 +93,7 @@ void gameLoop(Player& player, int hitdie) {
                 player.craft();
             } else if (choice.isChoice("rest", 5)) {
                 type("\nYou find a place to rest and gain some health.\n");
-                const float HEALING_MULTIPLIER = randint(10, 15) / 10.f;
-                player.health += (player.maxHealth - player.health) * HEALING_MULTIPLIER / 2;
+                player.heal();
                 /*
                 function: f(h) = r(m - h) / 2 where
                 f(h) = healing
@@ -143,137 +142,13 @@ void gameLoop(Player& player, int hitdie) {
                         player.unequipWeapon();
                         continue;
                     } else if (options[optionsChoiceNum] == "Abilities") {
-                        if (!player.hasAbility && player.Class != Player::WIZARD) {
-                            type("\nYou don't have any abilities.\n");
-                            continue;
-                        }
-                        if (!player.raceAbilityReady && !player.classAbilityReady && player.mana == 0) {
-                            type (
-                                "\nYour abilities are currently unavailable.\n",
-                                (player.Class == Player::WIZARD ? "You don't have enough mana points!\n" : "")
-                            );
-                            continue;
-                        }
-                        while (true) {
-                            std::unordered_map<uint16_t, std::string> abilities;
-                            uint16_t abilityNum = 0;
-                            if (player.Class == Player::FIGHTER && player.classAbilityReady) {
-                                abilities[abilityNum++] = "Second Wind";
-                                type("\t", abilityNum, ". Second Wind (Fighter)\n");
-                            }
-                            if (player.Class == Player::WIZARD) {
-                                type("Spells (You have ", player.mana, " mana points):\n");
-                                abilities[abilityNum++] = "Mage Armor";
-                                type("\t", abilityNum, ". Mage Armor (Wizard) - 5 MP\n");
-                                abilities[abilityNum++] = "Arcane Eye";
-                                type("\t", abilityNum, ". Arcane Eye (Wizard) - 3 MP\n");
-                                if (player.weapon == Item::TYPE::WPN_ST_GUARDIAN) {
-                                    abilities[abilityNum++] = "Recovery";
-                                    type("\t", abilityNum, ". Recovery (Staff of the Guardian) - 2 MP\n");
-                                }
-                            }
-                            type(++abilityNum, ". (go back)\n");
-                            Choice abilityChoice;
-                            uint16_t abilityChoiceNum = abilityNum;
-                            bool isValidAbilityChoice = false;
-                            do {
-                                abilityChoice = input("Enter choice: ");
-                                for (uint16_t i = 0; i < abilityNum && !isValidAbilityChoice; i++) {
-                                    isValidAbilityChoice = abilityChoice.isChoice(abilities[i], i + 1);
-                                    if (isValidAbilityChoice)
-                                        abilityChoiceNum = i;
-                                }
-                            } while (!(isValidAbilityChoice || abilityChoice.isChoice(true, "(go back)", abilityNum)));
-
-                            if (abilities[abilityChoiceNum] == "Second Wind") {
-                                const float HEALING_MULTIPLIER = randint(10, 15) / 10.f;
-                                const uint16_t healing = (player.maxHealth * HEALING_MULTIPLIER - player.health * HEALING_MULTIPLIER) / 2;
-                                player.health += healing;
-                                type (
-                                    "\nYou get a surge of adrenaline and heal ", healing, " points!"
-                                    "\nYour health is now ", player.health, ".\n"
-                                );
-                                player.classAbilityReady = false;
-                            } else if (abilities[abilityChoiceNum] == "Mage Armor") {
-                                if (player.mageArmorDefense > 0) {
-                                    type("\nThis spell is already active!\n");
-                                    continue;
-                                }
-                                if (player.mana < 5) {
-                                    type("\nYou don't have enough mana points!\n");
-                                    continue;
-                                }
-                                player.mageArmorDefense = pow(player.level + 1, 1.2f);
-                                player.defense += player.mageArmorDefense;
-                                player.mana -= 5;
-                                player.health = std::min((uint16_t)(player.health + 5), player.maxHealth);
-                                type ("\nA protective shielding aura surrounds you, boosting your defense by ", player.mageArmorDefense, "!\n");
-                            } else if (abilities[abilityChoiceNum] == "Arcane Eye") {
-                                if (player.mana < 3) {
-                                    type("\nYou don't have enough mana points!\n");
-                                    continue;
-                                }
-                                player.arcaneEye = true;
-                                player.mana -= 3;
-                                player.health = std::min((uint16_t)(player.health + 3), player.maxHealth);
-                                type (
-                                    "\nYou materialize your magic, forming an invisible, floating eye."
-                                    "\nIt scouts ahead, ensuring you are never caught off guard.\n"
-                                );
-                            } else if (abilities[abilityChoiceNum] == "Recovery") {
-                                if (player.mana < 2) {
-                                    type("\nYou don't have enough mana points!\n");
-                                    continue;
-                                }
-                                const float HEALING_MULTIPLIER = randint(10, 15) / 10.f;
-                                const uint16_t healing = (player.maxHealth - player.health) * HEALING_MULTIPLIER / 3;
-                                player.health += healing;
-                                player.mana -= 2;
-                                player.health = std::min((uint16_t)(player.health + 2), player.maxHealth);
-                                type (
-                                    "\nYou channel magical energy into a healing aura, wrapping yourself in a warm, sooting light."
-                                    "\nYour wounds are mended and you heal ", healing, " points!"
-                                    "\nYour health is now ", player.health, ".\n"
-                                );
-                            }
-                            break;
-                        }
-                    continue;
+                        while (true)
+                            if (player.abilities())
+                                break;
+                        continue;
                     } else if (options[optionsChoiceNum] == "Rituals") {
-                        std::unordered_map<uint16_t, std::string> rituals;
-                        uint16_t ritualNum = 0;
-                        if (!player.classAbilityReady) {
-                            type("\nYou cannot perform any more rituals today.\n");
+                        if (!player.rituals())
                             continue;
-                        }
-                        rituals[ritualNum++] = "Mana Restoration";
-                        type("\t", ritualNum, ". Mana Restoration\n");
-                        type(++ritualNum, ". (go back)\n");
-                        Choice ritualChoice;
-                        uint16_t ritualChoiceNum = ritualNum;
-                        bool isValidRitualChoice = false;
-                        do {
-                            ritualChoice = input("Enter choice: ");
-                            for (uint16_t i = 0; i < ritualNum && !isValidRitualChoice; i++) {
-                                isValidRitualChoice = ritualChoice.isChoice(rituals[i], i + 1);
-                                if (isValidRitualChoice)
-                                    ritualChoiceNum = i;
-                            }
-                        } while (!(isValidRitualChoice || ritualChoice.isChoice(true, "(go back)", ritualNum)));
-                        
-                        if (rituals[ritualChoiceNum] == "Mana Restoration") {
-                            if (player.resources["Arcane Focus"] < 1) {
-                                type("\nThis ritual requires an arcane focus.\n");
-                                continue;
-                            }
-                            player.resources["Arcane Focus"]--;
-                            player.mana = std::min((uint16_t)(player.mana + 4), player.maxMana);
-                            type (
-                                "\nYou channel the energy of your Arcane Focus."
-                                "\nAs it dissolves, its energy seeps into you, leaving you refreshed and ready to cast once more.\n"
-                            );
-                            player.classAbilityReady = false;
-                        }
                     }
                     break;
                 }
@@ -310,13 +185,13 @@ void start() {
         
         if (raceChoice.isChoice("elf", 1)) {
             pRace = Player::ELF;
-            con = 2;
+            con = 3;
         } else if (raceChoice.isChoice("human", 2)) {
             pRace = Player::HUMAN;
-            con = 2;
+            con = 3;
         } else {
             pRace = Player::DRAKONIAN;
-            con = 4;
+            con = 3;
             def = 1;
         }
     }
@@ -324,9 +199,9 @@ void start() {
     { // Get the player's choice of class
         type (
             "\nNow select a class:"
-            "\n1. Fighter   - Trained with blades of all sorts"
-            "\n2. Rogue     - A silent assassin"
-            "\n3. Wizard    - A scholar in the arcane arts\n"
+            "\n1. Fighter   - Trained with blades of all sorts      - Difficulty: Medium"
+            "\n2. Rogue     - A silent assassin, skilled in stealth - Difficulty: Low"
+            "\n3. Wizard    - A scholar in the arcane arts          - Difficulty: High\n"
         );
         Choice classChoice;
         do classChoice = input("Please enter your choice: ");
@@ -335,7 +210,7 @@ void start() {
         if (classChoice.isChoice("fighter", 1)) {
             pClass = Player::FIGHTER;
             hitdie = 16;
-            str = 5;
+            str = 4;
         } else if (classChoice.isChoice("rogue", 2)) {
             pClass = Player::ROGUE;
             hitdie = 14;

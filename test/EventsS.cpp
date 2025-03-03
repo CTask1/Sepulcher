@@ -5,7 +5,7 @@ void EventsS::oldChest() { // Old Chest
     type("You find an old chest. Let's see what's inside...\n");
     int itemType = randint(1, 2);
     if (itemType == 1)
-        player.initArmor(Item::TYPE::ARM_IRON, Item::Source::FIND);
+        player.initArmor(Item::TYPE::ARM_IRON, Item::Source::FIND, (player.Race == Player::HUMAN ? 2 : 1));
     else
         player.initWeapon(Item::TYPE::WPN_MAGIC, Item::Source::FIND, (player.Race == Player::ELF ? 2 : 1));
 }

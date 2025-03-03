@@ -37,7 +37,7 @@ namespace Item {
     };
 
     const struct Info {
-        std::string name;
+        std::string_view name;
         float defMod = 0.f;
         float strMod = 0.f;
         bool nDef = false;
@@ -129,6 +129,10 @@ namespace Item {
     public:
         short defenseBonus;
 
+        enum class REFORGE {
+
+        };
+
         Armor() : defenseBonus(0) {}
     
         Armor(const TYPE t, const uint16_t l, const short a = 1, const bool c = false) :
@@ -150,10 +154,26 @@ namespace Item {
     public:
         short strengthBonus;
 
+        enum class REFORGE {
+            NONE,
+            LEGENDARY,
+            DEADLY,
+            SHARP,
+            BLUNT
+        };
+
+        enum class MAGIC_REFORGE {
+
+        };
+
         Weapon() : strengthBonus(0) {}
     
         Weapon(const TYPE t, const uint16_t l, const short a = 1, const bool c = false) :
-            Leveled(t), strengthBonus(c ? std::abs(std::round(pow(l + a, Data.at(t).strMod))) : randint(1, std::abs(std::round(pow(l + a, Data.at(t).strMod))))) {}
+            Leveled(t),
+            strengthBonus (
+                c ? std::abs(std::round(pow(l + a, Data.at(t).strMod)))
+                  : randint(1, std::abs(std::round(pow(l + a, Data.at(t).strMod))))
+            ) {}
     
         void displayInfo(const Source source = Source::NONE) const override {
             if (source == FIND)
