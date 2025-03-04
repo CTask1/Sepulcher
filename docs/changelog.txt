@@ -1,0 +1,481 @@
+---------- Changelog ----------
+
+    -- 01/04/24 --
+    
+        -Rogues have disadvantage with heavy armor
+            -Can't surprise
+            -Less armor
+
+        -Code efficiency
+
+        -Enemy stat balances
+
+        -Item stat balances
+
+        -Bug fixes
+            -Foolproofing
+
+        -User-friendliness
+            -Item swapping
+
+        -Resource gathering
+    
+
+    -- 01/05/24 --
+    
+        -Added new events
+            -Lost Traveler
+            -Peaceful Meadow
+            -Hidden garden
+            -Mountain pass
+
+        -User-friendliness
+            -Optional stat showing during battle
+                -Health still shows
+            -Displays exp requirement for next level
+            -Additional info when finding an item
+            -Adjusted resource gathering
+
+        -More options during combat
+            -Ability to run away from combat
+            -Display the player's current stats
+            -Display the enemy's current stats
+
+        -Slower progression
+    
+
+    -- 01/07/24 --
+    
+        -Code cleanliness
+            -Explore function
+                -Events class
+
+        -Trader (WIP)
+
+        -Enemy stat balances
+    
+
+    -- 01/08/24 --
+    
+        -New item
+            -Crafting
+                -Leather armor
+
+        -Split into 8 header files
+            -Enemy.h
+            -Events.h
+            -Game.h
+            -Item.h
+            -Player.h
+            -Resources.h
+            -Trader.h
+            -Util.h
+        ...and two text files
+            -Changelog.txt
+            -To-Do.txt
+
+
+    -- 01/11/24 --
+
+        -Bug fixes
+
+
+    -- 01/12/24 --
+
+        -Trading (WIP)
+
+    
+    -- 01/03/25 --
+
+        -Code efficiency
+        -New folders
+            -src for source files
+            -docs for files like this one
+
+    
+    -- 01/07/25 --
+
+        -Code efficiency
+        -test folder for changing code safely
+        -Text files renamed to changelog.txt and todo.txt
+        -Race descriptions
+        -Sleeping replaced with resting
+        -Now limited to 5 actions per day (not including looking at stats or crafting)
+
+
+    -- 01/08/25 --
+
+        -Code efficiency
+        -User-friendliness and foolproofing
+        -Class descriptions
+
+
+    -- 01/09/25 --
+
+        -Healing from resting adjusted
+
+
+    -- 01/13/25 --
+
+        -Bug fixes
+        -Code efficiency
+        -Health is now fully restored from sleeping
+        -Line Count: 1115
+
+    
+    -- 01/14/25 --
+
+        -Code efficiency
+
+
+    -- 01/15/25 --
+
+        -Code efficiency
+        -User-friendliness
+        -Bug fixes
+
+
+    -- 01/16/25 --
+
+        -Code efficiency
+        -User-friendliness
+        -Added comments
+        -Trader prices are now shown
+        -TraderResources class added
+
+    
+    -- 01/17/25 --
+
+        -Code efficiency
+        -User-friendliness
+        -Item class split into three parts
+            -Armor class
+            -Weapon class
+            -Special class (WIP)
+        -equipItem() function split into three parts
+            -equipArmor()
+            -equipWeapon()
+            -equipSpecial() (WIP)
+        -Balances
+            -Steel armor defense adjusted
+            -Steel armor defense for elvish rogues is now the same as for normal elves
+            -Crossbow attack bonus lowered
+        -Changed some messages
+        -Merged all files to src (last merge 01/07/25)
+
+
+    -- 01/24/25 --
+
+        -Code efficiency
+            -Adjusted Util.h
+            -Added isChoice() function
+            -Added Item namespace
+            -Added Enemy namespace
+            -Added Source enum for item source (find, craft, etc.)
+
+
+    -- 02/03/25 --
+
+        -Code efficiency
+        -User-friendliness
+        -Mountain pass main path luck increased by 50%
+
+    -- 02/04/25 --
+
+        -Code efficiency
+            -Improved isChoice() function
+                -Added Choice class
+            -Regrouped events into three categories
+                -Safe (60%)
+                -Risky (30%)
+                -Dangerous (10%)
+        -Added the Poacher's Snare dangerous event (WIP) handled by hunterTrap()
+        -Added more events planned for the future
+            -Risky
+                -Strange Amulet
+                -Enchanted Fountain
+                -Talking Statue
+                -Treasure Chest
+                -Whispering Shadows
+                -Armor Stand
+                -Suspicious Statue
+            -Dangerous
+                -Apex Predator
+                -Blood Moon (night only)
+
+    
+    -- 02/05/25 --
+
+        -Code efficiency
+            -Improved process for starting combat
+                -Added initCombat() function
+                -Enemy stats are now completely handled by the Enemy class
+        -Added Bear and Poacher enemies, encountered in the Poacher's Snare event
+        -Adjusted wheel() function
+        -Finished the Poacher's Snare event
+
+
+    -- 02/06/25 --
+
+        -Bug fixes
+        -Fixed message order for enemy encounters
+        -Added abilities to be used in combat
+            -Second Wind for Fighters
+            -More coming soon...
+
+
+    -- 02/07/25 --
+
+        -Code efficiency
+        -User-friendliness
+        -Added mergelog.txt for tracking merges with src
+        -Bug fixes
+        -Changed leather crafting requirement for longsword to wood
+        -Added another overload to tostring() function
+        -Adjusted type() function
+        -Finished trading
+            -Replaced "buy" and "sell" options with "trade"
+            -Can now trade directly with common resources without having to use crystals
+        -Merged all files to src (last merge 01/17/25)
+
+
+    -- 02/09/25 --
+
+        -Code efficiency
+        -Armor and weapon stat bonus balances
+        -Added initArmor() and initWeapon() functions
+        -Adjusted initialization process of armor and weapons
+        -Moved combat() function to Events class
+        -Added the Strange Amulet event (WIP)
+        -Replaced item names in Player class with items themselves
+        -Upgraded to C++17
+
+    
+    -- 02/10/25 --
+
+        -Code efficiency
+            -Replaced all unnecessary maps with arrays
+        -Bug fixes
+        -Moved initArmor() and initWeapon() functions to Player class
+        -Crafted items are now no longer equipped automatically
+        -Changed some messages
+
+
+    -- 02/14/25 --
+
+        -Code efficiency
+            -Changed how player race and class are handled
+        -Removed random stats in item crafting
+        -Added Drakonian race (WIP)
+            -Drakonian Armor (WIP)
+
+
+    -- 02/18/25 --
+
+        -Many changes for code efficiency
+        -Bug fixes
+        -Finished Drakonian race
+        -Changed some messages
+        -Race stat balances
+        -Class stat balances
+        -Changed how random numbers are handled
+        -Added inputHelper() function to reduce redundancy
+        -Merged all files to src (last merge 02/07/25)
+        -Finished Strange Amulet event
+
+
+    -- 02/19/25 --
+
+        -Split Events.h into many different files:
+            -Events.h
+            -Events.cpp
+            -EventsS.h
+            -EventsS.cpp
+            -EventsR.h
+            -EventsR.cpp
+            -EventsD.h
+            -EventsD.cpp
+            This process required changes to the following files:
+                -tasks.json (for compiling)
+                -Events.h
+                -Enemy.h
+        -Bug fixes
+        -Changed some messages
+        -Started using git
+        -Changed the order of inputs at the beginning of the game
+        -Added confirmation to quit the game
+        -Upgraded to C++20
+        -Code efficiency
+        -Merged files to src
+            -Util.h   (last merge 02/18/25)
+            -Trader.h (last merge 02/18/25)
+            -Game.h   (last merge 02/18/25)
+            -Item.h   (last merge 02/18/25)
+            -Player.h (last merge 02/18/25)
+            -Enemy.h  (last merge 02/18/25)
+            -Events.h (last merge 02/18/25)
+            -Events.cpp
+            -EventsS.h
+            -EventsS.cpp
+            -EventsR.h
+            -EventsR.cpp
+            -EventsD.h
+            -EventsD.cpp
+        -Commit main d704f13
+
+
+    -- 02/20/25 --
+
+        -Added first module: Util.ixx (WIP) (unused)
+        -Added comments
+            -Statements for module importing
+        -Merges
+            -Enemies can now be killed by abilities (Events.cpp)
+            -Commented out night temporarily and changed its message (Game.h)
+
+
+    -- 02/21/25 --
+
+        -Code efficiency
+            -Changed how items are handled
+            -Changed how crafting is handled
+        -User-friendliness
+        -Changed some messages
+        -Crafting balances
+        -Bug fixes
+        -Added Wizard class (WIP)
+            -Added staves
+                -Staff of the Warborn (WIP)
+                -Staff of the Guardian (WIP)
+                -Staff of the Shadow (WIP)
+                -Staff of Fury
+                -Staff of the Weeping Spirit (WIP)
+            -Disadvantage with all non-magic weapons
+            -Added Arcane Focus item for rituals (WIP)
+        -Removed ambiguous stat naming
+        -Commit main 1f8bda2
+
+
+    -- 02/22/25 --
+
+        -Code efficiency
+        -Increased the length of the day from 5 actions to 8 actions
+        -Added "Other options" choice including:
+            -Unequip armor
+            -Unequip weapon
+            -Abilities (WIP)
+            -Rituals for wizards (WIP)
+        -Changed some messages
+        -Wizard changes
+            -Added mana
+            -Spells
+                -Added Mage Armor
+                -Added Recovery (WIP)
+
+
+    -- 02/24/25 --
+
+        -Code efficiency
+        -Bug fixes
+        -Increased player health
+        -Wizard changes
+            -Spells
+                -Added Fire Bolt
+                -Added Mirror Image
+                -Added Arcane Eye
+                -Finished Recovery
+            -Finished Staff of the Warborn
+            -Finished Staff of the Guardian
+            -Finished Staff of the Shadow
+            -Finished Staff of the Weeping Spirit
+            -Added natural mana recovery
+            -Magical Resilience - Regain HP equal to MP used
+            -Added Mana Restoration Ritual (WIP)
+
+
+    -- 02/25/25 --
+
+        -Code efficiency
+        -Bug fixes
+        -Can no longer encounter the same event twice in a row
+        -Changed some messages
+        -Finished Arcane Focus item
+        -Finished Wizard class with some changes
+            -Cannot craft or wear armor
+        -Merged files to src
+            -Game.h      (last merge 02/20/25)
+            -Events.cpp  (last merge 02/20/25)
+            -EventsR.cpp (last merge 02/19/25)
+            -Player.h    (last merge 02/19/25)
+            -Item.h      (last merge 02/19/25)
+            -Util.h      (last merge 02/19/25)
+            -Resources.h (last merge 02/18/25)
+        -Commit main 2fb5d55
+        -Split crafting into three categories
+            -Armor
+            -Weapons
+            -Items
+
+
+        -- 02/26/25 --
+
+            -Code efficiency
+            -Bug fixes
+            -Changed some messages
+            -Stat balances
+            -Added README.md (WIP) for information about:
+                -How to play
+                -Races
+                -Classes
+                -Items
+                -Events
+            -Line Count: 2287
+
+
+        -- 02/27/25 --
+
+            -Finished README.md
+            -Stat balances
+
+
+        -- 02/28/25 --
+
+            -Code efficiency
+            -Split craft() method into many different parts:
+                -craft()
+                -initCraftArmor()
+                -initCraftWeapons()
+                -initCraftItems()
+                -checkComponents()
+                -useComponents()
+                -initCraft()
+                -craftArmor()
+                -craftWeapon()
+                -craftItem()
+
+
+        -- 03/01/25 --
+
+            -Code efficiency
+            -Added Player::heal() method to reduce redundancy
+
+
+        -- 03/03/25 --
+
+            -Code efficiency
+            -Added methods to reduce redundancy
+                -Player::abilities()
+                -Player::rituals()
+            -Merged files to src
+                -Events.cpp  (last merge 02/25/25)
+                -Game.h      (last merge 02/25/25)
+                -Item.h      (last merge 02/25/25)
+                -Player.h    (last merge 02/25/25)
+                -Enemy.h     (last merge 02/19/25)
+                -EventsS.cpp (last merge 02/19/25)
+            -Commit main 4887a4a
+            -Changed some messages
+            -Deleted test folder
+            -Changed main branch to master
+            -Added test branch
+            -Commit master 179e74c
