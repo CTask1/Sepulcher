@@ -87,8 +87,7 @@ void EventsR::mountainPass() { // Mountain Pass
                         if (campsiteChoice.isChoice("investigate the campsite", 1)) {
                             type("\nYou decide to investigate the campsite. It seems abandoned, but you find a hidden stash of supplies!\n");
                             player.receiveGift();
-                            int ambush = randint(1, 4);
-                            if (ambush == 1) {
+                            if (randint(1, 4) == 1) {
                                 type("\nAs you are leaving the campsite, you are ambushed by a bandit!\n");
                                 events.initCombat(Enemy::BANDIT, true);
                             }
@@ -104,10 +103,11 @@ void EventsR::mountainPass() { // Mountain Pass
                         if (player.Class == Player::WIZARD && player.mana != player.maxMana)
                             player.mana++;
                     } else {
-                        type("\nAs you venture down the right path, you encounter a wild animal. How will you react?\n");
                         type (
-                            "1. Try to calm the animal\n"
-                            "2. Retreat slowly\n");
+                            "\nAs you venture down the right path, you encounter a wild animal. How will you react?"
+                            "\n1. Try to calm the animal"
+                            "\n2. Retreat slowly\n"
+                        );
                         Choice animalChoice;
                         do animalChoice = input("Enter choice: ");
                         while (!animalChoice.isChoice(true, "try to calm the animal", 1, "retreat slowly", 2));
@@ -128,10 +128,14 @@ void EventsR::mountainPass() { // Mountain Pass
 }
 
 void EventsR::mysteriousCave() { // Mysterious Cave
-    type("You discover a mysterious cave entrance. It emanates an eerie glow from within.\n");
-    type("What would you like to do?\n");
+    type (
+        "You discover a mysterious cave entrance. It emanates an eerie glow from within."
+        "\nWhat would you like to do?"
+        "\n1. Enter the cave"
+        "\n2. Move on\n"
+    );
     Choice caveChoice;
-    do caveChoice = input("1. Enter the cave\n2. Move on\nEnter choice: ");
+    do caveChoice = input("Enter choice: ");
     while (!caveChoice.isChoice(true, "enter the cave", 1, "move on", 2));
     
     if (caveChoice.isChoice("enter the cave", 1)) {
