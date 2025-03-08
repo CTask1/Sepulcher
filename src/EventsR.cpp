@@ -99,7 +99,7 @@ void EventsR::mountainPass() { // Mountain Pass
                     int outcome = randint(1, 2);
                     if (outcome == 1) {
                         type("\nThe right path leads to a dense forest with unique flora.\nYou collect rare herbs with medicinal properties and regain health!\n");
-                        player.health = std::min((uint16_t)(player.health + randint(5, 15)), player.maxHealth);
+                        player.heal(3);
                         if (player.Class == Player::WIZARD && player.mana != player.maxMana)
                             player.mana++;
                     } else {

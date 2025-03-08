@@ -53,7 +53,7 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
                     enemy.displayStats();
                     continue;
                 } else if (choice.isChoice("abilities", 4)) {
-                    if (player.abilities(&enemy, mirrorImage))
+                    if (player.abilities(&enemy, &mirrorImage))
                         break;
                     continue;
                 } else {
@@ -147,13 +147,13 @@ void explore(Player& player) {
                 break;
             case 5:
                 type("You discover a peaceful meadow. The serene environment helps you relax.\n");
-                player.health = std::min((uint16_t)(player.health + randint(5, 10)), player.maxHealth);
+                player.heal(3);
                 if (player.Class == Player::WIZARD && player.mana != player.maxMana)
                     player.mana++;
                 break;
             case 6:
                 type("You find a hidden garden with medicinal herbs. You gather some and regain health.\n");
-                player.health = std::min((uint16_t)(player.health + randint(5, 15)), player.maxHealth);
+                player.heal(3);
                 if (player.Class == Player::WIZARD && player.mana != player.maxMana)
                     player.mana++;
                 break;

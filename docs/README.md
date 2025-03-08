@@ -143,7 +143,6 @@ Here is a list of them:
 
 - Amulets  
 You can only have one amulet at a time, and amulets are equipped automatically when they are found.  
-- 
     - Amulet of the Warborn
         - Increases defense and strength
     - Amulet of the Guardian
@@ -156,7 +155,6 @@ You can only have one amulet at a time, and amulets are equipped automatically w
         - Decreases defense and strength
 - Staves (Wizards only)  
 Staves increase the strength of the player, and each has its own bonus effect.  
-- 
     - Staff of the Warborn
         - Increases mana points
         - Magic weapon

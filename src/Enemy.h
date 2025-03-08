@@ -18,7 +18,7 @@ namespace Enemy {
     };
 
     struct Info {
-        std::string name;
+        std::string_view name;
         float healthMod;
         float attackMod;
     };

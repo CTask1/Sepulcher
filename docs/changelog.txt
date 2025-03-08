@@ -479,3 +479,22 @@
             -Changed main branch to master
             -Added test branch
             -Commit master 179e74c
+            -Commit master 663a0cf
+
+
+        -- 03/04/25 --
+
+            -Code efficiency
+            -Added Revenant race (WIP)
+
+
+        -- 03/05/25–03/07/25 --
+
+            -Split Player.h into many different files:
+                -Player.h
+                -Player.cpp
+                -PlayerPublic.h
+                -PlayerPublic.cpp
+                -PlayerPrivate.h
+                -PlayerPrivate.cpp
+                -PlayerPrivate.tpp

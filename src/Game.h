@@ -178,6 +178,7 @@ void start() {
             "\n1. Elf       - Elves are a magical people with strong ties to nature. They are proficient with magical items."
             "\n2. Human     - Humans are adaptable and resilient, thriving in any environment. They are proficient with heavy weapons and armor."
             "\n3. Drakonian - Drakonians are a proud, ancient race born from the blood of dragons. They are known for their great strength and fiery breath.\n"
+            //"\n4. Revenant  -"
         );
         Choice raceChoice;
         do raceChoice = input("Please enter your choice: ");
@@ -189,10 +190,13 @@ void start() {
         } else if (raceChoice.isChoice("human", 2)) {
             pRace = Player::HUMAN;
             con = 3;
-        } else {
+        } else if (raceChoice.isChoice("drakonian", 3)) {
             pRace = Player::DRAKONIAN;
             con = 3;
             def = 1;
+        } else {
+            pRace = Player::REVENANT;
+            con = 3;
         }
     }
     

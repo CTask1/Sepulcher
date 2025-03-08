@@ -62,7 +62,9 @@
         "xtr1common": "cpp",
         "xutility": "cpp",
         "random": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "array": "cpp",
+        "*.tpp": "cpp"
     },
 
     "files.exclude": {
