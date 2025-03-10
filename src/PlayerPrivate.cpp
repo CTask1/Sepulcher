@@ -8,14 +8,14 @@ const bool PlayerPrivate::initCraftArmor(std::unordered_map<uint16_t, std::uniqu
     }
     if (player.Race == Player::DRAKONIAN) {
         Item::Armor drakArmor(Item::TYPE::ARM_DRAKONIAN, player.level, 1, true);
-        items[i] = std::move(std::make_unique<Item::Armor>(drakArmor));
+        items[i] = std::make_unique<Item::Armor>(std::move(drakArmor));
         type (
             ++i, ". Drakonian Armor (Defense Bonus: ", drakArmor.defenseBonus, ")",
             displayComponents("fiber", 2, "leather", 6), "\n"
         );
     } else {
         Item::Armor leatherArmor(Item::TYPE::ARM_LEATHER, player.level, 1, true);
-        items[i] = std::move(std::make_unique<Item::Armor>(leatherArmor));
+        items[i] = std::make_unique<Item::Armor>(std::move(leatherArmor));
         type (
             ++i, ". Leather Armor (Defense Bonus: ", leatherArmor.defenseBonus, ")",
             displayComponents("fiber", 2, "leather", 6), "\n"
@@ -26,38 +26,38 @@ const bool PlayerPrivate::initCraftArmor(std::unordered_map<uint16_t, std::uniqu
 
 const bool PlayerPrivate::initCraftWeapons(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) {
     Item::Weapon longsword(Item::TYPE::WPN_LONG, player.level, (player.Class == Player::WIZARD ? -1 : 1), true);
-    items[i] = std::move(std::make_unique<Item::Weapon>(longsword));
+    items[i] = std::make_unique<Item::Weapon>(std::move(longsword));
     type (
         ++i, ". Longsword (Strength Bonus: ", longsword.strengthBonus, ")",
         displayComponents("fiber", 2, "iron", 3, "wood", 2), "\n"
     );
     if (player.Class == Player::WIZARD) {
         Item::Weapon stWarborn(Item::TYPE::WPN_ST_WARBORN, player.level, (player.Race == Player::ELF ? 2 : 1), true);
-        items[i] = std::move(std::make_unique<Item::Weapon>(stWarborn));
+        items[i] = std::make_unique<Item::Weapon>(std::move(stWarborn));
         type (
             ++i, ". Staff of the Warborn (Strength Bonus: ", stWarborn.strengthBonus, ")",
             displayComponents("Amulet of the Warborn", 1, "fiber", 2, "wood", 4), "\n"
         );
         Item::Weapon stGuardian(Item::TYPE::WPN_ST_GUARDIAN, player.level, (player.Race == Player::ELF ? 2 : 1), true);
-        items[i] = std::move(std::make_unique<Item::Weapon>(stGuardian));
+        items[i] = std::make_unique<Item::Weapon>(std::move(stGuardian));
         type (
             ++i, ". Staff of the Guardian (Strength Bonus: ", stGuardian.strengthBonus, ")",
             displayComponents("Amulet of the Guardian", 1, "fiber", 2, "wood", 4), "\n"
         );
         Item::Weapon stShadow(Item::TYPE::WPN_ST_SHADOW, player.level, 1, true);
-        items[i] = std::move(std::make_unique<Item::Weapon>(stShadow));
+        items[i] = std::make_unique<Item::Weapon>(std::move(stShadow));
         type (
             ++i, ". Staff of the Shadow (Strength Bonus: ", stShadow.strengthBonus, ")",
             displayComponents("Amulet of the Shadow", 1, "fiber", 2, "wood", 4), "\n"
         );
         Item::Weapon stFury(Item::TYPE::WPN_ST_FURY, player.level, (player.Race == Player::ELF ? 2 : 1), true);
-        items[i] = std::move(std::make_unique<Item::Weapon>(stFury));
+        items[i] = std::make_unique<Item::Weapon>(std::move(stFury));
         type (
             ++i, ". Staff of Fury (Strength Bonus: ", stFury.strengthBonus, ")",
             displayComponents("Amulet of Fury", 1, "fiber", 2, "wood", 4), "\n"
         );
         Item::Weapon stWeeping(Item::TYPE::WPN_ST_WEEPING, player.level, (player.Race == Player::ELF ? 2 : 1), true);
-        items[i] = std::move(std::make_unique<Item::Weapon>(stWeeping));
+        items[i] = std::make_unique<Item::Weapon>(std::move(stWeeping));
         type (
             ++i, ". Staff of the Weeping Spirit (Strength Bonus: ", stWeeping.strengthBonus, ")",
             displayComponents("Amulet of the Weeping Spirit", 1, "fiber", 2, "wood", 4), "\n"
@@ -72,7 +72,7 @@ const bool PlayerPrivate::initCraftItems(std::unordered_map<uint16_t, std::uniqu
         return 0;
     }
     Item::Item focus(Item::TYPE::FOCUS);
-    items[i] = std::move(std::make_unique<Item::Item>(focus));
+    items[i] = std::make_unique<Item::Item>(std::move(focus));
     type (
         ++i, ". Arcane Focus",
         displayComponents("crystals", 4), "\n"
@@ -84,54 +84,7 @@ const bool PlayerPrivate::checkComponents() const {
     return true;
 }
 
-/*template<typename... Args>
-const bool PlayerPrivate::checkComponents(const std::string& resource, const uint16_t amount, const Args&... args) {
-    return player.resources[resource] >= amount && checkComponents(args...);
-}*/
-
 void PlayerPrivate::useComponents() {}
-
-/*template<typename... Args>
-void PlayerPrivate::useComponents(const std::string& resource, const uint16_t amount, const Args&... args) {
-    player.resources[resource] -= amount;
-    useComponents(args...);
-}
-
-template<typename... Args>
-const bool PlayerPrivate::initCraft(const Item::Item* const& item, const Args&... args) {
-    if (!checkComponents(args...)) {
-        type("You don't have enough resources!\n");
-        return 0;
-    }
-    useComponents(args...);
-    type("\nCrafting ", (*item).name, "...\n");
-    wheel();
-    return 1;
-}
-
-template<typename... Args>
-const bool PlayerPrivate::craftArmor(Item::Armor& armor, const Args&... args) {
-    if (!initCraft(&armor, args...))
-        return 0;
-    player.initArmor(armor, Item::Source::CRAFT);
-    return 1;
-}
-
-template<typename... Args>
-const bool PlayerPrivate::craftWeapon(const Item::Weapon& weapon, const Args&... args) {
-    if (!initCraft(&weapon, args...))
-        return 0;
-    player.initWeapon(weapon, Item::Source::CRAFT);
-    return 1;
-}
-
-template<typename... Args>
-const bool PlayerPrivate::craftItem(const Item::Item& item, const Args&... args) {
-    if (!initCraft(&item, args...))
-        return 0;
-    player.initItem(item, Item::Source::CRAFT);
-    return 1;
-}*/
 
 void PlayerPrivate::equipArmor(const Item::Armor& armorItem) {
     if (player.Race == Player::DRAKONIAN && armorItem != Item::TYPE::ARM_DRAKONIAN) {
@@ -197,13 +150,3 @@ void PlayerPrivate::equipSpecial(const Item::Special& specialItem) {
 }
 
 const std::string PlayerPrivate::getComponents() const { return ""; }
-
-/*template<typename... Args>
-const std::string PlayerPrivate::getComponents(const std::string& name, const uint16_t& amt, const Args&... args) {
-    return "\n\t" + ((player.resources.resources.count(name) != 0) ? (name + ": " + std::to_string(player.resources[name]) + '/' + std::to_string(amt)) : "??") + getComponents(args...);
-}
-
-template<typename... Args>
-const std::string PlayerPrivate::displayComponents(const Args&... args) {
-    return "\nComponents:" + getComponents(args...);
-}*/

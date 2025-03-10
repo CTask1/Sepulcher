@@ -303,15 +303,16 @@ void PlayerPublic::craft() {
 
         std::cout << '\n';
 
-        if (typeChoice.isChoice("armor", 1))
+        if (typeChoice.isChoice("armor", 1)) {
             if (!pPrv.initCraftArmor(items, i))
                 continue;
-        else if (typeChoice.isChoice("weapons", 2))
+        } else if (typeChoice.isChoice("weapons", 2)) {
             if (!pPrv.initCraftWeapons(items, i)) [[unlikely]]
                 continue;
-        else if (typeChoice.isChoice("items", 3))
+        } else if (typeChoice.isChoice("items", 3)) {
             if (!pPrv.initCraftItems(items, i))
                 continue;
+        }
         type(i + 1, ". (go back)\n");
 
         while (true) {
