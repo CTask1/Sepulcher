@@ -28,7 +28,8 @@ Player::~Player() {}
 
 void Player::displayStats() const {
     std::cout << "\n-------------------------";
-    type ( true,
+    setOutputSettings(true);
+    type (
         "\nName: ", name,
         "\nRace: ", Race.name,
         "\nClass: ", Class.name,

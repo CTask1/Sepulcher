@@ -17,49 +17,21 @@ public:
     
     
     /* ----- SAFE EVENTS ----- */
-    void oldChest() { // Old Chest
-        eS.oldChest();
-    }
-    
-    void hiddenArmory() { // Hidden Armory
-        eS.hiddenArmory();
-    }
-    
-    void travelingTrader() { // Traveling Trader
-        eS.travelingTrader();
-    }
-    
-    void friendlyTraveler() { // Friendly Traveler
-        eS.friendlyTraveler();
-    }
-    
+    void oldChest()         { eS.oldChest         (); } // Old Chest
+    void hiddenArmory()     { eS.hiddenArmory     (); } // Hidden Armory
+    void travelingTrader()  { eS.travelingTrader  (); } // Traveling Trader
+    void friendlyTraveler() { eS.friendlyTraveler (); } // Friendly Traveler
     
     /* ----- RISKY EVENTS ----- */
-    void mountainPass() { // Mountain Pass
-        eR.mountainPass();
-    }
-    
-    void mysteriousCave() { // Mysterious Cave
-        eR.mysteriousCave();
-    }
-    
-    void strangeAmulet() { // Strange Amulet
-        eR.strangeAmulet();
-    }
-    
-    void lostTraveler() { // Lost Traveler
-        eR.lostTraveler();
-    }
-    
+    void mountainPass()   { eR.mountainPass   (); } // Mountain Pass
+    void mysteriousCave() { eR.mysteriousCave (); } // Mysterious Cave
+    void strangeAmulet()  { eR.strangeAmulet  (); } // Strange Amulet
+    void lostTraveler()   { eR.lostTraveler   (); } // Lost Traveler
     
     /* ----- DANGEROUS EVENTS ----- */
-    void enemyEncounter() { // Enemy Encounter
-        eD.enemyEncounter();
-    }
-    
-    void hunterTrap() { // Poacher's Snare
-        eD.enemyEncounter();
-    }
+    void enemyEncounter() { eD.enemyEncounter (); } // Enemy Encounter
+    void hunterTrap()     { eD.hunterTrap     (); } // Poacher's Snare
+    void sepulcher()      { eD.sepulcher      (); } // Sepulcher
 
 private:
     Player& player;

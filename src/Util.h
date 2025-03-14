@@ -29,8 +29,7 @@ _NODISCARD inline std::string tostring(const T& value, const Args&... args) {
 }
 
 _NODISCARD inline std::string toLower(std::string str) {
-    for (size_t i = 0; i < str.length(); i++)
-        str[i] = tolower(str[i]);
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
     return str;
 }
 
@@ -43,34 +42,43 @@ _NODISCARD inline const uint16_t randint(uint16_t min, uint16_t max) {
     return distrib(gen);
 }
 
-inline void print() {}
-
-template<typename T, typename... Args>
-inline void print(const T& arg, const Args&... args) {
-    std::cout << arg;
-    print(args...);
+inline void wait(const uint16_t milliseconds) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
 
 template<typename... Args>
-inline void type(const bool options, const Args&... args) {
+inline void print(const Args&... args) {
+    std::cout << (... << args);
+}
+
+namespace {
+
+    bool outputOptions = false;
+    uint16_t outputDelay = 2;
+
+}
+
+inline void setOutputSettings(const bool options = false, const uint16_t delay = 2) {
+    outputOptions = options;
+    outputDelay = delay;
+}
+
+template<typename... Args>
+void type(const Args&... args) {
     std::string text = tostring(args...);
-    if (options) [[unlikely]] {
-        while (text.length() > 0) {
+    if (outputOptions) [[unlikely]] {
+        while (!text.empty()) {
             print(text.substr(0, text.find('\n', 1)));
             text.erase(0, text.find('\n', 1));
-            std::this_thread::sleep_for(std::chrono::milliseconds(150));
+            wait(outputDelay * 75);
         }
     } else {
         for (char character : text) {
             print(character);
-            std::this_thread::sleep_for(std::chrono::milliseconds(2));
+            wait(outputDelay);
         }
     }
-}
-
-template<typename... Args>
-inline void type(const Args&... args) {
-    type(false, args...);
+    setOutputSettings();
 }
 
 class Choice {
@@ -114,6 +122,7 @@ _NODISCARD inline const bool isPos(const std::string& s) {
 }
 
 namespace {
+
     template<typename... Args>
     inline std::string inputHelper(const bool isLine, const Args&... args) {
         std::string entry;
@@ -124,6 +133,7 @@ namespace {
             std::cin >> entry;
         return entry;
     }
+
 }
 
 template<typename... Args>

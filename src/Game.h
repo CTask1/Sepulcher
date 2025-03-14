@@ -65,7 +65,8 @@ void gameLoop(Player& player, int hitdie) {
             //} else 
             //    type("You decide to continue on into the night. Good luck!\n");
         } else {
-            type ( true,
+            setOutputSettings(true);
+            type (
                 "\nWhat would you like to do?"
                 "\n1. Explore"
                 "\n2. Display Stats"
@@ -108,7 +109,8 @@ void gameLoop(Player& player, int hitdie) {
                 while (true) {
                     std::unordered_map<uint16_t, std::string> options;
                     uint16_t optionNum = 0;
-                    type ( true,
+                    setOutputSettings(true);
+                    type (
                         "\nOther options:\n"
                         "\t1. Unequip armor\n"
                         "\t2. Unequip weapon\n"

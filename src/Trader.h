@@ -26,8 +26,10 @@ public:
     void displayResources() {
         type("\nTrader's resources:\n");
         for (const std::pair<std::string, uint16_t> stat : resources)
-            if (stat.second != 0)
-                type(true, "\t", stat.first, ": ", stat.second, " -- Price: ", prices[stat.first], "\n");
+            if (stat.second != 0) {
+                setOutputSettings(true);
+                type("\t", stat.first, ": ", stat.second, " -- Price: ", prices[stat.first], "\n");
+            }
     }
 
 };

@@ -46,7 +46,7 @@ void EventsS::travelingTrader() { // Traveling Trader
         player.resources.displayResources();
         trader.displayWares();
         while (true) {
-            type(
+            type (
                 "\nWhat would you like to do?"
                 "\n1. Trade"
                 "\n2. Leave\n"

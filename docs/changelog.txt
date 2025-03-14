@@ -488,8 +488,8 @@
             -Added Revenant race (WIP)
 
 
-        -- 03/05/25–03/07/25 --
-
+        -- 03/05/25 --
+        
             -Split Player.h into many different files:
                 -Player.h
                 -Player.cpp
@@ -498,6 +498,15 @@
                 -PlayerPrivate.h
                 -PlayerPrivate.cpp
                 -PlayerPrivate.tpp
+
+        -- 03/06/25 --
+
+            -Continued...
+
+
+        -- 03/07/25 --
+
+            -Continued...
             -Commit master ca9ffa8
             -Commit master 7f925c2
             -Line Count: 2381
@@ -506,3 +515,30 @@
         -- 03/10/25 --
 
             -Bug fixes
+            -Commit master 613a06d
+            -More bug fixes
+            -Added Sepulcher event (WIP)
+
+
+        -- 03/11/25 --
+
+            -Sepulcher event changes
+            -Troubleshooting
+
+
+        -- 03/12/25 --
+
+            -Troubleshooting
+            
+            
+        -- 03/13/25 --
+
+            -Continued...
+            -Code efficiency
+                -Changed type() function
+                    -Removed all overloads
+                    -Added setOutputSettings() function for changing type() parameters
+                -Added wait() function
+            -Added launch.json to help with compiling
+            -Updated README.md with new compiling command
+            -Changed output to UTF-8

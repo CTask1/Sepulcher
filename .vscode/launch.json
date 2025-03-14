@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "name": "Run RPG",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "program": "${workspaceFolder}\\RPG.exe",
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "console": "externalTerminal",
+            "preLaunchTask": "C++: cl.exe build RPG"
+        }
+    ]
+}

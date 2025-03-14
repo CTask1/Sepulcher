@@ -28,12 +28,16 @@ public:
     void displayResources(const bool showTitle = true) const {
         if (showTitle)
             type("\nResources:\n");
-        if (resources.empty())
-            type(true, "\tNone\n");
+        if (resources.empty()) {
+            setOutputSettings(true);
+            type("\tNone\n");
+        }
         else {
             for (const std::pair<std::string, uint16_t>& stat : resources)
-                if (stat.second != 0)
-                    type(true, "\t", stat.first, ": ", stat.second, "\n");
+                if (stat.second != 0) {
+                    setOutputSettings(true);
+                    type("\t", stat.first, ": ", stat.second, "\n");
+                }
         }
     }
 

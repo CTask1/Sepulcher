@@ -104,3 +104,43 @@ void EventsD::hunterTrap() { // Poacher's Snare
         break;
     }}
 }
+
+void EventsD::sepulcher() {
+    type (
+        "You encounter an ancient sepulcher. A cold wind howls through its ruined archway, carrying whispers in a language long forgotten."
+        "\nThe stones beneath your feet are slick with a substance thicker than water, seeping from unseen cracks."
+        "\nA silent presence lingers beyond the veil of shadow, watching, waiting."
+        "\nWhat would you like to do?"
+        "\n1. Enter"
+        "\n2. Turn back\n"
+    );
+    Choice enterChoice;
+    do enterChoice = input("Enter choice: ");
+    while (!enterChoice.isChoice(true, "enter", 1, "turn back", 2));
+
+    if (enterChoice.isChoice("turn back", 2)) {
+        type("\nYou decide to turn back, leaving the sepulcher to its slumber.\n");
+        return;
+    }
+
+    type("\nYou decide to enter the sepulcher...\n");
+
+    uint16_t message = randint(1, 2);
+    setOutputSettings(false, 20);
+    switch (message) {
+    case 1:
+        type (
+            "As you walk through the empty halls, your heartbeat echoes unnaturally, as if something else is beating alongside it."
+            "\nA low, guttural sound—too deep to be human—resonates through the walls."
+            "\nThe air thickens with an unseen presence. Each step forward is heavier than the last.\n"
+        );
+        break;
+    case 2:
+        type (
+            "Faint skeletal hands reach out from the walls as you pass, fingers twitching as if grasping for something long lost."
+            "\nTorches flicker with unnatural blue flames, casting shadows that move without their source."
+            "\nA voice—your own, yet not—whispers from the darkness: \"Turn back...\"\n"
+        );
+        break;
+    }
+}

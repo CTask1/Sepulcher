@@ -30,7 +30,8 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
         } else {
             // Player's turn
             while (true) {
-                type ( true,
+                setOutputSettings(true);
+                type (
                     "\nWhat would you like to do?"
                     "\n1. Attack"
                     "\n2. Display Stats"
@@ -107,8 +108,6 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
                 player.initWeapon(Item::TYPE::WPN_CROSSBOW, Item::Source::DROP, (player.Class == Player::WIZARD ? -1 : 1));
         } else {
             type("\nYou were defeated by the ", enemy.name, ". Game over.\n\n");
-            std::cout << "Press any key to continue . . .";
-            std::cin.get();
             exit(0);
         }
     }
@@ -125,7 +124,7 @@ void explore(Player& player) {
 
     do {
         // Generate a random number to determine the exploration event
-        eventType = randint(1, 10);
+        eventType =  randint(1, 10);
 
         if (eventType <= 6) { // Safe - 60%
             event = randint(1, 7);
@@ -180,7 +179,7 @@ void explore(Player& player) {
                 events.strangeAmulet();
             }
         } else { // Dangerous - 10%
-            event = randint(1, 2);
+            event = randint(1, 2); // ((player.level >= 10 ? 3 : 2));
             if (event == prevEvent)
                 continue;
             prevEvent = event;
@@ -197,6 +196,9 @@ void explore(Player& player) {
                     break;
                 }
                 events.hunterTrap();
+                break;
+            case 3:
+                events.sepulcher();
                 break;
             }
         }

@@ -30,12 +30,10 @@ void EventsR::lostTraveler() { // Lost Traveler
 
 void EventsR::mountainPass() { // Mountain Pass
     type (
-        "You come across a treacherous mountain pass. Climbing it will be challenging.\n"
-        "What would you like to do?\n"
-    );
-    type (
-        "1. Attempt the climb\n"
-        "2. Find an alternate route\n"
+        "You come across a treacherous mountain pass. Climbing it will be challenging."
+        "\nWhat would you like to do?"
+        "\n1. Attempt the climb"
+        "\n2. Find an alternate route\n"
     );
     Choice climbChoice;
     do climbChoice = input("Enter choice: ");
@@ -60,13 +58,18 @@ void EventsR::mountainPass() { // Mountain Pass
                 events.initCombat(Enemy::BANDIT, true);
                 break;
             } case 2:
-                type("You come across a group of friendly travelers along the alternate route.\n");
-                type("They share supplies and offer valuable information.\n");
+                type (
+                    "You come across a group of friendly travelers along the alternate route."
+                    "\nThey share supplies and offer valuable information.\n"
+                );
                 player.receiveGift();
                 break;
             case 3: {
-                type("The alternate route leads you to a crossroads with mysterious markings. Choose a path carefully.\n");
-                type("1. Follow the left path\n2. Follow the right path\n");
+                type (
+                    "The alternate route leads you to a crossroads with mysterious markings. Choose a path carefully."
+                    "\n1. Follow the left path"
+                    "\n2. Follow the right path\n"
+                );
                 Choice pathChoice;
                 do pathChoice = input("Enter choice: ");
                 while (!pathChoice.isChoice(true, "left", 1, "right", 2));
@@ -78,8 +81,11 @@ void EventsR::mountainPass() { // Mountain Pass
                         type("The left path leads to a peaceful glade with a group of friendly travelers. They share supplies with you!\n");
                         player.receiveGift();
                     } else {
-                        type("As you venture down the left path, you stumble upon an abandoned campsite. Investigate or continue?\n");
-                        type("1. Investigate the campsite\n2. Continue on the path\n");
+                        type (
+                            "As you venture down the left path, you stumble upon an abandoned campsite. Investigate or continue?"
+                            "\n1. Investigate the campsite"
+                            "\n2. Continue on the path\n"
+                        );
                         Choice campsiteChoice;
                         do campsiteChoice = input("Enter choice: ");
                         while (!campsiteChoice.isChoice(true, "investigate the campsite", 1, "continue on the path", 2));

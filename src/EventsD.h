@@ -11,6 +11,7 @@ public:
 
     void enemyEncounter(); // Enemy Encounter
     void hunterTrap(); // Poacher's Snare
+    void sepulcher(); // Sepulcher
 
 private:
     Player& player;
