@@ -1,5 +1,5 @@
-#include"EventsS.h"
-#include"Events.h"
+#include"..\include\EventsS.h"
+#include"..\include\Events.h"
 
 void EventsS::oldChest() { // Old Chest
     type("You find an old chest. Let's see what's inside...\n");

@@ -9,7 +9,7 @@
                 "/Zi",
                 "/EHsc",
                 "/nologo",
-                "/Fe${workspaceFolder}\\RPG.exe",
+                "/Fe${workspaceFolder}\\bin\\RPG.exe",
                 "${workspaceFolder}\\src\\RPG.cpp",
                 "${workspaceFolder}\\src\\Player.cpp",
                 "${workspaceFolder}\\src\\PlayerPrivate.cpp",
@@ -20,7 +20,7 @@
                 "${workspaceFolder}\\src\\EventsD.cpp"
             ],
             "options": {
-                "cwd": "${workspaceFolder}"
+                "cwd": "${workspaceFolder}\\bin"
             },
             "problemMatcher": [
                 "$msCompile"

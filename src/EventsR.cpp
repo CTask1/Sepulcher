@@ -1,5 +1,5 @@
-#include"EventsR.h"
-#include"Events.h"
+#include"..\include\EventsR.h"
+#include"..\include\Events.h"
 //import Util;
 
 void EventsR::lostTraveler() { // Lost Traveler

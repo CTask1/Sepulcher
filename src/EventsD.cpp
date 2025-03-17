@@ -1,5 +1,5 @@
-#include"EventsD.h"
-#include"Events.h"
+#include"..\include\EventsD.h"
+#include"..\include\Events.h"
 
 void EventsD::enemyEncounter() { // Enemy Encounter
     int encounter = randint(1, 3);

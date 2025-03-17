@@ -150,7 +150,7 @@ inline void wheel(const uint16_t duration = 4) {
     std::string chars = "|/-\\";
     for (uint16_t rep = 0; rep < duration * 5; rep++) {
         std::cout << chars[rep % 5];
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        wait(100);
         std::cout << "\r";
     }
 }

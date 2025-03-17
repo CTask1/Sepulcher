@@ -1,5 +1,5 @@
-#include"PlayerPrivate.h"
-#include"Player.h"
+#include"..\include\PlayerPrivate.h"
+#include"..\include\Player.h"
 
 const bool PlayerPrivate::initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) {
     if (player.Class == Player::WIZARD) {

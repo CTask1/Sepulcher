@@ -1,5 +1,5 @@
 # NOTE
-This game uses the C++20 standard. It can be compiled with MSVC using the following command: `cl.exe /std:c++20 /EHsc /nologo /FeRPG.exe src\RPG.cpp src\Player.cpp src\PlayerPrivate.cpp src\PlayerPublic.cpp src\Events.cpp src\EventsS.cpp src\EventsR.cpp src\EventsD.cpp`
+This game uses the C++20 standard. It can be compiled with MSVC using the following powershell command: `cd bin; cl.exe /std:c++20 /EHsc /nologo /FeRPG.exe ..\src\RPG.cpp ..\src\Player.cpp ..\src\PlayerPrivate.cpp ..\src\PlayerPublic.cpp ..\src\Events.cpp ..\src\EventsS.cpp ..\src\EventsR.cpp ..\src\EventsD.cpp; cd..`
 
 # Welcome to the game!
 

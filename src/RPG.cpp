@@ -1,6 +1,6 @@
 //CTask
 
-#include"Game.h"
+#include"..\include\Game.h"
 
 #ifdef _WIN32
 

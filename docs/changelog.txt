@@ -542,3 +542,12 @@
             -Added launch.json to help with compiling
             -Updated README.md with new compiling command
             -Changed output to UTF-8
+            -Commit master c517f60
+
+
+        -- 03/17/25 --
+
+            -Split src into three directories:
+                -src for source files
+                -include for header files
+                -bin for binary and executable files

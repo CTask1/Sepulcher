@@ -1,6 +1,6 @@
-#include"Player.h"
-#include"PlayerPublic.h"
-#include"PlayerPrivate.h"
+#include"..\include\Player.h"
+#include"..\include\PlayerPublic.h"
+#include"..\include\PlayerPrivate.h"
 
 Player::Player(std::string n, RACE ra, CLASS cl, int h, int s, int co) :
   pPub(std::make_unique<PlayerPublic>(*this)), pPrv(std::make_unique<PlayerPrivate>(*this)), name(n), Race({R[ra].Race, R[ra].name}), Class({C[cl].Class, C[cl].name}),

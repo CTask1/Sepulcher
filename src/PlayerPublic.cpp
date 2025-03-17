@@ -1,5 +1,5 @@
-#include"PlayerPublic.h"
-#include"Player.h"
+#include"..\include\PlayerPublic.h"
+#include"..\include\Player.h"
 
 void PlayerPublic::receiveGift() {
     player.resources.addResource("wood", randint(1, 3))

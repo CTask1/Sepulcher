@@ -6,7 +6,7 @@
             "request": "launch",
             "args": [],
             "stopAtEntry": false,
-            "program": "${workspaceFolder}\\RPG.exe",
+            "program": "${workspaceFolder}\\bin\\RPG.exe",
             "cwd": "${workspaceFolder}",
             "environment": [],
             "console": "externalTerminal",
