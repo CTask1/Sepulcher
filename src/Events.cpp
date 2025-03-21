@@ -1,7 +1,6 @@
 #include"..\include\Events.h"
 #include"..\include\Item.h"
 #include"..\include\Util.h"
-//import Util;
 
 void Events::initCombat(const Enemy::TYPE eType, const bool surprise) {
     Enemy::Enemy enemy(eType, player.maxHealth, player.strength, player.level);
@@ -124,7 +123,7 @@ void explore(Player& player) {
 
     do {
         // Generate a random number to determine the exploration event
-        eventType =  randint(1, 10);
+        eventType = randint(1, 10);
 
         if (eventType <= 6) { // Safe - 60%
             event = randint(1, 7);

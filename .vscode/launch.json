@@ -6,7 +6,7 @@
             "request": "launch",
             "args": [],
             "stopAtEntry": false,
-            "program": "${workspaceFolder}\\bin\\RPG.exe",
+            "program": "${workspaceFolder}\\bin\\Sepulcher.exe",
             "cwd": "${workspaceFolder}",
             "environment": [],
             "console": "externalTerminal",

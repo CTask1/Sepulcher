@@ -27,8 +27,8 @@ Player::Player(std::string n, RACE ra, CLASS cl, int h, int s, int co) :
 Player::~Player() {}
 
 void Player::displayStats() const {
-    std::cout << "\n-------------------------";
     setOutputSettings(true);
+    std::cout << "\n-------------------------";
     type (
         "\nName: ", name,
         "\nRace: ", Race.name,

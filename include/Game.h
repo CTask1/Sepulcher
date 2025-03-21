@@ -4,7 +4,6 @@
 #include"Events.h"
 #include"Player.h"
 #include"Enemy.h"
-//import Util;
 
 void levelUp(Player& player, int hitdie) {
     uint16_t levels = 0;
@@ -95,13 +94,6 @@ void gameLoop(Player& player, int hitdie) {
             } else if (choice.isChoice("rest", 5)) {
                 type("\nYou find a place to rest and gain some health.\n");
                 player.heal();
-                /*
-                function: f(h) = r(m - h) / 2 where
-                f(h) = healing
-                m = max health
-                h = current health
-                r = random number between 1.0 and 1.5
-                */
                 if (player.Class == Player::WIZARD && player.mana != player.maxMana)
                     player.mana++;
                time--;
@@ -174,6 +166,7 @@ void start() {
     uint16_t hitdie = 0;
     uint16_t str, con, def = 0;
     
+    setOutputSettings();
     { // Get the player's choice of race
         type (
             "Hello! Welcome to the game.\nPlease select a race for your character:"
@@ -228,7 +221,7 @@ void start() {
         }
     }
 
-    std::string pName = inputline("\nPlease enter a name for your character: ");
+    std::string pName = input("\nPlease enter a name for your character: ");
     
     type("\nNice to meet you, ", pName, ". Here are your stats:\n");
     Player player(pName, pRace, pClass, hitdie + con, str, con);

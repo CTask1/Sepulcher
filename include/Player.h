@@ -2,7 +2,6 @@
 #include"Resources.h"
 #include"Enemy.h"
 #include"Item.h"
-//import Util;
 
 class PlayerPublic;
 class PlayerPrivate;

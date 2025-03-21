@@ -1,4 +1,5 @@
 #pragma once
+#include"PlayerPrivate.h"
 #include"Player.h"
 
 template<typename... Args>

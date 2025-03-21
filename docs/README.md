@@ -1,7 +1,14 @@
-# NOTE
-This game uses the C++20 standard. It can be compiled with MSVC using the following powershell command: `cd bin; cl.exe /std:c++20 /EHsc /nologo /FeRPG.exe ..\src\RPG.cpp ..\src\Player.cpp ..\src\PlayerPrivate.cpp ..\src\PlayerPublic.cpp ..\src\Events.cpp ..\src\EventsS.cpp ..\src\EventsR.cpp ..\src\EventsD.cpp; cd..`
+# BUILDING
+This game uses the C++20 standard. It can be compiled with MSVC using the following command in the Developer Command Prompt for VS 2022: `cd bin && cl.exe /std:c++20 /EHsc /nologo /FeSepulcher.exe ..\src\main.cpp ..\src\Util.cpp ..\src\Player.cpp ..\src\PlayerPrivate.cpp ..\src\PlayerPublic.cpp ..\src\Events.cpp ..\src\EventsS.cpp ..\src\EventsR.cpp ..\src\EventsD.cpp && cd..`  
+You can then run it with the command: `bin\Sepulcher`  
+Alternatively, you can compile it in VSCode in the Run and Debug tab with the `Run RPG` option (this will run in debug mode)
+
+This game should be compatible with every OS, but you will have to find another compiler for non-Windows systems.
+
 
 # Welcome to the game!
+
+Welcome to the world of Sepulcher, a text-based RPG where you can explore and build your strength through random events where you can fight, gather resources, craft and find items, and trade until you eventually reach your final destination: the Sepulcher.
 
 Before you get started, there are a few things you should know:
 

@@ -5,19 +5,13 @@
         -Rogues have disadvantage with heavy armor
             -Can't surprise
             -Less armor
-
         -Code efficiency
-
         -Enemy stat balances
-
         -Item stat balances
-
         -Bug fixes
             -Foolproofing
-
         -User-friendliness
             -Item swapping
-
         -Resource gathering
     
 
@@ -28,19 +22,16 @@
             -Peaceful Meadow
             -Hidden garden
             -Mountain pass
-
         -User-friendliness
             -Optional stat showing during battle
                 -Health still shows
             -Displays exp requirement for next level
             -Additional info when finding an item
             -Adjusted resource gathering
-
         -More options during combat
             -Ability to run away from combat
             -Display the player's current stats
             -Display the enemy's current stats
-
         -Slower progression
     
 
@@ -49,9 +40,7 @@
         -Code cleanliness
             -Explore function
                 -Events class
-
         -Trader (WIP)
-
         -Enemy stat balances
     
 
@@ -60,7 +49,6 @@
         -New item
             -Crafting
                 -Leather armor
-
         -Split into 8 header files
             -Enemy.h
             -Events.h
@@ -254,7 +242,7 @@
     -- 02/10/25 --
 
         -Code efficiency
-            -Replaced all unnecessary maps with arrays
+            -Replaced unnecessary maps with arrays
         -Bug fixes
         -Moved initArmor() and initWeapon() functions to Player class
         -Crafted items are now no longer equipped automatically
@@ -417,137 +405,166 @@
             -Items
 
 
-        -- 02/26/25 --
+    -- 02/26/25 --
 
-            -Code efficiency
-            -Bug fixes
-            -Changed some messages
-            -Stat balances
-            -Added README.md (WIP) for information about:
-                -How to play
-                -Races
-                -Classes
-                -Items
-                -Events
-            -Line Count: 2287
-
-
-        -- 02/27/25 --
-
-            -Finished README.md
-            -Stat balances
+        -Code efficiency
+        -Bug fixes
+        -Changed some messages
+        -Stat balances
+        -Added README.md (WIP) for information about:
+            -How to play
+            -Races
+            -Classes
+            -Items
+            -Events
+        -Line Count: 2287
 
 
-        -- 02/28/25 --
+    -- 02/27/25 --
 
-            -Code efficiency
-            -Split craft() method into many different parts:
-                -craft()
-                -initCraftArmor()
-                -initCraftWeapons()
-                -initCraftItems()
-                -checkComponents()
-                -useComponents()
-                -initCraft()
-                -craftArmor()
-                -craftWeapon()
-                -craftItem()
+        -Finished README.md
+        -Stat balances
 
 
-        -- 03/01/25 --
+    -- 02/28/25 --
 
-            -Code efficiency
-            -Added Player::heal() method to reduce redundancy
-
-
-        -- 03/03/25 --
-
-            -Code efficiency
-            -Added methods to reduce redundancy
-                -Player::abilities()
-                -Player::rituals()
-            -Merged files to src
-                -Events.cpp  (last merge 02/25/25)
-                -Game.h      (last merge 02/25/25)
-                -Item.h      (last merge 02/25/25)
-                -Player.h    (last merge 02/25/25)
-                -Enemy.h     (last merge 02/19/25)
-                -EventsS.cpp (last merge 02/19/25)
-            -Commit main 4887a4a
-            -Changed some messages
-            -Deleted test folder
-            -Changed main branch to master
-            -Added test branch
-            -Commit master 179e74c
-            -Commit master 663a0cf
+        -Code efficiency
+        -Split craft() method into many different parts:
+            -craft()
+            -initCraftArmor()
+            -initCraftWeapons()
+            -initCraftItems()
+            -checkComponents()
+            -useComponents()
+            -initCraft()
+            -craftArmor()
+            -craftWeapon()
+            -craftItem()
 
 
-        -- 03/04/25 --
+    -- 03/01/25 --
 
-            -Code efficiency
-            -Added Revenant race (WIP)
+        -Code efficiency
+        -Added Player::heal() method to reduce redundancy
 
 
-        -- 03/05/25 --
+    -- 03/03/25 --
+
+        -Code efficiency
+        -Added methods to reduce redundancy
+            -Player::abilities()
+            -Player::rituals()
+        -Merged files to src
+            -Events.cpp  (last merge 02/25/25)
+            -Game.h      (last merge 02/25/25)
+            -Item.h      (last merge 02/25/25)
+            -Player.h    (last merge 02/25/25)
+            -Enemy.h     (last merge 02/19/25)
+            -EventsS.cpp (last merge 02/19/25)
+        -Commit main 4887a4a
+        -Changed some messages
+        -Deleted test folder
+        -Removed Util.ixx
+        -Renamed main branch to master
+        -Added test branch
+        -Commit master 179e74c
+        -Commit master 663a0cf
+
+
+    -- 03/04/25 --
+
+        -Code efficiency
+        -Added Revenant race (WIP)
+
+
+    -- 03/05/25 --
         
-            -Split Player.h into many different files:
-                -Player.h
-                -Player.cpp
-                -PlayerPublic.h
-                -PlayerPublic.cpp
-                -PlayerPrivate.h
-                -PlayerPrivate.cpp
-                -PlayerPrivate.tpp
+        -Split Player.h into many different files:
+            -Player.h
+            -Player.cpp
+            -PlayerPublic.h
+            -PlayerPublic.cpp
+            -PlayerPrivate.h
+            -PlayerPrivate.cpp
+            -PlayerPrivate.tpp
 
-        -- 03/06/25 --
+    -- 03/06/25 --
 
-            -Continued...
-
-
-        -- 03/07/25 --
-
-            -Continued...
-            -Commit master ca9ffa8
-            -Commit master 7f925c2
-            -Line Count: 2381
+        -Continued...
 
 
-        -- 03/10/25 --
+    -- 03/07/25 --
 
-            -Bug fixes
-            -Commit master 613a06d
-            -More bug fixes
-            -Added Sepulcher event (WIP)
-
-
-        -- 03/11/25 --
-
-            -Sepulcher event changes
-            -Troubleshooting
+        -Continued...
+        -Commit master ca9ffa8
+        -Commit master 7f925c2
+        -Line Count: 2381
 
 
-        -- 03/12/25 --
+    -- 03/10/25 --
 
-            -Troubleshooting
+        -Bug fixes
+        -Commit master 613a06d
+        -More bug fixes
+        -Added Sepulcher event (WIP)
+
+
+    -- 03/11/25 --
+
+        -Sepulcher event changes
+        -Troubleshooting
+
+
+    -- 03/12/25 --
+
+        -Troubleshooting
+    
             
-            
-        -- 03/13/25 --
+    -- 03/13/25 --
 
-            -Continued...
-            -Code efficiency
-                -Changed type() function
-                    -Removed all overloads
-                    -Added setOutputSettings() function for changing type() parameters
-                -Added wait() function
-            -Added launch.json to help with compiling
-            -Updated README.md with new compiling command
-            -Changed output to UTF-8
-            -Commit master c517f60
+        -Continued...
+        -Code efficiency
+            -Changed type() function
+                -Removed all overloads
+                -Added setOutputSettings() function for changing type() parameters
+            -Added wait() function
+        -Added launch.json to help with compiling
+        -Updated README.md with new compiling steps
+        -Changed output to UTF-8
+        -Commit master c517f60
 
 
-        -- 03/17/25 --
+    -- 03/17/25 --
 
-            -Split src into three directories:
-                -src for source files
-                -include for header files
-                -bin for binary and executable files
+        -Split src into three directories:
+            -src for source files
+            -include for header files
+            -bin for binary and executable files
+        -Commit master 0e605aa
+
+
+    -- 03/20/25 --
+
+        -Code efficiency
+            -Removed print() function
+            -Adjusted type() function
+            -Removed inputHelper() function
+            -input() now functions as inputLine()
+            -Removed inputLine()
+            -Other Util changes
+        -Bug fixes
+        -User-friendliness
+        -Split Util.h into three files:
+            -Util.h
+            -Util.tpp
+            -Util.cpp
+        -Updated README.md with new compiling steps
+        -Renamed game from RPG to Sepulcher
+
+
+    -- 03/21/25 --
+
+        -Code efficiency
+            -Replaced unnecessary maps with constexpr arrays
+        -Bug fixes
+        -Enemy stat balances

@@ -1,7 +1,13 @@
 {
+    "files.exclude": {
+        "**/.git": false
+    },
+    "C_Cpp.default.cppStandard": "c++20",
     "files.associations": {
-        "ctime": "cpp",
-        "cstdlib": "cpp",
+        "*.tpp": "cpp",
+        "random": "cpp",
+        "xstring": "cpp",
+        "algorithm": "cpp",
         "atomic": "cpp",
         "bit": "cpp",
         "cctype": "cpp",
@@ -14,7 +20,9 @@
         "cstddef": "cpp",
         "cstdint": "cpp",
         "cstdio": "cpp",
+        "cstdlib": "cpp",
         "cstring": "cpp",
+        "ctime": "cpp",
         "cwchar": "cpp",
         "exception": "cpp",
         "format": "cpp",
@@ -58,17 +66,7 @@
         "xlocnum": "cpp",
         "xloctime": "cpp",
         "xmemory": "cpp",
-        "xstring": "cpp",
         "xtr1common": "cpp",
-        "xutility": "cpp",
-        "random": "cpp",
-        "algorithm": "cpp",
-        "array": "cpp",
-        "*.tpp": "cpp"
-    },
-
-    "files.exclude": {
-        "**/.git": false
-    },
-    "C_Cpp.default.cppStandard": "c++20"
+        "xutility": "cpp"
+    }
 }

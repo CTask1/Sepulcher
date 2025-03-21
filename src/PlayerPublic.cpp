@@ -190,6 +190,13 @@ const bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage) {
 const uint16_t PlayerPublic::heal(const uint16_t div) {
     static const float HEALING_MULTIPLIER = randint(10, 15) / 10.f;
     const uint16_t healing = (player.maxHealth - player.health) * HEALING_MULTIPLIER / div;
+    /*
+    function: f(h) = r(m - h) / 2 where
+    f(h) = healing
+    m = max health
+    h = current health
+    r = random number between 1.0 and 1.5
+    */
     player.health += healing;
     return healing;
 }
