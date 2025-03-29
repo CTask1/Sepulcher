@@ -1,5 +1,9 @@
 #include"..\include\EventsS.h"
 #include"..\include\Events.h"
+#include"..\include\Trader.h"
+#include"..\include\Player.h"
+#include"..\include\Enemy.h"
+#include"..\include\Util.h"
 
 void EventsS::oldChest() { // Old Chest
     type("You find an old chest. Let's see what's inside...\n");
@@ -25,7 +29,7 @@ void EventsS::friendlyTraveler() { // Friendly Traveler
         int giftType = randint(1, 2);
         if (giftType == 1) {
             type("The traveler gives you a health potion. Your health has been restored!\n");
-            player.health = player.maxHealth;
+            player.healMax();
         }
         else {
             int expGain = (randint(1, 100) == 1) ? randint(25, 50) : randint(5, 15);

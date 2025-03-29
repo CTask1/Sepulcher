@@ -1,9 +1,9 @@
 #pragma once
-#include"PlayerPrivate.h"
 #include"Enemy.h"
 #include"Item.h"
 
 class Player;
+class PlayerPrivate;
 
 class PlayerPublic {
 public:
@@ -11,10 +11,17 @@ public:
     PlayerPublic(Player& p) : player(p), pPrv(p) {}
     ~PlayerPublic() {}
 
+    uint16_t getMaxHealth() const;
+    short getStrength() const;
+    short getDefense() const;
     void receiveGift();
-    const bool rituals();
-    const bool abilities(Enemy::Enemy*, short*);
-    const uint16_t heal(const uint16_t);
+    bool rituals();
+    bool abilities(Enemy::Enemy*, short*, bool*);
+    uint16_t heal(const uint16_t);
+    uint16_t healMax();
+    void addDebuff(Debuff::TYPE);
+    void updateDebuffs();
+    void displayDebuffs() const;
     void initArmor(const Item::Armor&, const Item::Source);
     void initArmor(const Item::TYPE, const Item::Source, const uint16_t);
     void initWeapon(const Item::Weapon&, const Item::Source);

@@ -1,6 +1,5 @@
 #pragma once
 #include"Player.h"
-#include"Trader.h"
 
 class Events;
 

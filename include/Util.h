@@ -1,12 +1,6 @@
 #pragma once
 #include<type_traits>
-#include<iostream>
-#include<sstream>
-#include<random>
-#include<thread>
-#include<chrono>
 #include<string>
-#include<cmath>
 
 _NODISCARD std::string tostring();
 template<typename T> typename std::enable_if<!std::is_same<T, const char*>::value, std::string>::type _NODISCARD tostring(const T&);

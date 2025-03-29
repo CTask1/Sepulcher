@@ -1,4 +1,8 @@
+#include<cstdlib>
+
 #include"..\include\Events.h"
+#include"..\include\Player.h"
+#include"..\include\Enemy.h"
 #include"..\include\Item.h"
 #include"..\include\Util.h"
 
@@ -14,9 +18,10 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
     bool first = true; // Is it the first round of combat?
     bool run   = false; // Is the player trying to run?
     short mirrorImage = 0;
+    bool shadowmeld = false;
     uint16_t surprise = 0;
     if (player.Class == Player::ROGUE)
-        surprise = (player.armor == Item::TYPE::ARM_STEEL || player.armor == Item::TYPE::ARM_IRON) ? 1 : randint(1, player.level + 1); // The player cannot surprise if they are wearing steel armor
+        surprise = (player.armor == Item::TYPE::ARM_STEEL || player.armor == Item::TYPE::ARM_IRON) ? 1 : randint(1, player.level + 1); // The player cannot surprise if they are wearing heavy armor
     while (player.health > 0 && enemy.health > 0) {
         if (surprised && first) { // If the player is surprised
             if (player.arcaneEye) { // If the player has the Arcane Eye spell active
@@ -53,7 +58,7 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
                     enemy.displayStats();
                     continue;
                 } else if (choice.isChoice("abilities", 4)) {
-                    if (player.abilities(&enemy, &mirrorImage))
+                    if (player.abilities(&enemy, &mirrorImage, &shadowmeld))
                         break;
                     continue;
                 } else {
@@ -86,6 +91,9 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
                     "\nThe enemy's precise attack finds its mark, only for the image to shimmer and dissolve."
                     "\nThey stare in confusion, momentarily thrown off their attack.\n"
                 );
+            } else if (shadowmeld) {
+                type ("\nYou remain hidden in the shadows, evading the enemy's attack.\n");
+                shadowmeld = false;
             } else {
                 uint16_t enemyDamage = std::max(enemy.attack + randint(1, 6) - player.CON - player.defense, 0);  // Enemy's attack based on its attack stat + a six-sided die roll - player's CON and defense
                 enemyDamage = (enemyDamage > 0) ? enemyDamage : 0;
@@ -95,20 +103,63 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
         }
 
         first = false;
-    }
-
-    // Check the outcome of the battle
-    if (run == false) {
-        if (player.health > 0) [[likely]] {
-            uint16_t expGain = randint(5, player.level * 8);
-            type("\nYou defeated the ", enemy.name, "! You earned ", expGain, " experience points.\n");
-            player.exp += expGain;
-            if (enemy.name == Enemy::eType[Enemy::GOBLIN].name && randint(1, 2) == 1)
-                player.initWeapon(Item::TYPE::WPN_CROSSBOW, Item::Source::DROP, (player.Class == Player::WIZARD ? -1 : 1));
-        } else {
-            type("\nYou were defeated by the ", enemy.name, ". Game over.\n\n");
-            exit(0);
+        
+        if (player.health <= 0 || enemy.health <= 0) {
+            // Check the outcome of the battle
+            if (run == false) {
+                if (player.health > 0) [[likely]] {
+                    uint16_t expGain = randint(5, player.level * 8);
+                    type("\nYou defeated the ", enemy.name, "! You earned ", expGain, " experience points.\n");
+                    player.exp += expGain;
+                    if (enemy.name == Enemy::eType[Enemy::GOBLIN].name && randint(1, 2) == 1)
+                        player.initWeapon(Item::TYPE::WPN_CROSSBOW, Item::Source::DROP, (player.Class == Player::WIZARD ? -1 : 1));
+                } else {
+                    if (checkDeath(enemy, player))
+                        return;
+                }
+            }
         }
+    }
+}
+
+bool checkDeath(Enemy::Enemy& enemy, Player& player) {
+    if (player.health <= 0) {
+        if (player.resurgence) {
+            type (
+                "\nYou were defeated by the ", enemy.name, " but your body is not yet ready to perish."
+                "\nYou feel a surge of energy as you rise from the ground, ready to fight again!\n"
+            );
+            player.health = player.getMaxHealth() / 2;
+            player.resurgence = false;
+            return 0;
+        }
+        type("\nYou were defeated by the ", enemy.name, ". Game over.\n");
+        return 1;
+    }
+    return 0;
+}
+
+void levelUp(Player& player, int hitdie) {
+    uint16_t levels = 0;
+    while (player.exp >= player.nextLevel) {
+        player.level++;
+        player.exp -= player.nextLevel;
+        player.maxHealth += player.level + hitdie;
+        player.health = player.getMaxHealth();
+        player.strength += 3;
+        player.baseStrength += 3;
+        if (player.Race == Player::DRAKONIAN)
+            player.defense += 1;
+        player.nextLevel = 10 + static_cast<uint32_t>(pow(player.level, 2));
+        levels++;
+    }
+    if (levels > 0) {
+        type("You leveled up");
+        if (levels == 2)
+            type(" twice");
+        else if (levels == 3)
+            type(" three times");
+        type("!\n");
     }
 }
 
@@ -117,8 +168,8 @@ void explore(Player& player) {
 
     Events events(player);
 
+    static uint16_t prevEvent = 0;
     uint16_t eventType,
-             prevEvent = 0,
              event;
 
     do {

@@ -1,21 +1,61 @@
 #pragma once
+#include<unordered_map>
+#include<string_view>
+#include<vector>
+#include<memory>
+
 #include"Resources.h"
 #include"Enemy.h"
 #include"Item.h"
+#include"consts.h"
 
 class PlayerPublic;
 class PlayerPrivate;
 
+class Debuff {
+public:
+    std::string_view name;
+    uint16_t duration;
+    float hMod, strMod, defMod;
+
+    enum TYPE {
+        NONE,
+        RAVENOUS
+    };
+
+    struct Info {
+        const std::string_view name = "None";
+        const uint16_t duration = 1;
+        const float hMod   = 0.f,
+                    strMod = 0.f,
+                    defMod = 0.f;
+    };
+
+    static constexpr Info Data[] {
+        { "None"                        },
+        { "Ravenous", DAY_LENGTH, -0.1f }
+    };
+
+    Debuff(TYPE debuffType) :
+        name     (Data[debuffType].name    ),
+        duration (Data[debuffType].duration),
+        hMod     (Data[debuffType].hMod    ),
+        strMod   (Data[debuffType].strMod  ),
+        defMod   (Data[debuffType].defMod  ) {}
+
+};
+
 class Player {
 public:
-    std::string name;
+    std::string_view name;
     uint16_t maxHealth,
              health,
              maxMana,
              mana,
              baseStrength,
              CON,
-             level;
+             level,
+             bloodMeter;
     short strength, defense, 
     mageArmorDefense;
     uint32_t nextLevel, exp;
@@ -25,7 +65,9 @@ public:
     bool hasAbility,
          raceAbilityReady,
          classAbilityReady,
-         arcaneEye;
+         arcaneEye,
+         resurgence;
+    std::vector<Debuff> debuffs;
     Resources resources;
 
     enum RACE {
@@ -41,20 +83,27 @@ public:
         WIZARD
     };
  
+    uint16_t getMaxHealth() const;
+    short getStrength() const;
+    short getDefense() const;
     void receiveGift();
-    const bool rituals();
-    const bool abilities(Enemy::Enemy* enemy = nullptr, short* mirrorImage = nullptr);
-    const uint16_t heal(const uint16_t div = 2);
-    void initItem(const Item::Item& item, const Item::Source source);
-    void initItem(const Item::TYPE iType, const Item::Source source);
-    void initArmor(const Item::Armor& armor, const Item::Source source);
-    void initArmor(const Item::TYPE aType, const Item::Source source, const uint16_t add = 1);
-    void initWeapon(const Item::Weapon& weapon, const Item::Source source);
-    void initWeapon(const Item::TYPE wType, const Item::Source source, const uint16_t add = 1);
-    void initSpecial(const Item::Special& special, const Item::Source source);
-    void initSpecial(const Item::TYPE sType, const Item::Source source);
-    void unequipArmor(const bool confirmation = true);
-    void unequipWeapon(const bool confirmation = true);
+    bool rituals();
+    bool abilities(Enemy::Enemy* = nullptr, short* = nullptr, bool* = nullptr);
+    uint16_t heal(const uint16_t = 2);
+    uint16_t healMax();
+    void addDebuff(Debuff::TYPE);
+    void updateDebuffs();
+    void displayDebuffs() const;
+    void initItem(const Item::Item&, const Item::Source);
+    void initItem(const Item::TYPE, const Item::Source);
+    void initArmor(const Item::Armor&, const Item::Source);
+    void initArmor(const Item::TYPE, const Item::Source, const uint16_t = 1);
+    void initWeapon(const Item::Weapon&, const Item::Source);
+    void initWeapon(const Item::TYPE, const Item::Source, const uint16_t = 1);
+    void initSpecial(const Item::Special&, const Item::Source);
+    void initSpecial(const Item::TYPE, const Item::Source);
+    void unequipArmor(const bool = true);
+    void unequipWeapon(const bool = true);
     void gatherResources();
     void craft();
     
@@ -97,30 +146,30 @@ private:
         { WIZARD,  "Wizard"  }
     };
 
-    const bool initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i);
-    const bool initCraftWeapons(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i);
-    const bool initCraftItems(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i);
-    const bool checkComponents() const;
-    template<typename... Args> const bool checkComponents(const std::string& resource, const uint16_t amount, const Args&... args);
+    bool initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>&, uint16_t&);
+    bool initCraftWeapons(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>&, uint16_t&);
+    bool initCraftItems(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>&, uint16_t&);
+    bool checkComponents() const;
+    template<typename... Args> bool checkComponents(const std::string&, const uint16_t, const Args&...);
     void useComponents();
-    template<typename... Args> void useComponents(const std::string& resource, const uint16_t amount, const Args&... args);
-    template<typename... Args> const bool initCraft(const Item::Item* const& item, const Args&... args);
-    template<typename... Args> const bool craftArmor(Item::Armor& armor, const Args&... args);
-    template<typename... Args> const bool craftWeapon(const Item::Weapon& weapon, const Args&... args);
-    template<typename... Args> const bool craftItem(const Item::Item& item, const Args&... args);
-    void equipArmor(const Item::Armor& armorItem);
-    void equipWeapon(const Item::Weapon& weaponItem);
-    void equipSpecial(const Item::Special& specialItem);
+    template<typename... Args> void useComponents(const std::string&, const uint16_t, const Args&...);
+    template<typename... Args> bool initCraft(const Item::Item* const&, const Args&...);
+    template<typename... Args> bool craftArmor(Item::Armor&, const Args&...);
+    template<typename... Args> bool craftWeapon(const Item::Weapon&, const Args&...);
+    template<typename... Args> bool craftItem(const Item::Item&, const Args&...);
+    void equipArmor(const Item::Armor&);
+    void equipWeapon(const Item::Weapon&);
+    void equipSpecial(const Item::Special&);
     const std::string getComponents() const;
-    template<typename... Args> const std::string getComponents(const std::string& name, const uint16_t& amt, const Args&... args);
-    template<typename... Args> const std::string displayComponents(const Args&... args);
+    template<typename... Args> const std::string getComponents(const std::string&, const uint16_t, const Args&...);
+    template<typename... Args> const std::string displayComponents(const Args&...);
 
 public:
 
     RaceInfo Race;
     ClassInfo Class;
 
-    Player(std::string, RACE, CLASS, int, int, int);
+    Player(std::string_view, RACE, CLASS, int, int, int);
     ~Player();
 
     void displayStats() const;

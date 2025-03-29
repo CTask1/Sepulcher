@@ -1,5 +1,9 @@
 #pragma once
+#include<unordered_map>
+#include<string_view>
+
 #include"Resources.h"
+#include"Util.h"
 
 class TraderResources : public Resources {
 public:
@@ -16,7 +20,7 @@ public:
         } while (resources.empty());
 
         for (std::pair<std::string_view, uint16_t> pair : resources)
-            if (pair.first == "crystals" || pair.first == "iron") [[unlikely]]
+            if (pair.first == "crystals" || pair.first == "iron")
                 prices[pair.first] = 5;
             else
                 prices[pair.first] = 1;

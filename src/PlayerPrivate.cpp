@@ -1,7 +1,9 @@
 #include"..\include\PlayerPrivate.h"
 #include"..\include\Player.h"
+#include"..\include\Item.h"
+#include"..\include\Util.h"
 
-const bool PlayerPrivate::initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) {
+bool PlayerPrivate::initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) {
     if (player.Class == Player::WIZARD) {
         type("There is no armor available to craft.\n");
         return 0;
@@ -24,7 +26,7 @@ const bool PlayerPrivate::initCraftArmor(std::unordered_map<uint16_t, std::uniqu
     return 1;
 }
 
-const bool PlayerPrivate::initCraftWeapons(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) {
+bool PlayerPrivate::initCraftWeapons(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) {
     Item::Weapon longsword(Item::TYPE::WPN_LONG, player.level, (player.Class == Player::WIZARD ? -1 : 1), true);
     items[i] = std::make_unique<Item::Weapon>(std::move(longsword));
     type (
@@ -66,7 +68,7 @@ const bool PlayerPrivate::initCraftWeapons(std::unordered_map<uint16_t, std::uni
     return 1;
 }
 
-const bool PlayerPrivate::initCraftItems(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) {
+bool PlayerPrivate::initCraftItems(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) {
     if (player.Class != Player::WIZARD) {
         type("There are no items available to craft.\n");
         return 0;
@@ -80,7 +82,7 @@ const bool PlayerPrivate::initCraftItems(std::unordered_map<uint16_t, std::uniqu
     return 1;
 }
 
-const bool PlayerPrivate::checkComponents() const {
+bool PlayerPrivate::checkComponents() const {
     return true;
 }
 

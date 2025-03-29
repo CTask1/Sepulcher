@@ -1,5 +1,7 @@
 #pragma once
 #include<unordered_map>
+#include<string_view>
+
 #include"Util.h"
 
 class Resources {

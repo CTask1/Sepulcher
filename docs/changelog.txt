@@ -568,3 +568,27 @@
             -Replaced unnecessary maps with constexpr arrays
         -Bug fixes
         -Enemy stat balances
+        -Commit master 2701768
+        -Line Count: 2434
+
+
+    -- 03/24/25 --
+
+        -Code efficiency
+        -Added Debuff class with:
+            -Ravenous
+                -Race-specific to Revenants
+                -Lasts one day
+                -Reduces max health by 5
+        -Added consts.h file for constexpr variables:
+            -DAY_LENGTH
+            -NIGHT_LENGTH
+            -FULL_DAY_LENGTH
+        -Enemy stat balances
+
+
+    -- 03/28/25 --
+
+        -Bug fixes
+        -Finished Revenant race
+        -Line Count: 2761

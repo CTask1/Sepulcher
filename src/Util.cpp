@@ -1,3 +1,7 @@
+#include<chrono>
+#include<thread>
+#include<string>
+
 #include"..\include\Util.h"
 
 bool outputAsList = false;
@@ -15,9 +19,13 @@ _NODISCARD std::string toLower(std::string&& str) {
     return str;
 }
 
-_NODISCARD uint16_t randint(const uint16_t min, const uint16_t max) {
-    if (min > max) [[unlikely]]
-        return 0;
+_NODISCARD uint16_t randint(uint16_t min, uint16_t max) {
+    // swap variables
+    if (min > max) [[unlikely]] {
+        min ^= max;
+        max ^= min;
+        min ^= max;
+    }
     return std::uniform_int_distribution<uint16_t>{min, max}(gen);
 }
 

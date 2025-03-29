@@ -39,6 +39,18 @@ Here is some information about each race:
 - Combat ability: Dragon's Breath (Burns the enemy)
 
 
+### Revenant
+
+- Constitution: 3
+- Healing has half normal effect
+- Use Necrotic Drain to heal and fill a blood meter up to three times per day
+    - If this meter is not filled by the end of the day, becomes Ravenous
+- Debuff: Ravenous (Reduces max health by 10% for one day)
+- Ability: Shadowmeld (Guarantees enemy will miss their next attack)
+- Resurgence (Resurrect at 50% health once)
+- Restless (Cannot heal from sleeping)
+
+
 ## Classes
 
 After you choose a race, you must choose a class.
@@ -74,8 +86,7 @@ It has many weapons and spells to keep track of, and the player must be smart ab
 - Mana points: 15
 - Cannot wear armor
 - Disadvantage with non-magic weapons
-- Magical Resilience: Wizards regain health equal to mana points used for spells.
-- Spells
+- Use mana points to cast spells
     - Fire Bolt
         - Only used in combat
         - Burns the enemy
@@ -96,6 +107,7 @@ It has many weapons and spells to keep track of, and the player must be smart ab
         - Given by the Staff of the Guardian
         - Heals the player
         - Costs two mana points
+- Magical Resilience: Wizards regain health equal to mana points used for spells.
 - Ability: Rituals
 - Rituals (Only used outside of combat)
     - Mana Restoration
@@ -207,3 +219,4 @@ Dangerous events happen 10% of the time.
 Combat and/or damage is highly likely.  
     - Enemy Encounter
     - Poacher's Snare
+    - Sepulcher (WIP)

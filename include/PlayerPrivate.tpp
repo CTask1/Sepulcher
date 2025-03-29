@@ -3,7 +3,7 @@
 #include"Player.h"
 
 template<typename... Args>
-const bool PlayerPrivate::checkComponents(const std::string& resource, const uint16_t amount, const Args&... args) {
+bool PlayerPrivate::checkComponents(const std::string& resource, const uint16_t amount, const Args&... args) {
     return player.resources[resource] >= amount && checkComponents(args...);
 }
 
@@ -14,7 +14,7 @@ void PlayerPrivate::useComponents(const std::string& resource, const uint16_t am
 }
 
 template<typename... Args>
-const bool PlayerPrivate::initCraft(const Item::Item* const& item, const Args&... args) {
+bool PlayerPrivate::initCraft(const Item::Item* const& item, const Args&... args) {
     if (!checkComponents(args...)) {
         type("You don't have enough resources!\n");
         return 0;
@@ -26,7 +26,7 @@ const bool PlayerPrivate::initCraft(const Item::Item* const& item, const Args&..
 }
 
 template<typename... Args>
-const bool PlayerPrivate::craftArmor(Item::Armor& armor, const Args&... args) {
+bool PlayerPrivate::craftArmor(Item::Armor& armor, const Args&... args) {
     if (!initCraft(&armor, args...))
         return 0;
     player.initArmor(armor, Item::Source::CRAFT);
@@ -34,7 +34,7 @@ const bool PlayerPrivate::craftArmor(Item::Armor& armor, const Args&... args) {
 }
 
 template<typename... Args>
-const bool PlayerPrivate::craftWeapon(const Item::Weapon& weapon, const Args&... args) {
+bool PlayerPrivate::craftWeapon(const Item::Weapon& weapon, const Args&... args) {
     if (!initCraft(&weapon, args...))
         return 0;
     player.initWeapon(weapon, Item::Source::CRAFT);
@@ -42,7 +42,7 @@ const bool PlayerPrivate::craftWeapon(const Item::Weapon& weapon, const Args&...
 }
 
 template<typename... Args>
-const bool PlayerPrivate::craftItem(const Item::Item& item, const Args&... args) {
+bool PlayerPrivate::craftItem(const Item::Item& item, const Args&... args) {
     if (!initCraft(&item, args...))
         return 0;
     player.initItem(item, Item::Source::CRAFT);
@@ -50,7 +50,7 @@ const bool PlayerPrivate::craftItem(const Item::Item& item, const Args&... args)
 }
 
 template<typename... Args>
-const std::string PlayerPrivate::getComponents(const std::string& name, const uint16_t& amt, const Args&... args) {
+const std::string PlayerPrivate::getComponents(const std::string& name, const uint16_t amt, const Args&... args) {
     return "\n\t" + ((player.resources.resources.count(name) != 0) ? (name + ": " + std::to_string(player.resources[name]) + '/' + std::to_string(amt)) : "??") + getComponents(args...);
 }
 

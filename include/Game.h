@@ -1,37 +1,15 @@
 #pragma once
-#include<cmath>
 #include<string>
+#include<cmath>
+
 #include"Events.h"
 #include"Player.h"
-#include"Enemy.h"
-
-void levelUp(Player& player, int hitdie) {
-    uint16_t levels = 0;
-    while (player.exp >= player.nextLevel) {
-        player.level++;
-        player.exp -= player.nextLevel;
-        player.maxHealth += player.level + hitdie;
-        player.health = player.maxHealth;
-        player.strength += 3;
-        player.baseStrength += 3;
-        if (player.Race == Player::DRAKONIAN)
-            player.defense += 1;
-        player.nextLevel = 10 + static_cast<uint32_t>(pow(player.level, 2));
-        levels++;
-    }
-    if (levels > 0) {
-        type("You leveled up");
-        if (levels == 2)
-            type(" twice");
-        else if (levels == 3)
-            type(" three times");
-        type("!\n");
-    }
-}
+#include"Util.h"
+#include"consts.h"
 
 void gameLoop(Player& player, int hitdie) {
-    uint16_t time = 8;
-    uint16_t energy = 8;
+    uint16_t time = DAY_LENGTH;
+    uint16_t energy = DAY_LENGTH;
     // Main game loop
     while (true) {
         Choice choice;
@@ -52,15 +30,22 @@ void gameLoop(Player& player, int hitdie) {
 
             //if (choice.isChoice("sleep", 1)) {
                 //type("\nYou find a place to sleep through the night.\n");
-                player.health = player.maxHealth;
+                if (player.Race != Player::REVENANT)
+                    player.healMax();
+                else {
+                    if (player.bloodMeter < 3) {
+                        type ("\nYou were unable to fill your blood meter!\n");
+                        player.addDebuff(Debuff::RAVENOUS);
+                    }
+                    player.bloodMeter = 0;
+                }
                 player.defense -= player.mageArmorDefense;
                 player.mageArmorDefense = 0;
                 player.mana = std::min(player.maxMana, (uint16_t)(player.mana + 5));
                 player.raceAbilityReady = true;
                 player.classAbilityReady = true;
                 player.arcaneEye = false;
-                time = 8;
-                energy = 8;
+                time = energy = DAY_LENGTH;
             //} else 
             //    type("You decide to continue on into the night. Good luck!\n");
         } else {
@@ -80,23 +65,21 @@ void gameLoop(Player& player, int hitdie) {
             
             if (choice.isChoice("explore", 1)) {
                 explore(player);
-                time--;
-                energy--;
             } else if (choice.isChoice("display stats", 2)) {
                 player.displayStats();
                 player.resources.displayResources();
+                continue;
             } else if (choice.isChoice("gather resources", 3)) {
                 player.gatherResources();
-                time--;
-                energy--;
             } else if (choice.isChoice("craft", 4)) {
                 player.craft();
+                continue;
             } else if (choice.isChoice("rest", 5)) {
                 type("\nYou find a place to rest and gain some health.\n");
                 player.heal();
                 if (player.Class == Player::WIZARD && player.mana != player.maxMana)
                     player.mana++;
-               time--;
+               energy++;
             } else if (choice.isChoice("other options", 6)) {
                 while (true) {
                     std::unordered_map<uint16_t, std::string> options;
@@ -155,7 +138,14 @@ void gameLoop(Player& player, int hitdie) {
                     return;
             }
 
+            if (player.health <= 0) {
+                type("\nYou have died. Game over.\n\n");
+                return;
+            }
+            time--;
+            energy--;
             levelUp(player, hitdie);
+            player.updateDebuffs();
         }
     }
 }
@@ -172,12 +162,12 @@ void start() {
             "Hello! Welcome to the game.\nPlease select a race for your character:"
             "\n1. Elf       - Elves are a magical people with strong ties to nature. They are proficient with magical items."
             "\n2. Human     - Humans are adaptable and resilient, thriving in any environment. They are proficient with heavy weapons and armor."
-            "\n3. Drakonian - Drakonians are a proud, ancient race born from the blood of dragons. They are known for their great strength and fiery breath.\n"
-            //"\n4. Revenant  -"
+            "\n3. Drakonian - Drakonians are a proud, ancient race born from the blood of dragons. They are known for their great strength and fiery breath."
+            "\n4. Revenant  - Revenants are restless souls bound to the mortal plane. They endure with unnatural vitality but must feed on the life force of others.\n"
         );
         Choice raceChoice;
         do raceChoice = input("Please enter your choice: ");
-        while (!raceChoice.isChoice(true, "elf", 1, "human", 2, "drakonian", 3));
+        while (!raceChoice.isChoice(true, "elf", 1, "human", 2, "drakonian", 3, "revenant", 4));
         
         if (raceChoice.isChoice("elf", 1)) {
             pRace = Player::ELF;

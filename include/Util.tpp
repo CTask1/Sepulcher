@@ -1,4 +1,12 @@
 #pragma once
+#include<type_traits>
+#include<iostream>
+#include<sstream>
+#include<string>
+#include<chrono>
+#include<thread>
+#include<random>
+
 #include"Util.h"
 
 extern bool outputAsList;

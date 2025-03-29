@@ -40,4 +40,8 @@ private:
     EventsD eD;
 };
 
+bool checkDeath(Enemy::Enemy&, Player&);
+    
+void levelUp(Player&, int);
+
 void explore(Player&);
