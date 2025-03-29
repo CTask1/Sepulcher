@@ -99,7 +99,7 @@ namespace Item {
 
     };
     
-    class Potion : public Item {
+    /*class Potion : public Item {
     public:
     
         Potion(const TYPE t = TYPE::NONE) : Item(t) {}
@@ -108,7 +108,7 @@ namespace Item {
             
         }
     
-    };
+    };*/
     
     class Leveled : public Item {
     public:
@@ -120,7 +120,15 @@ namespace Item {
             level++;
         }
     
-        virtual void displayInfo(const Source source = Source::NONE) const {}
+        virtual void displayInfo(const Source source = Source::NONE) const {
+            if (source == FIND)
+                type("\nYou found an item: ");
+            else if (source == CRAFT)
+                type("You crafted an item: ");
+            else if (source == DROP)
+                type("The enemy dropped an item: ");
+            type(name, "\n");
+        }
     
     };
     
@@ -133,8 +141,8 @@ namespace Item {
         Armor(const TYPE armType, const uint16_t level, const short add = 1, const bool crafted = false) :
             Leveled(armType),
             defenseBonus (crafted
-                ? std::round(pow(level + add, Data[static_cast<uint16_t>(armType)].defMod))
-                : randint(1, std::round(pow(level + add, Data[static_cast<uint16_t>(armType)].defMod)))
+                ? (short)std::round(pow(level + add, Data[static_cast<uint16_t>(armType)].defMod))
+                : (short)randint(1, (uint16_t)std::round(pow(level + add, Data[static_cast<uint16_t>(armType)].defMod)))
             ) {}
     
         void displayInfo(const Source source = Source::NONE) const override {
@@ -158,8 +166,8 @@ namespace Item {
         Weapon(const TYPE wpnType, const uint16_t level, const short add = 1, const bool crafted = false) :
             Leveled(wpnType),
             strengthBonus (crafted
-                ? std::abs(std::round(pow(level + add, Data[static_cast<uint16_t>(wpnType)].strMod)))
-                : randint(1, std::abs(std::round(pow(level + add, Data[static_cast<uint16_t>(wpnType)].strMod))))
+                ? (short)std::abs(std::round(pow(level + add, Data[static_cast<uint16_t>(wpnType)].strMod)))
+                : (short)randint(1, (uint16_t)std::abs(std::round(pow(level + add, Data[static_cast<uint16_t>(wpnType)].strMod))))
             ) {}
     
         void displayInfo(const Source source = Source::NONE) const override {
@@ -185,7 +193,7 @@ namespace Item {
             Item(splType),
             defenseBonus (Data[static_cast<uint16_t>(splType)].defMod == 0
                 ? 0
-                : randint(1, std::round(pow(level, Data[static_cast<uint16_t>(splType)].defMod))) *
+                : (short)randint(1, (uint16_t)std::round(pow(level, Data[static_cast<uint16_t>(splType)].defMod))) *
                 (Data[static_cast<uint16_t>(splType)].nDef
                     ? -1
                     : 1
@@ -193,7 +201,7 @@ namespace Item {
             ),
             strengthBonus (Data[static_cast<uint16_t>(splType)].strMod == 0
                 ? 0
-                : randint(1, std::round(pow(level, Data[static_cast<uint16_t>(splType)].strMod))) *
+                : (short)randint(1, (uint16_t)std::round(pow(level, Data[static_cast<uint16_t>(splType)].strMod))) *
                 (Data[static_cast<uint16_t>(splType)].nStr
                     ? -1
                     : 1

@@ -1,4 +1,5 @@
 #pragma once
+#include<initializer_list>
 #include<unordered_map>
 #include<string_view>
 #include<vector>
@@ -146,30 +147,25 @@ private:
         { WIZARD,  "Wizard"  }
     };
 
-    bool initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>&, uint16_t&);
-    bool initCraftWeapons(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>&, uint16_t&);
-    bool initCraftItems(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>&, uint16_t&);
-    bool checkComponents() const;
-    template<typename... Args> bool checkComponents(const std::string&, const uint16_t, const Args&...);
-    void useComponents();
-    template<typename... Args> void useComponents(const std::string&, const uint16_t, const Args&...);
-    template<typename... Args> bool initCraft(const Item::Item* const&, const Args&...);
-    template<typename... Args> bool craftArmor(Item::Armor&, const Args&...);
-    template<typename... Args> bool craftWeapon(const Item::Weapon&, const Args&...);
-    template<typename... Args> bool craftItem(const Item::Item&, const Args&...);
-    void equipArmor(const Item::Armor&);
-    void equipWeapon(const Item::Weapon&);
-    void equipSpecial(const Item::Special&);
-    const std::string getComponents() const;
-    template<typename... Args> const std::string getComponents(const std::string&, const uint16_t, const Args&...);
-    template<typename... Args> const std::string displayComponents(const Args&...);
+    bool initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
+    bool initCraftWeapons(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
+    bool initCraftItems(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
+    bool useComponents(const std::initializer_list<std::pair<std::string, uint16_t>> components);
+    bool initCraft(const Item::Item* const& item, const std::initializer_list<std::pair<std::string, uint16_t>> components);
+    bool craftArmor(Item::Armor& armor, const std::initializer_list<std::pair<std::string, uint16_t>> components);
+    bool craftWeapon(const Item::Weapon& weapon, const std::initializer_list<std::pair<std::string, uint16_t>> componentss);
+    bool craftItem(const Item::Item& item, const std::initializer_list<std::pair<std::string, uint16_t>> components);
+    void equipArmor(const Item::Armor& armorItem);
+    void equipWeapon(const Item::Weapon& weaponItem);
+    void equipSpecial(const Item::Special& specialItem);
+    const std::string displayComponents(const std::initializer_list<std::pair<std::string, uint16_t>> components) const;
 
 public:
 
     RaceInfo Race;
     ClassInfo Class;
 
-    Player(std::string_view, RACE, CLASS, int, int, int);
+    Player(std::string_view, RACE, CLASS, uint16_t, uint16_t, uint16_t);
     ~Player();
 
     void displayStats() const;

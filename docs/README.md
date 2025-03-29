@@ -1,7 +1,7 @@
 # BUILDING
-This game uses the C++20 standard. It can be compiled with MSVC using the following command in the Developer Command Prompt for VS 2022: `cd bin && cl.exe /std:c++20 /EHsc /nologo /FeSepulcher.exe ..\src\main.cpp ..\src\Util.cpp ..\src\Player.cpp ..\src\PlayerPrivate.cpp ..\src\PlayerPublic.cpp ..\src\Events.cpp ..\src\EventsS.cpp ..\src\EventsR.cpp ..\src\EventsD.cpp && cd..`  
-You can then run it with the command: `bin\Sepulcher`  
-Alternatively, you can compile it in VSCode in the Run and Debug tab with the `Run RPG` option (this will run in debug mode)
+This game can be compiled in release mode with MSVC using the following command in the Developer Command Prompt for VS 2022: `cl.exe /std:c++20 /EHsc /O2 /DNDEBUG /MP /nologo /Febin\release\Sepulcher.exe /Fobin\release\ src\*.cpp`  
+You can then run it with the command: `bin\release\Sepulcher.exe`  
+Alternatively, you can compile it in VSCode in the Run and Debug tab with the `Run RPG (Release)` option
 
 This game should be compatible with every OS, but you will have to find another compiler for non-Windows systems.
 
@@ -46,7 +46,7 @@ Here is some information about each race:
 - Use Necrotic Drain to heal and fill a blood meter up to three times per day
     - If this meter is not filled by the end of the day, becomes Ravenous
 - Debuff: Ravenous (Reduces max health by 10% for one day)
-- Ability: Shadowmeld (Guarantees enemy will miss their next attack)
+- Combat ability: Shadowmeld (Guarantees enemy will miss their next attack)
 - Resurgence (Resurrect at 50% health once)
 - Restless (Cannot heal from sleeping)
 

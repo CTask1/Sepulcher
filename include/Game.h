@@ -7,7 +7,7 @@
 #include"Util.h"
 #include"consts.h"
 
-void gameLoop(Player& player, int hitdie) {
+void gameLoop(Player& player, uint16_t hitdie) {
     uint16_t time = DAY_LENGTH;
     uint16_t energy = DAY_LENGTH;
     // Main game loop

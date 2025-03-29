@@ -44,8 +44,8 @@ namespace Enemy {
 
         Enemy(TYPE t, uint16_t h, uint16_t a, uint16_t l) :
             name(eType[static_cast<uint16_t>(t)].name),
-            health(std::pow(randint(h, std::round(h * eType[static_cast<uint16_t>(t)].healthMod)), l / 50.0 + 1)),
-            attack(std::pow(randint(a, std::round(a * eType[static_cast<uint16_t>(t)].attackMod)), l / 50.0 + 1)) {}
+            health((uint16_t)std::pow(randint(h, (uint16_t)std::round(h * eType[static_cast<uint16_t>(t)].healthMod)), l / 50.0 + 1)),
+            attack((uint16_t)std::pow(randint(a, (uint16_t)std::round(a * eType[static_cast<uint16_t>(t)].attackMod)), l / 50.0 + 1)) {}
 
         void displayStats() {
             setOutputSettings();

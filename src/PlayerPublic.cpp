@@ -8,12 +8,13 @@
 #include"..\include\Player.h"
 #include"..\include\Enemy.h"
 #include"..\include\Util.h"
+#include"..\include\consts.h"
 
 uint16_t PlayerPublic::getMaxHealth() const {
     uint16_t maxHealth = player.maxHealth;
     for (const Debuff& debuff : player.debuffs) {
         if (debuff.hMod != 0)
-            maxHealth *= (1 + debuff.hMod);
+            maxHealth = (uint16_t)(maxHealth * (1 + debuff.hMod));
     }
     return maxHealth;
 }
@@ -22,7 +23,7 @@ short PlayerPublic::getStrength() const {
     short strength = player.strength;
     for (const Debuff& debuff : player.debuffs) {
         if (debuff.strMod != 0)
-            strength *= (1 + debuff.strMod);
+            strength = (uint16_t)(strength * (1 + debuff.strMod));
     }
     return strength;
 }
@@ -31,7 +32,7 @@ short PlayerPublic::getDefense() const {
     short defense = player.defense;
     for (const Debuff& debuff : player.debuffs) {
         if (debuff.defMod != 0)
-            defense *= (1 + debuff.defMod);
+            defense = (uint16_t)(defense * (1 + debuff.defMod));
     }
     return defense;
 }
@@ -148,7 +149,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
     if (abilities[choiceNum] == "Dragon's Breath") {
         const uint16_t damage = player.strength + randint(1, 6);
         const uint16_t burn = randint(1, 4);
-        (*enemy).health = std::max((*enemy).health - damage - burn, 0);
+        (*enemy).health = (uint16_t)std::max((*enemy).health - damage - burn, 0);
         type (
             "\nYou take a deep breath, and with a powerful exhale, a torrent of searing flames erupts from your mouth, searing the ", (*enemy).name, " for ", damage, " damage!"
             "\nThe ", (*enemy).name, " is burned for an additional ", burn, " damage!"
@@ -165,7 +166,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         return 0;
     } else if (abilities[choiceNum] == "Necrotic Drain") {
         const uint16_t damage = player.strength / 2 + randint(1, 6);
-        (*enemy).health = std::max((*enemy).health - damage, 0);
+        (*enemy).health = (uint16_t)std::max((*enemy).health - damage, 0);
         player.health = std::min((uint16_t)(player.health + damage / 2), player.getMaxHealth());
         player.bloodMeter++;
         type (
@@ -189,7 +190,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         }
         const uint16_t damage = player.strength + randint(1, 8);
         const uint16_t burn = randint(1, 4);
-        (*enemy).health = std::max((*enemy).health - damage - burn, 0);
+        (*enemy).health = (uint16_t)std::max((*enemy).health - damage - burn, 0);
         player.mana--;
         player.health = std::min((uint16_t)(player.health + 1), player.getMaxHealth());
         type (
@@ -219,7 +220,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
             type("\nYou don't have enough mana points!\n");
             return 0;
         }
-        player.mageArmorDefense = pow(player.level + 1, 1.2f);
+        player.mageArmorDefense = (uint16_t)pow(player.level + 1, 1.2f);
         player.defense += player.mageArmorDefense;
         player.mana -= 5;
         player.health = std::min((uint16_t)(player.health + 5), player.getMaxHealth());
@@ -256,7 +257,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
 
 uint16_t PlayerPublic::heal(const uint16_t div) {
     static const float HEALING_MULTIPLIER = randint(10, 15) / 10.f;
-    uint16_t healing = (player.getMaxHealth() - player.health) * HEALING_MULTIPLIER / div;
+    uint16_t healing = (uint16_t)((player.getMaxHealth() - player.health) * HEALING_MULTIPLIER / div);
     /*
     function: f(h) = r(m - h) / 2 where
     f(h) = healing
@@ -400,7 +401,7 @@ void PlayerPublic::unequipWeapon(const bool confirmation) {
     }
     if (player.weapon == Item::TYPE::WPN_ST_WARBORN) {
         player.maxMana -= 3;
-        player.mana = std::max(player.mana - 3, 0);
+        player.mana = (uint16_t)std::max(player.mana - 3, 0);
     } else if (player.weapon == Item::TYPE::WPN_ST_WEEPING) {
         player.maxMana += 3;
         player.mana += 3;
@@ -475,31 +476,31 @@ void PlayerPublic::craft() {
 
             switch ((*items[choiceNum]).itemType) {
             case Item::TYPE::ARM_DRAKONIAN: // Drakonian Armor
-                pPrv.craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), "fiber", 2, "leather", 6);
+                pPrv.craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), { { "fiber", (uint16_t)2 }, { "leather", (uint16_t)6 } });
                 break;
             case Item::TYPE::ARM_LEATHER: // Leather Armor
-                pPrv.craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), "fiber", 2, "leather", 6);
+                pPrv.craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), { { "fiber", (uint16_t)2 }, { "leather", (uint16_t)6 } });
                 break;
             case Item::TYPE::WPN_LONG: // Longsword
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), "fiber", 2, "iron", 3, "wood", 2);
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "fiber", (uint16_t)2 }, { "iron", (uint16_t)3 }, { "wood", (uint16_t)2 } });
                 break;
             case Item::TYPE::WPN_ST_WARBORN: // Staff of the Warborn
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), "Amulet of the Warborn", 1, "fiber", 2, "wood", 4);
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Warborn", (uint16_t)1 }, { "fiber", (uint16_t)2 }, { "wood", (uint16_t)4 } });
                 break;
             case Item::TYPE::WPN_ST_GUARDIAN: // Staff of the Guardian
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), "Amulet of the Guardian", 1, "fiber", 2, "wood", 4);
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Guardian", (uint16_t)1 }, { "fiber", (uint16_t)2 }, { "wood", (uint16_t)4 } });
                 break;
             case Item::TYPE::WPN_ST_SHADOW: // Staff of the Shadow
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), "Amulet of the Shadow", 1, "fiber", 2, "wood", 4);
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Shadow", (uint16_t)1 }, { "fiber", (uint16_t)2 }, { "wood", (uint16_t)4 } });
                 break;
             case Item::TYPE::WPN_ST_FURY: // Staff of Fury
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), "Amulet of Fury", 1, "fiber", 2, "wood", 4);
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of Fury", (uint16_t)1 }, { "fiber", (uint16_t)2 }, { "wood", (uint16_t)4 } });
                 break;
             case Item::TYPE::WPN_ST_WEEPING: // Staff of the Weeping Spirit
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), "Amulet of the Weeping Spirit", 1, "fiber", 2, "wood", 4);
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Weeping Spirit", (uint16_t)1 }, { "fiber", (uint16_t)2 }, { "wood", (uint16_t)4 } });
                 break;
             case Item::TYPE::FOCUS: // Arcane Focus
-                pPrv.craftItem(*items[choiceNum], "crystals", 4);
+                pPrv.craftItem(*items[choiceNum], { { "crystals", (uint16_t)4 } });
                 break;
             }
             return;

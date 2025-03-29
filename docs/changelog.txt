@@ -592,3 +592,18 @@
         -Bug fixes
         -Finished Revenant race
         -Line Count: 2761
+        -Commit master 08d3747
+
+    -- 03/29/25 --
+
+        -Code efficiency
+            -Replaced some parameter packs with initializer_lists
+            -Merged checkComponents() with useComponents()
+            -Merged getComponents() with displayComponents()
+            -Reduced recursion
+        -Bug fixes
+            -Fixed all warnings
+        -Compiling optimizations
+        -Added debug and release folders in bin directory
+        -Removed PlayerPrivate.tpp
+        -Updated README

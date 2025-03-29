@@ -106,10 +106,10 @@ void EventsS::travelingTrader() { // Traveling Trader
                 }
 
                 type("\nYou got ", amountBuy, " ", buyChoice, " from the trader for ", amountSell, " ", sellChoice, ".\n");
-                trader.resources[sellChoice] += amountSell;
-                trader.resources[buyChoice] -= amountBuy;
-                player.resources[sellChoice] -= amountSell;
-                player.resources[buyChoice] += amountBuy;
+                trader.resources[sellChoice] += (uint16_t)amountSell;
+                trader.resources[buyChoice] -= (uint16_t)amountBuy;
+                player.resources[sellChoice] -= (uint16_t)amountSell;
+                player.resources[buyChoice] += (uint16_t)amountBuy;
                 continue;
             } else
                 type("You leave the trader.\n");

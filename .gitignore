@@ -1,0 +1,7 @@
+bin/debug/*
+bin/release/*
+docs/*
+!docs/changelog.txt
+!docs/README.md
+test/*
+!*.gitkeep

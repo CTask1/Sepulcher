@@ -13,7 +13,7 @@ public:
 
     void initCombat(const Enemy::TYPE, const bool = false);
     
-    void combat(Enemy::Enemy&, const bool);
+    void combat(Enemy::Enemy&, bool);
     
     
     /* ----- SAFE EVENTS ----- */
@@ -42,6 +42,6 @@ private:
 
 bool checkDeath(Enemy::Enemy&, Player&);
     
-void levelUp(Player&, int);
+void levelUp(Player&, uint16_t);
 
 void explore(Player&);

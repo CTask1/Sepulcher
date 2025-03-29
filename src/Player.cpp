@@ -1,3 +1,4 @@
+#include<initializer_list>
 #include<unordered_map>
 #include<iostream>
 #include<memory>
@@ -9,7 +10,7 @@
 #include"..\include\Player.h"
 #include"..\include\Util.h"
 
-Player::Player(std::string_view n, RACE ra, CLASS cl, int h, int s, int co) :
+Player::Player(std::string_view n, RACE ra, CLASS cl, uint16_t h, uint16_t s, uint16_t co) :
   pPub(std::make_unique<PlayerPublic>(*this)),
   pPrv(std::make_unique<PlayerPrivate>(*this)),
   name(n),
@@ -59,7 +60,7 @@ Player::Player(std::string_view n, RACE ra, CLASS cl, int h, int s, int co) :
     resources.displayResources();
 }
 
-Player::~Player() {}
+Player::~Player() = default;
 
 void Player::displayStats() const {
     setOutputSettings(true);
@@ -84,43 +85,38 @@ void Player::displayStats() const {
     displayDebuffs();
 }
 
-uint16_t Player::getMaxHealth() const                                                                                                { return (*pPub).getMaxHealth      (                                   ); }
-short Player::getStrength() const                                                                                                    { return (*pPub).getStrength       (                                   ); }
-short Player::getDefense() const                                                                                                     { return (*pPub).getDefense        (                                   ); }
-void Player::receiveGift()                                                                                                           {        (*pPub).receiveGift       (                                   ); }
-bool Player::rituals()                                                                                                               { return (*pPub).rituals           (                                   ); }
-bool Player::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shadowmeld)                                                    { return (*pPub).abilities         ( enemy   , mirrorImage, shadowmeld ); }
-uint16_t Player::heal(const uint16_t div)                                                                                            { return (*pPub).heal              ( div                               ); }
-uint16_t Player::healMax()                                                                                                           { return (*pPub).healMax           (                                   ); }
-void Player::addDebuff(Debuff::TYPE debuffType)                                                                                      {        (*pPub).addDebuff         ( debuffType                        ); }
-void Player::updateDebuffs()                                                                                                         {        (*pPub).updateDebuffs     (                                   ); }
-void Player::displayDebuffs() const                                                                                                  {        (*pPub).displayDebuffs    (                                   ); }
-void Player::initItem(const Item::Item& item, const Item::Source source)                                                             {        (*pPub).initItem          ( item    , source                  ); }
-void Player::initItem(const Item::TYPE iType, const Item::Source source)                                                             {        (*pPub).initItem          ( iType   , source                  ); }
-void Player::initArmor(const Item::Armor& armor, const Item::Source source)                                                          {        (*pPub).initArmor         ( armor   , source                  ); }
-void Player::initArmor(const Item::TYPE aType, const Item::Source source, const uint16_t add)                                        {        (*pPub).initArmor         ( aType   , source     , add        ); }
-void Player::initWeapon(const Item::Weapon& weapon, const Item::Source source)                                                       {        (*pPub).initWeapon        ( weapon  , source                  ); }
-void Player::initWeapon(const Item::TYPE wType, const Item::Source source, const uint16_t add)                                       {        (*pPub).initWeapon        ( wType   , source     , add        ); }
-void Player::initSpecial(const Item::Special& special, const Item::Source source)                                                    {        (*pPub).initSpecial       ( special , source                  ); }
-void Player::initSpecial(const Item::TYPE sType, const Item::Source source)                                                          {        (*pPub).initSpecial       ( sType   , source                  ); }
-void Player::unequipArmor(const bool confirmation)                                                                                   {        (*pPub).unequipArmor      ( confirmation                      ); }
-void Player::unequipWeapon(const bool confirmation)                                                                                  {        (*pPub).unequipWeapon     ( confirmation                      ); }
-void Player::gatherResources()                                                                                                       {        (*pPub).gatherResources   (                                   ); }
-void Player::craft()                                                                                                                 {        (*pPub).craft             (                                   ); }
-bool Player::initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i)                           { return (*pPrv).initCraftArmor    ( items   , i                       ); }
-bool Player::initCraftWeapons(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i)                         { return (*pPrv).initCraftWeapons  ( items   , i                       ); }
-bool Player::initCraftItems(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i)                           { return (*pPrv).initCraftItems    ( items   , i                       ); }
-bool Player::checkComponents() const                                                                                                 { return (*pPrv).checkComponents   (                                   ); }
-template<typename... Args> bool Player::checkComponents(const std::string& resource, const uint16_t amount, const Args&... args)     { return (*pPrv).checkComponents   ( resource, amount     , args...    ); }
-void Player::useComponents()                                                                                                         {        (*pPrv).useComponents     (                                   ); }
-template<typename... Args> void Player::useComponents(const std::string& resource, const uint16_t amount, const Args&... args)       {        (*pPrv).useComponents     ( resource, amount     , args...    ); }
-template<typename... Args> bool Player::initCraft(const Item::Item* const& item, const Args&... args)                                { return (*pPrv).initCraft         ( item    ,              args...    ); }
-template<typename... Args> bool Player::craftArmor(Item::Armor& armor, const Args&... args)                                          { return (*pPrv).craftArmor        ( armor   ,              args...    ); }
-template<typename... Args> bool Player::craftWeapon(const Item::Weapon& weapon, const Args&... args)                                 { return (*pPrv).craftWeapon       ( weapon  ,              args...    ); }
-template<typename... Args> bool Player::craftItem(const Item::Item& item, const Args&... args)                                       { return (*pPrv).craftItem         ( item    ,              args...    ); }
-void Player::equipArmor(const Item::Armor& armorItem)                                                                                {        (*pPrv).equipArmor        ( armorItem                         ); }
-void Player::equipWeapon(const Item::Weapon& weaponItem)                                                                             {        (*pPrv).equipWeapon       ( weaponItem                        ); }
-void Player::equipSpecial(const Item::Special& specialItem)                                                                          {        (*pPrv).equipSpecial      ( specialItem                       ); }
-const std::string Player::getComponents() const                                                                                      { return (*pPrv).getComponents     (                                   ); }
-template<typename... Args> const std::string Player::getComponents(const std::string& name, const uint16_t amt, const Args&... args) { return (*pPrv).getComponents     ( name    , amt        , args...    ); }
-template<typename... Args> const std::string Player::displayComponents(const Args&... args)                                          { return (*pPrv).displayComponents ( args...                           ); } 
+uint16_t Player::getMaxHealth() const                                                                                              { return (*pPub).getMaxHealth      (                                      ); }
+short Player::getStrength() const                                                                                                  { return (*pPub).getStrength       (                                      ); }
+short Player::getDefense() const                                                                                                   { return (*pPub).getDefense        (                                      ); }
+void Player::receiveGift()                                                                                                         {        (*pPub).receiveGift       (                                      ); }
+bool Player::rituals()                                                                                                             { return (*pPub).rituals           (                                      ); }
+bool Player::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shadowmeld)                                                  { return (*pPub).abilities         ( enemy      , mirrorImage, shadowmeld ); }
+uint16_t Player::heal(const uint16_t div)                                                                                          { return (*pPub).heal              ( div                                  ); }
+uint16_t Player::healMax()                                                                                                         { return (*pPub).healMax           (                                      ); }
+void Player::addDebuff(Debuff::TYPE debuffType)                                                                                    {        (*pPub).addDebuff         ( debuffType                           ); }
+void Player::updateDebuffs()                                                                                                       {        (*pPub).updateDebuffs     (                                      ); }
+void Player::displayDebuffs() const                                                                                                {        (*pPub).displayDebuffs    (                                      ); }
+void Player::initItem(const Item::Item& item, const Item::Source source)                                                           {        (*pPub).initItem          ( item       , source                  ); }
+void Player::initItem(const Item::TYPE iType, const Item::Source source)                                                           {        (*pPub).initItem          ( iType      , source                  ); }
+void Player::initArmor(const Item::Armor& armorItem, const Item::Source source)                                                    {        (*pPub).initArmor         ( armorItem  , source                  ); }
+void Player::initArmor(const Item::TYPE aType, const Item::Source source, const uint16_t add)                                      {        (*pPub).initArmor         ( aType      , source     , add        ); }
+void Player::initWeapon(const Item::Weapon& weaponItem, const Item::Source source)                                                 {        (*pPub).initWeapon        ( weaponItem , source                  ); }
+void Player::initWeapon(const Item::TYPE wType, const Item::Source source, const uint16_t add)                                     {        (*pPub).initWeapon        ( wType      , source     , add        ); }
+void Player::initSpecial(const Item::Special& specialItem, const Item::Source source)                                              {        (*pPub).initSpecial       ( specialItem, source                  ); }
+void Player::initSpecial(const Item::TYPE sType, const Item::Source source)                                                        {        (*pPub).initSpecial       ( sType      , source                  ); }
+void Player::unequipArmor(const bool confirmation)                                                                                 {        (*pPub).unequipArmor      ( confirmation                         ); }
+void Player::unequipWeapon(const bool confirmation)                                                                                {        (*pPub).unequipWeapon     ( confirmation                         ); }
+void Player::gatherResources()                                                                                                     {        (*pPub).gatherResources   (                                      ); }
+void Player::craft()                                                                                                               {        (*pPub).craft             (                                      ); }
+bool Player::initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const                   { return (*pPrv).initCraftArmor    ( items      , i                       ); }
+bool Player::initCraftWeapons(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const                 { return (*pPrv).initCraftWeapons  ( items      , i                       ); }
+bool Player::initCraftItems(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const                   { return (*pPrv).initCraftItems    ( items      , i                       ); }
+bool Player::useComponents(const std::initializer_list<std::pair<std::string, uint16_t>> components)                               { return (*pPrv).useComponents     ( components                           ); }
+bool Player::initCraft(const Item::Item* const& item, const std::initializer_list<std::pair<std::string, uint16_t>> components)    { return (*pPrv).initCraft         ( item       , components              ); }
+bool Player::craftArmor(Item::Armor& armorItem, const std::initializer_list<std::pair<std::string, uint16_t>> components)          { return (*pPrv).craftArmor        ( armorItem  , components              ); }
+bool Player::craftWeapon(const Item::Weapon& weaponItem, const std::initializer_list<std::pair<std::string, uint16_t>> components) { return (*pPrv).craftWeapon       ( weaponItem , components              ); }
+bool Player::craftItem(const Item::Item& item, const std::initializer_list<std::pair<std::string, uint16_t>> components)           { return (*pPrv).craftItem         ( item       , components              ); }
+void Player::equipArmor(const Item::Armor& armorItem)                                                                              {        (*pPrv).equipArmor        ( armorItem                            ); }
+void Player::equipWeapon(const Item::Weapon& weaponItem)                                                                           {        (*pPrv).equipWeapon       ( weaponItem                           ); }
+void Player::equipSpecial(const Item::Special& specialItem)                                                                        {        (*pPrv).equipSpecial      ( specialItem                          ); }
+const std::string Player::displayComponents(const std::initializer_list<std::pair<std::string, uint16_t>> components) const        { return (*pPrv).displayComponents ( components                           ); } 

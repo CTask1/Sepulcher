@@ -15,7 +15,7 @@ _NODISCARD std::string tostring(const char* const& value) {
 }
 
 _NODISCARD std::string toLower(std::string&& str) {
-    std::transform(str.begin(), str.end(), str.begin(), [](int ch) { return std::tolower(ch); });
+    std::transform(str.begin(), str.end(), str.begin(), [](uint8_t ch) { return (uint8_t)std::tolower(ch); });
     return str;
 }
 
