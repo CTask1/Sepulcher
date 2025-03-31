@@ -607,3 +607,20 @@
         -Added debug and release folders in bin directory
         -Removed PlayerPrivate.tpp
         -Updated README
+        -Commit master 8f141a5
+
+
+    -- 03/30/25 --
+
+        -Code efficiency
+            -Readability
+            -Replaced some maps with vectors
+        -Bug fixes
+
+
+    -- 03/31/25 --
+
+        -Bug fixes
+        -Enemy stat balances
+        -Added a prefix/suffix system for weapons and armor
+        -Updated README

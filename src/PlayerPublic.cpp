@@ -1,14 +1,14 @@
-#include<unordered_map>
 #include<iostream>
 #include<memory>
 #include<string>
+#include<vector>
 
 #include"..\include\PlayerPrivate.h"
 #include"..\include\PlayerPublic.h"
 #include"..\include\Player.h"
+#include"..\include\consts.h"
 #include"..\include\Enemy.h"
 #include"..\include\Util.h"
-#include"..\include\consts.h"
 
 uint16_t PlayerPublic::getMaxHealth() const {
     uint16_t maxHealth = player.maxHealth;
@@ -50,24 +50,28 @@ bool PlayerPublic::rituals() {
         type("\nYou cannot perform any more rituals today.\n");
         return 0;
     }
-    std::unordered_map<uint16_t, std::string> rituals;
+    std::vector<std::string> rituals;
     uint16_t ritualNum = 0;
-    rituals[ritualNum++] = "Mana Restoration";
-    type("\t", ritualNum, ". Mana Restoration\n");
-    type(++ritualNum, ". (go back)\n");
+    rituals.push_back("Mana Restoration");
+    type("\t", ++ritualNum, ". Mana Restoration\n");
+    type(ritualNum + 1, ". (go back)\n");
+
     Choice ritualChoice;
-    uint16_t ritualChoiceNum = ritualNum;
+    uint16_t ritualChoiceNum = ritualNum + 1
+    ;
     bool isValidRitualChoice = false;
     do {
         ritualChoice = input("Enter choice: ");
         for (uint16_t i = 0; i < ritualNum && !isValidRitualChoice; i++) {
-            isValidRitualChoice = ritualChoice.isChoice(rituals[i], i + 1);
+            isValidRitualChoice = ritualChoice.isChoice(rituals.at(i), i + 1);
             if (isValidRitualChoice)
                 ritualChoiceNum = i;
         }
-    } while (!(isValidRitualChoice || ritualChoice.isChoice(true, "(go back)", ritualNum)));
-    
-    if (rituals[ritualChoiceNum] == "Mana Restoration") {
+        if (!isValidRitualChoice && ritualChoice.isChoice(true, "(go back)", ritualNum + 1))
+            return 0;
+    } while (!isValidRitualChoice);
+
+    if (rituals.at(ritualChoiceNum) == "Mana Restoration") {
         if (player.resources["Arcane Focus"] < 1) {
             type("\nThis ritual requires an arcane focus.\n");
             return 0;
@@ -89,64 +93,74 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         return 0;
     }
     if (!player.raceAbilityReady && !player.classAbilityReady && player.mana == 0) {
-        type("\nYour abilities are currently unavailable.\nYou must sleep first.\n");
-        return 0;
+        if (player.Race != Player::REVENANT || player.bloodMeter == 3) {
+            type("\nYour abilities are currently unavailable.\nYou must sleep first.\n");
+            return 0;
+        }
     }
-    type("\nAbilities:\n");
-    std::unordered_map<uint16_t, std::string> abilities;
+    std::string output = "\nAbilities:\n";
+    std::vector<std::string> abilities;
     uint16_t abilityNum = 0;
     // Race abilities
     if (enemy != nullptr && player.Race == Player::DRAKONIAN && player.raceAbilityReady) {
-        abilities[abilityNum++] = "Dragon's Breath";
-        type("\t", abilityNum, ". Dragon's Breath (Drakonian)\n");
+        abilities.push_back("Dragon's Breath");
+        output += "\t" + std::to_string(++abilityNum) + ". Dragon's Breath (Drakonian)\n";
     } else if (enemy != nullptr && player.Race == Player::REVENANT) {
         if (player.raceAbilityReady) {
-            abilities[abilityNum++] = "Shadowmeld";
-            type("\t", abilityNum, ". Shadowmeld (Revenant)\n");
+            abilities.push_back("Shadowmeld");
+            output += "\t" + std::to_string(++abilityNum) + ". Shadowmeld (Revenant)\n";
         }
         if (player.bloodMeter < 3) {
-            abilities[abilityNum++] = "Necrotic Drain";
-            type("\t", abilityNum, ". Necrotic Drain ", player.bloodMeter, "/3 (Revenant)\n");
+            abilities.push_back("Necrotic Drain");
+            output += "\t" + std::to_string(++abilityNum) + ". Necrotic Drain " + std::to_string(player.bloodMeter) + "/3 (Revenant)\n";
         }
     }
     // Class abilities
     if (player.Class == Player::FIGHTER && player.classAbilityReady) {
-        abilities[abilityNum++] = "Second Wind";
-        type("\t", abilityNum, ". Second Wind (Fighter)\n");
+        abilities.push_back("Second Wind");
+        output += "\t" + std::to_string(++abilityNum) + ". Second Wind (Fighter)\n";
     }
     if (player.Class == Player::WIZARD) {
-        type("Spells (You have ", player.mana, " mana points):\n");
+        output += "Spells (You have " + std::to_string(player.mana) + " mana points):\n";
         if (enemy != nullptr) {
-            abilities[abilityNum++] = "Fire Bolt";
-            type("\t", abilityNum, ". Fire Bolt (Wizard) - 1 MP\n");
-            abilities[abilityNum++] = "Mirror Image";
-            type("\t", abilityNum, ". Mirror Image (Wizard) - 2 MP\n");
+            abilities.push_back("Fire Bolt");
+            output += "\t" + std::to_string(++abilityNum) + ". Fire Bolt (Wizard) - 1 MP\n";
+            abilities.push_back("Mirror Image");
+            output += "\t" + std::to_string(++abilityNum) + ". Mirror Image (Wizard) - 2 MP\n";
         }
-        abilities[abilityNum++] = "Mage Armor";
-        type("\t", abilityNum, ". Mage Armor (Wizard) - 5 MP\n");
+        abilities.push_back("Mage Armor");
+        output += "\t" + std::to_string(++abilityNum) + ". Mage Armor (Wizard) - 5 MP\n";
         if (enemy == nullptr) {
-            abilities[abilityNum++] = "Arcane Eye";
-            type("\t", abilityNum, ". Arcane Eye (Wizard) - 3 MP\n");
+            abilities.push_back("Arcane Eye");
+            output += "\t" + std::to_string(++abilityNum) + ". Arcane Eye (Wizard) - 3 MP\n";
         }
         if (player.weapon == Item::TYPE::WPN_ST_GUARDIAN) {
-            abilities[abilityNum++] = "Recovery";
-            type("\t", abilityNum, ". Recovery (Staff of the Guardian) - 2 MP\n");
+            abilities.push_back("Recovery");
+            output += "\t" + std::to_string(++abilityNum) + ". Recovery (Staff of the Guardian) - 2 MP\n";
         }
     }
-    type(++abilityNum, ". (go back)\n");
+    output += std::to_string(abilityNum + 1) + ". (go back)\n";
+    if (abilities.size() == 0) {
+        type("\nYour abilities are currently unavailable.\n");
+        return 0;
+    }
+    type(output);
+
     Choice abilityChoice;
-    uint16_t choiceNum = abilityNum;
+    uint16_t choiceNum = abilityNum + 1;
     bool isValidChoice = false;
     do {
         abilityChoice = input("Enter choice: ");
         for (uint16_t i = 0; i < abilityNum && !isValidChoice; i++) {
-            isValidChoice = abilityChoice.isChoice(abilities[i], i + 1);
+            isValidChoice = abilityChoice.isChoice(abilities.at(i), i + 1);
             if (isValidChoice)
                 choiceNum = i;
         }
-    } while (!(isValidChoice || abilityChoice.isChoice(true, "(go back)", abilityNum)));
+        if (!isValidChoice && abilityChoice.isChoice(true, "(go back)", abilityNum + 1))
+            return 0;
+    } while (!isValidChoice);
 
-    if (abilities[choiceNum] == "Dragon's Breath") {
+    if (abilities.at(choiceNum) == "Dragon's Breath") {
         const uint16_t damage = player.strength + randint(1, 6);
         const uint16_t burn = randint(1, 4);
         (*enemy).health = (uint16_t)std::max((*enemy).health - damage - burn, 0);
@@ -156,7 +170,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
             "\nIts health is now ", (*enemy).health, ".\n"
         );
         player.raceAbilityReady = false;
-    } else if (abilities[choiceNum] == "Shadowmeld") {
+    } else if (abilities.at(choiceNum) == "Shadowmeld") {
         type (
             "\nYou meld into the shadows, becoming nearly invisible."
             "\nThe enemy can't see you!\n"
@@ -164,7 +178,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         *shadowmeld = true;
         player.raceAbilityReady = false;
         return 0;
-    } else if (abilities[choiceNum] == "Necrotic Drain") {
+    } else if (abilities.at(choiceNum) == "Necrotic Drain") {
         const uint16_t damage = player.strength / 2 + randint(1, 6);
         (*enemy).health = (uint16_t)std::max((*enemy).health - damage, 0);
         player.health = std::min((uint16_t)(player.health + damage / 2), player.getMaxHealth());
@@ -176,14 +190,14 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
             "\nYour health is now ", player.health, "."
             "\nYour blood meter is now at ", player.bloodMeter, "/3.\n"
         );
-    } else if (abilities[choiceNum] == "Second Wind") {
+    } else if (abilities.at(choiceNum) == "Second Wind") {
         const uint16_t healing = player.heal();
         type (
             "\nYou get a surge of adrenaline and heal ", healing, " points!"
             "\nYour health is now ", player.health, ".\n"
         );
         player.classAbilityReady = false;
-    } else if (abilities[choiceNum] == "Fire Bolt") {
+    } else if (abilities.at(choiceNum) == "Fire Bolt") {
         if (player.mana < 1) {
             type("\nYou don't have enough mana points!\n");
             return 0;
@@ -199,7 +213,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
             "\nThe ", (*enemy).name, " is burned for an additional ", burn, " damage!"
             "\nIts health is now ", (*enemy).health, ".\n"
         );
-    } else if (abilities[choiceNum] == "Mirror Image") {
+    } else if (abilities.at(choiceNum) == "Mirror Image") {
         if (player.mana < 2) {
             type("\nYou don't have enough mana points!\n");
             return 0;
@@ -211,7 +225,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
             "\nYou weave an illusion, creating shimmering duplicates of yourself."
             "\nThey flicker and shift, making it difficult for the enemy to land its strikes.\n"
         );
-    } else if (abilities[choiceNum] == "Mage Armor") {
+    } else if (abilities.at(choiceNum) == "Mage Armor") {
         if (player.mageArmorDefense > 0) {
             type("\nThis spell is already active!\n");
             return 0;
@@ -225,7 +239,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         player.mana -= 5;
         player.health = std::min((uint16_t)(player.health + 5), player.getMaxHealth());
         type ("\nA protective shielding aura surrounds you, boosting your defense by ", player.mageArmorDefense, "!\n");
-    } else if (abilities[choiceNum] == "Arcane Eye") {
+    } else if (abilities.at(choiceNum) == "Arcane Eye") {
         if (player.mana < 3) {
             type("\nYou don't have enough mana points!\n");
             return 0;
@@ -237,7 +251,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
             "\nYou materialize your magic, forming an invisible, floating eye."
             "\nIt scouts ahead, ensuring you are never caught off guard.\n"
         );
-    } else if (abilities[choiceNum] == "Recovery") {
+    } else if (abilities.at(choiceNum) == "Recovery") {
         if (player.mana < 2) {
             type("\nYou don't have enough mana points!\n");
             return 0;
@@ -476,31 +490,31 @@ void PlayerPublic::craft() {
 
             switch ((*items[choiceNum]).itemType) {
             case Item::TYPE::ARM_DRAKONIAN: // Drakonian Armor
-                pPrv.craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), { { "fiber", (uint16_t)2 }, { "leather", (uint16_t)6 } });
+                pPrv.craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), { { "fiber", u(2) }, { "leather", u(6) } });
                 break;
             case Item::TYPE::ARM_LEATHER: // Leather Armor
-                pPrv.craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), { { "fiber", (uint16_t)2 }, { "leather", (uint16_t)6 } });
+                pPrv.craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), { { "fiber", u(2) }, { "leather", u(6) } });
                 break;
             case Item::TYPE::WPN_LONG: // Longsword
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "fiber", (uint16_t)2 }, { "iron", (uint16_t)3 }, { "wood", (uint16_t)2 } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "fiber", u(2) }, { "iron", u(3) }, { "wood", u(2) } });
                 break;
             case Item::TYPE::WPN_ST_WARBORN: // Staff of the Warborn
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Warborn", (uint16_t)1 }, { "fiber", (uint16_t)2 }, { "wood", (uint16_t)4 } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Warborn", u(1) }, { "fiber", u(2) }, { "wood", u(4) } });
                 break;
             case Item::TYPE::WPN_ST_GUARDIAN: // Staff of the Guardian
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Guardian", (uint16_t)1 }, { "fiber", (uint16_t)2 }, { "wood", (uint16_t)4 } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Guardian", u(1) }, { "fiber", u(2) }, { "wood", u(4) } });
                 break;
             case Item::TYPE::WPN_ST_SHADOW: // Staff of the Shadow
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Shadow", (uint16_t)1 }, { "fiber", (uint16_t)2 }, { "wood", (uint16_t)4 } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Shadow", u(1) }, { "fiber", u(2) }, { "wood", u(4) } });
                 break;
             case Item::TYPE::WPN_ST_FURY: // Staff of Fury
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of Fury", (uint16_t)1 }, { "fiber", (uint16_t)2 }, { "wood", (uint16_t)4 } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of Fury", u(1) }, { "fiber", u(2) }, { "wood", u(4) } });
                 break;
             case Item::TYPE::WPN_ST_WEEPING: // Staff of the Weeping Spirit
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Weeping Spirit", (uint16_t)1 }, { "fiber", (uint16_t)2 }, { "wood", (uint16_t)4 } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Weeping Spirit", u(1) }, { "fiber", u(2) }, { "wood", u(4) } });
                 break;
             case Item::TYPE::FOCUS: // Arcane Focus
-                pPrv.craftItem(*items[choiceNum], { { "crystals", (uint16_t)4 } });
+                pPrv.craftItem(*items[choiceNum], { { "crystals", u(4) } });
                 break;
             }
             return;

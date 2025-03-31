@@ -1,4 +1,5 @@
 # BUILDING
+
 This game can be compiled in release mode with MSVC using the following command in the Developer Command Prompt for VS 2022: `cl.exe /std:c++20 /EHsc /O2 /DNDEBUG /MP /nologo /Febin\release\Sepulcher.exe /Fobin\release\ src\*.cpp`  
 You can then run it with the command: `bin\release\Sepulcher.exe`  
 Alternatively, you can compile it in VSCode in the Run and Debug tab with the `Run RPG (Release)` option
@@ -53,7 +54,7 @@ Here is some information about each race:
 
 ## Classes
 
-After you choose a race, you must choose a class.
+After you choose a race, you must choose a class.  
 The class you choose affects the difficulty of the game.
 
 
@@ -78,7 +79,7 @@ Rogue is the easiest class, as it has no abilities to keep track of.
 
 ### Wizard
 
-Wizard is the hardest class.
+Wizard is the hardest class.  
 It has many weapons and spells to keep track of, and the player must be smart about how they manage their mana points.
 
 - Hitdie: 12
@@ -117,42 +118,85 @@ It has many weapons and spells to keep track of, and the player must be smart ab
 
 ## Items
 
-There are currently 19 items you can find or craft in the game.
+There are currently 19 items you can find or craft in the game.  
+Armor and weapons have a chance to have prefixes and/or suffixes, which can affect the item in a few different ways.  
 Here is a list of them:
 
-- Armor (non-Wizards only)
-    - Drakonian Armor (Drakonians only)
-        - Crafted with six leather, two fiber
-        - Low defense
-    - Leather Armor (non-Drakonians only)
-        - Crafted with six leather, two fiber
-        - Low defense
-    - Iron Armor (non-Drakonians only)
-        - Found
-        - Heavy armor
-        - Medium Defense
-    - Steel Armor (non-Drakonians only)
-        - Found
-        - Heavy armor
-        - High Defense
-- Weapons
-    - Longsword
-        - Crafted with two wood, two fiber, three iron
-        - Medium attack
-    - Greatsword
-        - Found
-        - Heavy weapon
-        - Medium attack
-    - Magic Sword
-        - Found
-        - Magic weapon
-        - Medium attack
-    - Crossbow
-        - Dropped by Goblins
-        - Medium attack
-- Items
-    - Arcane Focus (Wizards only)
-        - Crafted with four crystals
+
+### Armor (non-Wizards only)
+
+- Drakonian Armor (Drakonians only)
+    - Crafted with six leather, two fiber
+    - Low defense
+- Leather Armor (non-Drakonians only)
+    - Crafted with six leather, two fiber
+    - Low defense
+- Iron Armor (non-Drakonians only)
+    - Found
+    - Heavy armor
+    - Medium Defense
+- Steel Armor (non-Drakonians only)
+    - Found
+    - Heavy armor
+    - High Defense
+
+
+#### Prefixes
+
+- Rusted (-20% defense)
+- Worn (-10% defense)
+- Heavy (+10% defense)
+- Enchanted (+20% defense)
+
+
+#### Suffixes
+
+- of Thorns (+10% damage reflection)
+- of the Knight (+10% defense)
+- of Fortitude (+20% defense)
+- of Resilience (+30% defense)
+
+
+### Weapons
+
+- Longsword
+    - Crafted with two wood, two fiber, three iron
+    - Medium attack
+- Greatsword
+    - Found
+    - Heavy weapon
+    - Medium attack
+- Magic Sword
+    - Found
+    - Magic weapon
+    - Medium attack
+- Crossbow
+    - Dropped by Goblins
+    - Medium attack
+    
+
+#### Prefixes
+
+- Cursed (-20% strength)
+- Dull (-10% strength)
+- Sharp (+10% strength)
+- Legendary (+20% strength)
+
+
+#### Suffixes
+
+- of the Inferno (+1d4 fire damage)
+- of Vengeance (+10% strength)
+- of the Slayer (+20% strength)
+- of the Executioner (+30% strength)
+
+
+### General
+
+- Arcane Focus (Wizards only)
+    - Crafted with four crystals
+
+
 
 
 ### Other

@@ -20,37 +20,37 @@ namespace Enemy {
     struct Info {
         std::string_view name;
         float healthMod;
-        float attackMod;
+        float strengthMod;
     };
 
     constexpr Info eType[] {
-        { "Bandit"       , 1.00f, 1.25f },
-        { "Bear"         , 1.20f, 1.40f },
-        { "Cave Creature", 1.20f, 1.25f },
+        { "Bandit"       , 0.90f, 1.10f },
+        { "Bear"         , 1.10f, 1.00f },
+        { "Cave Creature", 1.00f, 1.15f },
         { "Goblin"       , 0.80f, 1.10f },
-        { "Poacher"      , 1.00f, 1.20f },
-        { "Dark Shadow"  , 1.00f, 1.40f },
-        { "Cursed Spirit", 1.15f, 1.35f },
-        { "Lost Traveler", 1.10f, 1.30f }
+        { "Poacher"      , 1.00f, 1.00f },
+        { "Dark Shadow"  , 1.00f, 1.10f },
+        { "Cursed Spirit", 1.05f, 1.20f },
+        { "Lost Traveler", 1.00f, 1.00f }
     };
 
     class Enemy {
     public:
         std::string_view name;
         uint16_t health;
-        uint16_t attack;
+        uint16_t strength;
 
-        Enemy() : name("None"), health(0), attack(0) {}
+        Enemy() : name("None"), health(0), strength(0) {}
 
-        Enemy(TYPE t, uint16_t h, uint16_t a, uint16_t l) :
+        Enemy(TYPE t, uint16_t h, uint16_t s, uint16_t l) :
             name(eType[static_cast<uint16_t>(t)].name),
             health((uint16_t)std::pow(randint(h, (uint16_t)std::round(h * eType[static_cast<uint16_t>(t)].healthMod)), l / 50.0 + 1)),
-            attack((uint16_t)std::pow(randint(a, (uint16_t)std::round(a * eType[static_cast<uint16_t>(t)].attackMod)), l / 50.0 + 1)) {}
+            strength((uint16_t)std::pow(randint(s, (uint16_t)std::round(s * eType[static_cast<uint16_t>(t)].strengthMod)), l / 50.0 + 1)) {}
 
         void displayStats() {
             setOutputSettings();
             std::cout << "\n-------------------------";
-            type("\nEnemy: ", name, "\nHealth: ", health, "\nAttack: ", attack);
+            type("\nEnemy: ", name, "\nHealth: ", health, "\nStrength: ", strength);
             std::cout << "\n-------------------------\n";
         }
     };

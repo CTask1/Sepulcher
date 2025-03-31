@@ -1,13 +1,13 @@
 #pragma once
 #include<unordered_map>
-#include<string_view>
+#include<string>
 
 #include"Resources.h"
 #include"Util.h"
 
 class TraderResources : public Resources {
 public:
-    std::unordered_map<std::string_view, uint16_t> prices;
+    std::unordered_map<std::string, uint16_t> prices;
 
     TraderResources() {
         do {
@@ -19,7 +19,7 @@ public:
             resources["iron"] = randint(0, 3);
         } while (resources.empty());
 
-        for (std::pair<std::string_view, uint16_t> pair : resources)
+        for (std::pair<std::string, uint16_t> pair : resources)
             if (pair.first == "crystals" || pair.first == "iron")
                 prices[pair.first] = 5;
             else
@@ -28,7 +28,7 @@ public:
 
     void displayResources() {
         type("\nTrader's resources:\n");
-        for (const std::pair<std::string_view, uint16_t> stat : resources)
+        for (const std::pair<std::string, uint16_t> stat : resources)
             if (stat.second != 0) {
                 setOutputSettings(true);
                 type("\t", stat.first, ": ", stat.second, " -- Price: ", prices[stat.first], "\n");

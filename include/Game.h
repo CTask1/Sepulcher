@@ -30,15 +30,16 @@ void gameLoop(Player& player, uint16_t hitdie) {
 
             //if (choice.isChoice("sleep", 1)) {
                 //type("\nYou find a place to sleep through the night.\n");
-                if (player.Race != Player::REVENANT)
-                    player.healMax();
-                else {
+                if (player.Race == Player::REVENANT) {
                     if (player.bloodMeter < 3) {
                         type ("\nYou were unable to fill your blood meter!\n");
                         player.addDebuff(Debuff::RAVENOUS);
                     }
                     player.bloodMeter = 0;
-                }
+                    type("\nYour blood meter has been emptied.\n");
+                } else
+                    player.healMax();
+                    
                 player.defense -= player.mageArmorDefense;
                 player.mageArmorDefense = 0;
                 player.mana = std::min(player.maxMana, (uint16_t)(player.mana + 5));
@@ -119,10 +120,8 @@ void gameLoop(Player& player, uint16_t hitdie) {
                         player.unequipWeapon();
                         continue;
                     } else if (options[optionsChoiceNum] == "Abilities") {
-                        while (true)
-                            if (player.abilities())
-                                break;
-                        continue;
+                        if (!player.abilities())
+                            continue;
                     } else if (options[optionsChoiceNum] == "Rituals") {
                         if (!player.rituals())
                             continue;

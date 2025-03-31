@@ -82,7 +82,8 @@ void Player::displayStats() const {
         "\nExperience: ", exp, "/", nextLevel
     );
     std::cout << "\n-------------------------\n";
-    displayDebuffs();
+    if (Race == REVENANT)
+        displayDebuffs();
 }
 
 uint16_t Player::getMaxHealth() const                                                                                              { return (*pPub).getMaxHealth      (                                      ); }

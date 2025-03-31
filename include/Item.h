@@ -1,6 +1,7 @@
 #pragma once
 #include<string_view>
 
+#include"consts.h"
 #include"Util.h"
 
 namespace Item {
@@ -10,6 +11,13 @@ namespace Item {
         FIND,
         CRAFT,
         DROP
+    };
+
+    enum class ItemClass {
+        GEN, // General
+        ARM, // Armor
+        WPN, // Weapon
+        SPL  // Special
     };
 
     enum class TYPE {
@@ -36,6 +44,7 @@ namespace Item {
     };
 
     const struct Info {
+        ItemClass type;
         std::string_view name;
         float defMod = 0.f;
         float strMod = 0.f;
@@ -44,35 +53,34 @@ namespace Item {
     };
 
     constexpr Info Data[] {
-        // General
-        { "None"                                                   },
-        { "Arcane Focus"                                           },
-        // Armor
-        { "Leather Armor"               , 1.15f                    },
-        { "Drakonian Armor"             , 1.15f                    },
-        { "Iron Armor"                  , 1.20f                    },
-        { "Steel Armor"                 , 1.30f                    },
-        // Weapons
-        { "Longsword"                   , 0.00f, 1.25f             },
-        { "Magic Sword"                 , 0.00f, 1.25f             },
-        { "Greatsword"                  , 0.00f, 1.25f             },
-        { "Crossbow"                    , 0.00f, 1.25f             },
-        { "Staff of the Warborn"        , 0.00f, 1.25f             },
-        { "Staff of the Guardian"       , 0.00f, 1.25f             },
-        { "Staff of the Shadow"         , 0.00f, 1.25f             },
-        { "Staff of Fury"               , 0.00f, 1.35f             },
-        { "Staff of the Weeping Spirit" , 0.00f, 1.10f             },
-        // Special
-        { "Amulet of the Warborn"       , 1.20f, 1.20f             },
-        { "Amulet of the Guardian"      , 1.30f                    },
-        { "Amulet of the Shadow"                                   },
-        { "Amulet of Fury"              , 1.25f, 1.25f, true       },
-        { "Amulet of the Weeping Spirit", 1.20f, 1.20f, true, true }
+        { ItemClass::GEN, "None"                        , 0.00f, 0.00f             },
+        { ItemClass::GEN, "Arcane Focus"                , 0.00f, 0.00f             },
+
+        { ItemClass::ARM, "Leather Armor"               , 1.15f                    },
+        { ItemClass::ARM, "Drakonian Armor"             , 1.15f                    },
+        { ItemClass::ARM, "Iron Armor"                  , 1.20f                    },
+        { ItemClass::ARM, "Steel Armor"                 , 1.30f                    },
+
+        { ItemClass::WPN, "Longsword"                   , 0.00f, 1.25f             },
+        { ItemClass::WPN, "Magic Sword"                 , 0.00f, 1.25f             },
+        { ItemClass::WPN, "Greatsword"                  , 0.00f, 1.25f             },
+        { ItemClass::WPN, "Crossbow"                    , 0.00f, 1.25f             },
+        { ItemClass::WPN, "Staff of the Warborn"        , 0.00f, 1.25f             },
+        { ItemClass::WPN, "Staff of the Guardian"       , 0.00f, 1.25f             },
+        { ItemClass::WPN, "Staff of the Shadow"         , 0.00f, 1.25f             },
+        { ItemClass::WPN, "Staff of Fury"               , 0.00f, 1.35f             },
+        { ItemClass::WPN, "Staff of the Weeping Spirit" , 0.00f, 1.10f             },
+
+        { ItemClass::SPL, "Amulet of the Warborn"       , 1.20f, 1.20f,            },
+        { ItemClass::SPL, "Amulet of the Guardian"      , 1.30f, 0.00f,            },
+        { ItemClass::SPL, "Amulet of the Shadow"        , 0.00f, 0.00f,            },
+        { ItemClass::SPL, "Amulet of Fury"              , 1.25f, 1.25f, true       },
+        { ItemClass::SPL, "Amulet of the Weeping Spirit", 1.20f, 1.20f, true, true }
     };
 
     class Item {
     public:
-        std::string_view name;
+        std::string name;
         TYPE itemType;
         
         Item(const TYPE t = TYPE::NONE) : itemType(t), name(Data[static_cast<uint16_t>(t)].name) {}
@@ -136,6 +144,25 @@ namespace Item {
     public:
         short defenseBonus;
 
+        enum class Prefix {
+            NONE      = 50,
+            RUSTED    = 9,  // -20% defense
+            WORN      = 16, // -10% defense
+            HEAVY     = 15, // +10% defense
+            ENCHANTED = 10  // +20% defense
+        };
+
+        enum class Suffix {
+            NONE       = 75,
+            THORNS     = 8,  // +10% damage reflection
+            KNIGHT     = 10, // +10% defense
+            FORTITUDE  = 5,  // +20% defense
+            RESILIENCE = 2   // +30% defense
+        };
+
+        Prefix prefix;
+        Suffix suffix;
+
         Armor() : defenseBonus(0) {}
     
         Armor(const TYPE armType, const uint16_t level, const short add = 1, const bool crafted = false) :
@@ -143,7 +170,66 @@ namespace Item {
             defenseBonus (crafted
                 ? (short)std::round(pow(level + add, Data[static_cast<uint16_t>(armType)].defMod))
                 : (short)randint(1, (uint16_t)std::round(pow(level + add, Data[static_cast<uint16_t>(armType)].defMod)))
-            ) {}
+            ),
+            prefix(Prefix::NONE),
+            suffix(Suffix::NONE) {
+                // Set prefix
+                uint16_t num = randint(1, 100);
+                uint16_t prb = u(Prefix::NONE);
+                if (num > prb && num <= prb + u(Prefix::RUSTED)) {
+                    name = "Rusted " + name;
+                    prefix = Prefix::RUSTED;
+                    defenseBonus = (short)(defenseBonus * 0.8f);
+                }
+                prb += u(Prefix::RUSTED);
+                if (num > prb && num <= prb + u(Prefix::WORN)) {
+                    name = "Worn " + name;
+                    prefix = Prefix::WORN;
+                    defenseBonus = (short)(defenseBonus * 0.9f);
+                }
+                prb += u(Prefix::WORN);
+                if (num > prb && num <= prb + u(Prefix::HEAVY)) {
+                    name = "Heavy " + name;
+                    prefix = Prefix::HEAVY;
+                    defenseBonus = (short)(defenseBonus * 1.1f);
+                }
+                prb += u(Prefix::HEAVY);
+                if (num > prb && num <= prb + u(Prefix::ENCHANTED)) {
+                    name = "Enchanted " + name;
+                    prefix = Prefix::ENCHANTED;
+                    defenseBonus = (short)(defenseBonus * 1.2f);
+                }
+
+                // Set suffix
+                num = randint(1, 100);
+                prb = u(Suffix::NONE);
+                if (num > prb && num <= prb + u(Suffix::THORNS)) {
+                    name += " of Thorns";
+                    suffix = Suffix::THORNS;
+                    return;
+                }
+                prb += u(Suffix::THORNS);
+                if (num > prb && num <= prb + u(Suffix::KNIGHT)) {
+                    name += " of the Knight";
+                    suffix = Suffix::KNIGHT;
+                    defenseBonus = (short)(defenseBonus * 1.1f);
+                    return;
+                }
+                prb += u(Suffix::KNIGHT);
+                if (num > prb && num <= prb + u(Suffix::FORTITUDE)) {
+                    name += " of Fortitude";
+                    suffix = Suffix::FORTITUDE;
+                    defenseBonus = (short)(defenseBonus * 1.2f);
+                    return;
+                }
+                prb += u(Suffix::FORTITUDE);
+                if (num > prb && num <= prb + u(Suffix::RESILIENCE)) {
+                    name += " of Resilience";
+                    suffix = Suffix::RESILIENCE;
+                    defenseBonus = (short)(defenseBonus * 1.3f);
+                    return;
+                }
+            }
     
         void displayInfo(const Source source = Source::NONE) const override {
             if (source == FIND)
@@ -161,6 +247,25 @@ namespace Item {
     public:
         short strengthBonus;
 
+        enum class Prefix {
+            NONE      = 50,
+            CURSED    = 9,  // -20% strength
+            DULL      = 16, // -10% strength
+            SHARP     = 15, // +10% strength
+            LEGENDARY = 10  // +20% strength
+        };
+    
+        enum class Suffix {
+            NONE        = 75,
+            INFERNO     = 8,  // +1d4 fire damage
+            VENGEANCE   = 10, // +10% strength
+            SLAYER      = 5,  // +20% strength
+            EXECUTIONER = 2   // +30% strength
+        };
+
+        Prefix prefix;
+        Suffix suffix;
+
         Weapon() : strengthBonus(0) {}
     
         Weapon(const TYPE wpnType, const uint16_t level, const short add = 1, const bool crafted = false) :
@@ -168,7 +273,66 @@ namespace Item {
             strengthBonus (crafted
                 ? (short)std::abs(std::round(pow(level + add, Data[static_cast<uint16_t>(wpnType)].strMod)))
                 : (short)randint(1, (uint16_t)std::abs(std::round(pow(level + add, Data[static_cast<uint16_t>(wpnType)].strMod))))
-            ) {}
+            ),
+            prefix(Prefix::NONE),
+            suffix(Suffix::NONE) {
+                // Set prefix
+                uint16_t num = randint(1, 100);
+                uint16_t prb = u(Prefix::NONE);
+                if (num > prb && num <= prb + u(Prefix::CURSED)) {
+                    name = "Cursed " + name;
+                    prefix = Prefix::CURSED;
+                    strengthBonus = (short)(strengthBonus * 0.8f);
+                }
+                prb += u(Prefix::CURSED);
+                if (num > prb && num <= prb + u(Prefix::DULL)) {
+                    name = "Dull " + name;
+                    prefix = Prefix::DULL;
+                    strengthBonus = (short)(strengthBonus * 0.9f);
+                }
+                prb += u(Prefix::DULL);
+                if (num > prb && num <= prb + u(Prefix::SHARP)) {
+                    name = "Sharp " + name;
+                    prefix = Prefix::SHARP;
+                    strengthBonus = (short)(strengthBonus * 1.1f);
+                }
+                prb += u(Prefix::SHARP);
+                if (num > prb && num <= prb + u(Prefix::LEGENDARY)) {
+                    name = "Legendary " + name;
+                    prefix = Prefix::LEGENDARY;
+                    strengthBonus = (short)(strengthBonus * 1.2f);
+                }
+
+                // Set suffix
+                num = randint(1, 100);
+                prb = u(Suffix::NONE);
+                if (num > prb && num <= prb + u(Suffix::INFERNO)) {
+                    name += " of the Inferno";
+                    suffix = Suffix::INFERNO;
+                    return;
+                }
+                prb += u(Suffix::INFERNO);
+                if (num > prb && num <= prb + u(Suffix::VENGEANCE)) {
+                    name += " of Vengeance";
+                    suffix = Suffix::VENGEANCE;
+                    strengthBonus = (short)(strengthBonus * 1.1f);
+                    return;
+                }
+                prb += u(Suffix::VENGEANCE);
+                if (num > prb && num <= prb + u(Suffix::SLAYER)) {
+                    name += " of the Slayer";
+                    suffix = Suffix::SLAYER;
+                    strengthBonus = (short)(strengthBonus * 1.2f);
+                    return;
+                }
+                prb += u(Suffix::SLAYER);
+                if (num > prb && num <= prb + u(Suffix::EXECUTIONER)) {
+                    name += " of the Executioner";
+                    suffix = Suffix::EXECUTIONER;
+                    strengthBonus = (short)(strengthBonus * 1.3f);
+                    return;
+                }
+            }
     
         void displayInfo(const Source source = Source::NONE) const override {
             if (source == FIND)

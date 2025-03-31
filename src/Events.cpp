@@ -47,6 +47,10 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
 
                 if (choice.isChoice("attack", 1)) {
                     int damage = player.strength + randint(1, 6);  // Player's attack based on strength + a six-sided die–roll
+                    if (player.weapon.suffix == Item::Weapon::Suffix::INFERNO) {
+                        damage += randint(1, 4);
+                        type("\nYour weapon ignites with a fiery glow!\n");
+                    }
                     enemy.health = (uint16_t)std::max(enemy.health - damage, 0);
                     type("\nYou dealt ", damage, " damage to the ", enemy.name, "!\nIts health is now ", enemy.health, ".\n");
                 } else if (choice.isChoice("display stats", 2)) {
@@ -93,10 +97,15 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
                 type ("\nYou remain hidden in the shadows, evading the enemy's attack.\n");
                 shadowmeld = false;
             } else {
-                uint16_t enemyDamage = (uint16_t)std::max(enemy.attack + randint(1, 6) - player.CON - player.defense, 0);  // Enemy's attack based on its attack stat + a six-sided die roll - player's CON and defense
+                uint16_t enemyDamage = (uint16_t)std::max(enemy.strength + randint(1, 6) - player.CON - player.defense, 0);  // Enemy's attack based on its attack stat + a six-sided die roll - player's CON and defense
                 enemyDamage = (enemyDamage > 0) ? enemyDamage : 0;
                 player.health = (uint16_t)std::max(player.health - enemyDamage, 0);
                 type("\nThe ", enemy.name, " dealt ", enemyDamage, " damage to you!\nYour health is now ", player.health, ".\n");
+                if (player.armor.suffix == Item::Armor::Suffix::THORNS) {
+                    uint16_t thornsDamage = enemyDamage / 10;
+                    enemy.health = (uint16_t)std::max(enemy.health - thornsDamage, 0);
+                    type("\nThe thorns on your armor dealt ", thornsDamage, " damage to the ", enemy.name, "!\nIts health is now ", enemy.health, ".\n");
+                }
             }
         }
 
