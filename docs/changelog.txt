@@ -624,3 +624,38 @@
         -Enemy stat balances
         -Added a prefix/suffix system for weapons and armor
         -Updated README
+        -Commit master 6e3e586
+
+
+    -- 04/02/25 --
+
+        -Code efficiency
+            -Removed an unnecessary map
+
+    
+    -- 04/04/25 --
+
+        -Bug fixes
+        -Renamed resources to inventory
+        -Added health potions
+        -Added confirmation before running from combat
+
+
+    -- 04/05/25 --
+
+        -Code efficiency
+        -Bug fixes
+        -Combat balances
+
+
+    -- 04/07/25 --
+
+        -Changed some messages
+        -Capitalized all resource names for consistency
+        -Health potions are now craftable items
+            -Adjusted Hidden Garden event
+            -Added medicinal herbs
+        -Staves can no longer have prefixes
+        -Enemy stat balances
+        -Updated README
+        -Line Count: 2994

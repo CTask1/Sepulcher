@@ -1,3 +1,4 @@
+//CTask1
 #include<iostream>
 #include<memory>
 #include<string>
@@ -38,10 +39,10 @@ short PlayerPublic::getDefense() const {
 }
 
 void PlayerPublic::receiveGift() {
-    player.resources.addResource("wood", randint(1, 3))
-    ->addResource("stone", randint(1, 3))
-    ->addResource("fiber", randint(1, 3))
-    ->addResource("leather", randint(1, 3));
+    player.resources.addResource("Wood", randint(1, 3))
+    ->addResource("Stone", randint(1, 3))
+    ->addResource("Fiber", randint(1, 3))
+    ->addResource("Leather", randint(1, 3));
     player.exp += randint(5, 15);
 }
 
@@ -197,6 +198,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
             "\nYour health is now ", player.health, ".\n"
         );
         player.classAbilityReady = false;
+        return 0;
     } else if (abilities.at(choiceNum) == "Fire Bolt") {
         if (player.mana < 1) {
             type("\nYou don't have enough mana points!\n");
@@ -225,6 +227,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
             "\nYou weave an illusion, creating shimmering duplicates of yourself."
             "\nThey flicker and shift, making it difficult for the enemy to land its strikes.\n"
         );
+        return 0;
     } else if (abilities.at(choiceNum) == "Mage Armor") {
         if (player.mageArmorDefense > 0) {
             type("\nThis spell is already active!\n");
@@ -264,13 +267,16 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
             "\nYour wounds are mended and you heal ", healing, " points!"
             "\nYour health is now ", player.health, ".\n"
         );
+        return 0;
     } else
         return 0;
     return 1;
 }
 
-uint16_t PlayerPublic::heal(const uint16_t div) {
+uint16_t PlayerPublic::heal(float div) {
     static const float HEALING_MULTIPLIER = randint(10, 15) / 10.f;
+    if (div < HEALING_MULTIPLIER)
+        div = HEALING_MULTIPLIER;
     uint16_t healing = (uint16_t)((player.getMaxHealth() - player.health) * HEALING_MULTIPLIER / div);
     /*
     function: f(h) = r(m - h) / 2 where
@@ -429,10 +435,10 @@ void PlayerPublic::gatherResources() {
     wheel();
 
     Resources colResources;
-    colResources.addResource("wood", randint(0, player.level))
-    ->addResource("stone", randint(0, player.level))
-    ->addResource("fiber", randint(0, player.level))
-    ->addResource("leather", randint(0, player.level));
+    colResources.addResource("Wood", randint(0, player.level))
+    ->addResource("Stone", randint(0, player.level))
+    ->addResource("Fiber", randint(0, player.level))
+    ->addResource("Leather", randint(0, player.level));
 
     player.resources.addResources(colResources);
 
@@ -490,31 +496,34 @@ void PlayerPublic::craft() {
 
             switch ((*items[choiceNum]).itemType) {
             case Item::TYPE::ARM_DRAKONIAN: // Drakonian Armor
-                pPrv.craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), { { "fiber", u(2) }, { "leather", u(6) } });
+                pPrv.craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), { { "Fiber", u(2) }, { "Leather", u(6) } });
                 break;
             case Item::TYPE::ARM_LEATHER: // Leather Armor
-                pPrv.craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), { { "fiber", u(2) }, { "leather", u(6) } });
+                pPrv.craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), { { "Fiber", u(2) }, { "Leather", u(6) } });
                 break;
             case Item::TYPE::WPN_LONG: // Longsword
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "fiber", u(2) }, { "iron", u(3) }, { "wood", u(2) } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Fiber", u(2) }, { "Iron", u(3) }, { "Wood", u(2) } });
                 break;
             case Item::TYPE::WPN_ST_WARBORN: // Staff of the Warborn
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Warborn", u(1) }, { "fiber", u(2) }, { "wood", u(4) } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Warborn", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } });
                 break;
             case Item::TYPE::WPN_ST_GUARDIAN: // Staff of the Guardian
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Guardian", u(1) }, { "fiber", u(2) }, { "wood", u(4) } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Guardian", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } });
                 break;
             case Item::TYPE::WPN_ST_SHADOW: // Staff of the Shadow
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Shadow", u(1) }, { "fiber", u(2) }, { "wood", u(4) } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Shadow", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } });
                 break;
             case Item::TYPE::WPN_ST_FURY: // Staff of Fury
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of Fury", u(1) }, { "fiber", u(2) }, { "wood", u(4) } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of Fury", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } });
                 break;
             case Item::TYPE::WPN_ST_WEEPING: // Staff of the Weeping Spirit
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Weeping Spirit", u(1) }, { "fiber", u(2) }, { "wood", u(4) } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Weeping Spirit", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } });
+                break;
+            case Item::TYPE::POTION: // Health Potion
+                pPrv.craftItem(*items[choiceNum], { { "Medicinal Herbs", u(2) } });
                 break;
             case Item::TYPE::FOCUS: // Arcane Focus
-                pPrv.craftItem(*items[choiceNum], { { "crystals", u(4) } });
+                pPrv.craftItem(*items[choiceNum], { { "Crystals", u(4) } });
                 break;
             }
             return;

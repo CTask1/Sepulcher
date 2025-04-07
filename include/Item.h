@@ -1,3 +1,4 @@
+//CTask1
 #pragma once
 #include<string_view>
 
@@ -22,6 +23,7 @@ namespace Item {
 
     enum class TYPE {
         NONE,
+        POTION,
         FOCUS,
         ARM_LEATHER,
         ARM_DRAKONIAN,
@@ -48,34 +50,36 @@ namespace Item {
         std::string_view name;
         float defMod = 0.f;
         float strMod = 0.f;
+        bool canHavePrefix = true;
         bool nDef = false;
         bool nStr = false;
     };
 
     constexpr Info Data[] {
-        { ItemClass::GEN, "None"                        , 0.00f, 0.00f             },
-        { ItemClass::GEN, "Arcane Focus"                , 0.00f, 0.00f             },
+        { ItemClass::GEN, "None"                                                          },
+        { ItemClass::GEN, "Health Potion"                                                 },
+        { ItemClass::GEN, "Arcane Focus"                                                  },
 
-        { ItemClass::ARM, "Leather Armor"               , 1.15f                    },
-        { ItemClass::ARM, "Drakonian Armor"             , 1.15f                    },
-        { ItemClass::ARM, "Iron Armor"                  , 1.20f                    },
-        { ItemClass::ARM, "Steel Armor"                 , 1.30f                    },
+        { ItemClass::ARM, "Leather Armor"               , 1.15f                           },
+        { ItemClass::ARM, "Drakonian Armor"             , 1.15f                           },
+        { ItemClass::ARM, "Iron Armor"                  , 1.20f                           },
+        { ItemClass::ARM, "Steel Armor"                 , 1.30f                           },
 
-        { ItemClass::WPN, "Longsword"                   , 0.00f, 1.25f             },
-        { ItemClass::WPN, "Magic Sword"                 , 0.00f, 1.25f             },
-        { ItemClass::WPN, "Greatsword"                  , 0.00f, 1.25f             },
-        { ItemClass::WPN, "Crossbow"                    , 0.00f, 1.25f             },
-        { ItemClass::WPN, "Staff of the Warborn"        , 0.00f, 1.25f             },
-        { ItemClass::WPN, "Staff of the Guardian"       , 0.00f, 1.25f             },
-        { ItemClass::WPN, "Staff of the Shadow"         , 0.00f, 1.25f             },
-        { ItemClass::WPN, "Staff of Fury"               , 0.00f, 1.35f             },
-        { ItemClass::WPN, "Staff of the Weeping Spirit" , 0.00f, 1.10f             },
+        { ItemClass::WPN, "Longsword"                   , 0.00f, 1.25f                    },
+        { ItemClass::WPN, "Magic Sword"                 , 0.00f, 1.25f                    },
+        { ItemClass::WPN, "Greatsword"                  , 0.00f, 1.25f                    },
+        { ItemClass::WPN, "Crossbow"                    , 0.00f, 1.25f                    },
+        { ItemClass::WPN, "Staff of the Warborn"        , 0.00f, 1.25f, false             },
+        { ItemClass::WPN, "Staff of the Guardian"       , 0.00f, 1.25f, false             },
+        { ItemClass::WPN, "Staff of the Shadow"         , 0.00f, 1.25f, false             },
+        { ItemClass::WPN, "Staff of Fury"               , 0.00f, 1.35f, false             },
+        { ItemClass::WPN, "Staff of the Weeping Spirit" , 0.00f, 1.10f, false             },
 
-        { ItemClass::SPL, "Amulet of the Warborn"       , 1.20f, 1.20f,            },
-        { ItemClass::SPL, "Amulet of the Guardian"      , 1.30f, 0.00f,            },
-        { ItemClass::SPL, "Amulet of the Shadow"        , 0.00f, 0.00f,            },
-        { ItemClass::SPL, "Amulet of Fury"              , 1.25f, 1.25f, true       },
-        { ItemClass::SPL, "Amulet of the Weeping Spirit", 1.20f, 1.20f, true, true }
+        { ItemClass::SPL, "Amulet of the Warborn"       , 1.20f, 1.20f,                   },
+        { ItemClass::SPL, "Amulet of the Guardian"      , 1.30f, 0.00f,                   },
+        { ItemClass::SPL, "Amulet of the Shadow"        , 0.00f, 0.00f,                   },
+        { ItemClass::SPL, "Amulet of Fury"              , 1.25f, 1.25f, false, true       },
+        { ItemClass::SPL, "Amulet of the Weeping Spirit", 1.20f, 1.20f, false, true, true }
     };
 
     class Item {
@@ -106,17 +110,6 @@ namespace Item {
         }
 
     };
-    
-    /*class Potion : public Item {
-    public:
-    
-        Potion(const TYPE t = TYPE::NONE) : Item(t) {}
-    
-        void displayInfo(const Source source = Source::NONE) const {
-            
-        }
-    
-    };*/
     
     class Leveled : public Item {
     public:
@@ -276,31 +269,35 @@ namespace Item {
             ),
             prefix(Prefix::NONE),
             suffix(Suffix::NONE) {
+                uint16_t num;
+                uint16_t prb;
                 // Set prefix
-                uint16_t num = randint(1, 100);
-                uint16_t prb = u(Prefix::NONE);
-                if (num > prb && num <= prb + u(Prefix::CURSED)) {
-                    name = "Cursed " + name;
-                    prefix = Prefix::CURSED;
-                    strengthBonus = (short)(strengthBonus * 0.8f);
-                }
-                prb += u(Prefix::CURSED);
-                if (num > prb && num <= prb + u(Prefix::DULL)) {
-                    name = "Dull " + name;
-                    prefix = Prefix::DULL;
-                    strengthBonus = (short)(strengthBonus * 0.9f);
-                }
-                prb += u(Prefix::DULL);
-                if (num > prb && num <= prb + u(Prefix::SHARP)) {
-                    name = "Sharp " + name;
-                    prefix = Prefix::SHARP;
-                    strengthBonus = (short)(strengthBonus * 1.1f);
-                }
-                prb += u(Prefix::SHARP);
-                if (num > prb && num <= prb + u(Prefix::LEGENDARY)) {
-                    name = "Legendary " + name;
-                    prefix = Prefix::LEGENDARY;
-                    strengthBonus = (short)(strengthBonus * 1.2f);
+                if (Data[static_cast<uint16_t>(wpnType)].canHavePrefix) {
+                    num = randint(1, 100);
+                    prb = u(Prefix::NONE);
+                    if (num > prb && num <= prb + u(Prefix::CURSED)) {
+                        name = "Cursed " + name;
+                        prefix = Prefix::CURSED;
+                        strengthBonus = (short)(strengthBonus * 0.8f);
+                    }
+                    prb += u(Prefix::CURSED);
+                    if (num > prb && num <= prb + u(Prefix::DULL)) {
+                        name = "Dull " + name;
+                        prefix = Prefix::DULL;
+                        strengthBonus = (short)(strengthBonus * 0.9f);
+                    }
+                    prb += u(Prefix::DULL);
+                    if (num > prb && num <= prb + u(Prefix::SHARP)) {
+                        name = "Sharp " + name;
+                        prefix = Prefix::SHARP;
+                        strengthBonus = (short)(strengthBonus * 1.1f);
+                    }
+                    prb += u(Prefix::SHARP);
+                    if (num > prb && num <= prb + u(Prefix::LEGENDARY)) {
+                        name = "Legendary " + name;
+                        prefix = Prefix::LEGENDARY;
+                        strengthBonus = (short)(strengthBonus * 1.2f);
+                    }
                 }
 
                 // Set suffix

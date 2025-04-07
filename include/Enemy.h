@@ -1,3 +1,4 @@
+//CTask1
 #pragma once
 #include<string_view>
 #include<iostream>
@@ -24,14 +25,14 @@ namespace Enemy {
     };
 
     constexpr Info eType[] {
-        { "Bandit"       , 0.90f, 1.10f },
+        { "Bandit"       , 0.95f, 1.05f },
         { "Bear"         , 1.10f, 1.00f },
-        { "Cave Creature", 1.00f, 1.15f },
-        { "Goblin"       , 0.80f, 1.10f },
+        { "Cave Creature", 1.05f, 1.05f },
+        { "Goblin"       , 0.90f, 1.05f },
         { "Poacher"      , 1.00f, 1.00f },
-        { "Dark Shadow"  , 1.00f, 1.10f },
-        { "Cursed Spirit", 1.05f, 1.20f },
-        { "Lost Traveler", 1.00f, 1.00f }
+        { "Dark Shadow"  , 1.00f, 1.05f },
+        { "Cursed Spirit", 1.05f, 1.10f },
+        { "Lost Traveler", 0.95f, 1.00f }
     };
 
     class Enemy {
@@ -42,10 +43,24 @@ namespace Enemy {
 
         Enemy() : name("None"), health(0), strength(0) {}
 
-        Enemy(TYPE t, uint16_t h, uint16_t s, uint16_t l) :
-            name(eType[static_cast<uint16_t>(t)].name),
-            health((uint16_t)std::pow(randint(h, (uint16_t)std::round(h * eType[static_cast<uint16_t>(t)].healthMod)), l / 50.0 + 1)),
-            strength((uint16_t)std::pow(randint(s, (uint16_t)std::round(s * eType[static_cast<uint16_t>(t)].strengthMod)), l / 50.0 + 1)) {}
+        Enemy(TYPE type, uint16_t playerHealth, uint16_t playerStrength, uint16_t playerLevel) :
+            name(eType[static_cast<uint16_t>(type)].name),
+            health (
+                (uint16_t) (
+                    randint (
+                        playerHealth,
+                        (uint16_t)std::round(playerHealth * eType[static_cast<uint16_t>(type)].healthMod)
+                    ) * (playerLevel / 25.0 + 1)
+                )
+            ),
+            strength (
+                (uint16_t) (
+                    randint (
+                        playerStrength,
+                        (uint16_t)std::round(playerStrength * eType[static_cast<uint16_t>(type)].strengthMod)
+                    ) * (playerLevel / 25.0 + 1)
+                )
+            ) {}
 
         void displayStats() {
             setOutputSettings();

@@ -1,3 +1,4 @@
+//CTask1
 #pragma once
 #include<unordered_map>
 #include<string>
@@ -11,16 +12,16 @@ public:
 
     TraderResources() {
         do {
-            resources["fiber"] = (randint(0, 5));
-            resources["wood"] = randint(0, 5);
-            resources["stone"] = randint(0, 5);
-            resources["leather"] = randint(0, 5);
-            resources["crystals"] = randint(0, 3);
-            resources["iron"] = randint(0, 3);
+            resources["Fiber"] = (randint(0, 5));
+            resources["Wood"] = randint(0, 5);
+            resources["Stone"] = randint(0, 5);
+            resources["Leather"] = randint(0, 5);
+            resources["Crystals"] = randint(0, 3);
+            resources["Iron"] = randint(0, 3);
         } while (resources.empty());
 
         for (std::pair<std::string, uint16_t> pair : resources)
-            if (pair.first == "crystals" || pair.first == "iron")
+            if (pair.first == "Crystals" || pair.first == "Iron")
                 prices[pair.first] = 5;
             else
                 prices[pair.first] = 1;

@@ -1,3 +1,4 @@
+//CTask1
 #include"..\include\EventsS.h"
 #include"..\include\Events.h"
 #include"..\include\Trader.h"
@@ -28,8 +29,8 @@ void EventsS::friendlyTraveler() { // Friendly Traveler
     {
         int giftType = randint(1, 2);
         if (giftType == 1) {
-            type("The traveler gives you a health potion. Your health has been restored!\n");
-            player.healMax();
+            type("The traveler gives you a health potion!\n");
+            player.resources.addResource("Health Potion");
         }
         else {
             int expGain = (randint(1, 100) == 1) ? randint(25, 50) : randint(5, 15);

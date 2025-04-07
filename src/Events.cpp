@@ -1,3 +1,4 @@
+//CTask1
 #include"..\include\Events.h"
 #include"..\include\Player.h"
 #include"..\include\Enemy.h"
@@ -39,11 +40,12 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
                     "\n2. Display Stats"
                     "\n3. Display Enemy Stats"
                     "\n4. Abilities"
-                    "\n5. Run\n"
+                    "\n5. Use a health potion"
+                    "\n6. Run\n"
                 );
                 Choice choice;
                 do choice = input("Enter choice: ");
-                while (!choice.isChoice(true, "attack", 1, "abilities", 2, "display stats", 3, "display enemy stats", 4, "run", 5));
+                while (!choice.isChoice(true, "attack", 1, "display stats", 2, "display enemy stats", 3, "abilities", 4, "use a health potion", 5, "run", 6));
 
                 if (choice.isChoice("attack", 1)) {
                     int damage = player.strength + randint(1, 6);  // Player's attack based on strength + a six-sided die–roll
@@ -63,7 +65,23 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
                     if (player.abilities(&enemy, &mirrorImage, &shadowmeld))
                         break;
                     continue;
+                } else if (choice.isChoice("use a health potion", 5)) {
+                    if (player.resources["Health Potion"] < 1) {
+                        type("\nYou don't have any health potions!\n");
+                        continue;
+                    }
+                    player.resources["Health Potion"]--;
+                    player.heal(1);
+                    type("\nYou used a health potion!\nYour health is now ", player.health, ".\n");
+                    continue;
                 } else {
+                    Choice runChoice;
+                    do runChoice = input("Are you sure you want to run (1. Yes / 2. No)? ");
+                    while (!runChoice.isChoice(true, "yes", 1, "no", 2));
+
+                    if (runChoice.isChoice("no", 2))
+                        continue;
+                        
                     run = true;
                     type("You try to run away.\n");
                     if (randint(1, 10) == 1 && player.weapon != Item::TYPE::WPN_ST_SHADOW) {
@@ -209,6 +227,7 @@ void explore(Player& player) {
                 break;
             case 6:
                 type("You find a hidden garden with medicinal herbs. You gather some and regain health.\n");
+                player.resources.addResource("Medicinal Herbs", randint(1, 3));
                 player.heal(3);
                 if (player.Class == Player::WIZARD && player.mana != player.maxMana)
                     player.mana++;

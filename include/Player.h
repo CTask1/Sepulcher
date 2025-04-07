@@ -1,3 +1,4 @@
+//CTask1
 #pragma once
 #include<initializer_list>
 #include<unordered_map>
@@ -90,7 +91,7 @@ public:
     void receiveGift();
     bool rituals();
     bool abilities(Enemy::Enemy* = nullptr, short* = nullptr, bool* = nullptr);
-    uint16_t heal(const uint16_t = 2);
+    uint16_t heal(float = 2);
     uint16_t healMax();
     void addDebuff(Debuff::TYPE);
     void updateDebuffs();

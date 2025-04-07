@@ -1,4 +1,4 @@
-//CTask
+//CTask1
 #include<iostream>
 
 #include"..\include\Game.h"

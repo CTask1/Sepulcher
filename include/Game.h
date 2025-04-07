@@ -1,3 +1,4 @@
+//CTask1
 #pragma once
 #include<string>
 #include<cmath>
@@ -83,46 +84,46 @@ void gameLoop(Player& player, uint16_t hitdie) {
                energy++;
             } else if (choice.isChoice("other options", 6)) {
                 while (true) {
-                    std::unordered_map<uint16_t, std::string> options;
-                    uint16_t optionNum = 0;
                     setOutputSettings(true);
                     type (
                         "\nOther options:\n"
-                        "\t1. Unequip armor\n"
-                        "\t2. Unequip weapon\n"
-                        "\t3. Abilities\n"
+                        "\t1. Use a health potion\n"
+                        "\t2. Unequip armor\n"
+                        "\t3. Unequip weapon\n"
+                        "\t4. Abilities\n",
+                        (player.Class == Player::WIZARD ? "\t5. Rituals\n6" : "5"),
+                        ". (go back)\n"
                     );
-                    options[optionNum++] = "Unequip armor";
-                    options[optionNum++] = "Unequip weapon";
-                    options[optionNum++] = "Abilities";
-                    if (player.Class == Player::WIZARD) {
-                        options[optionNum++] = "Rituals";
-                        type("\t", optionNum, ". Rituals\n");
-                    }
-                    type(++optionNum, ". (go back)\n");
 
                     Choice optionsChoice;
-                    uint16_t optionsChoiceNum = optionNum;
-                    bool isValidOptionChoice = false;
+                    bool isValidChoice;
                     do {
                         optionsChoice = input("Enter choice: ");
-                        for (uint16_t i = 0; i < optionNum && !isValidOptionChoice; i++) {
-                            isValidOptionChoice = optionsChoice.isChoice(options[i], i + 1);
-                            if (isValidOptionChoice)
-                                optionsChoiceNum = i;
+                        isValidChoice = optionsChoice.isChoice("use a healing potion", 1, "unequip armor", 2, "unequip weapon", 3, "abilities", 4, "(go back)", 5);
+                        if (player.Class == Player::WIZARD)
+                            isValidChoice |= optionsChoice.isChoice("rituals", 6);
+                        if (!isValidChoice)
+                            type("\nThat's not an option!\n");
+                    } while (!isValidChoice);
+                    
+                    if (optionsChoice.isChoice("use a health potion", 1)) {
+                        if (player.resources["Health Potion"] < 1) {
+                            type("\nYou don't have any health potions!\n");
+                            continue;
                         }
-                    } while (!(isValidOptionChoice || optionsChoice.isChoice(true, "(go back)", optionNum)));
-
-                    if (options[optionsChoiceNum] == "Unequip armor") {
+                        player.resources["Health Potion"]--;
+                        player.heal(1);
+                        type("\nYou used a health potion!\nYour health is now full (", player.health, ").\n");
+                    } else if (optionsChoice.isChoice("unequip armor", 2)) {
                         player.unequipArmor();
                         continue;
-                    } else if (options[optionsChoiceNum] == "Unequip weapon") {
+                    } else if (optionsChoice.isChoice("unequip weapon", 3)) {
                         player.unequipWeapon();
                         continue;
-                    } else if (options[optionsChoiceNum] == "Abilities") {
+                    } else if (optionsChoice.isChoice("abilities", 4)) {
                         if (!player.abilities())
                             continue;
-                    } else if (options[optionsChoiceNum] == "Rituals") {
+                    } else if (player.Class == Player::WIZARD && optionsChoice.isChoice("rituals", 5)) {
                         if (!player.rituals())
                             continue;
                     }

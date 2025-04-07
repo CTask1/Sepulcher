@@ -1,3 +1,4 @@
+//CTask1
 #include<initializer_list>
 #include<unordered_map>
 #include<iostream>
@@ -92,7 +93,7 @@ short Player::getDefense() const                                                
 void Player::receiveGift()                                                                                                         {        (*pPub).receiveGift       (                                      ); }
 bool Player::rituals()                                                                                                             { return (*pPub).rituals           (                                      ); }
 bool Player::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shadowmeld)                                                  { return (*pPub).abilities         ( enemy      , mirrorImage, shadowmeld ); }
-uint16_t Player::heal(const uint16_t div)                                                                                          { return (*pPub).heal              ( div                                  ); }
+uint16_t Player::heal(float div)                                                                                                   { return (*pPub).heal              ( div                                  ); }
 uint16_t Player::healMax()                                                                                                         { return (*pPub).healMax           (                                      ); }
 void Player::addDebuff(Debuff::TYPE debuffType)                                                                                    {        (*pPub).addDebuff         ( debuffType                           ); }
 void Player::updateDebuffs()                                                                                                       {        (*pPub).updateDebuffs     (                                      ); }

@@ -1,3 +1,4 @@
+//CTask1
 #pragma once
 #include"Player.h"
 #include"Enemy.h"
@@ -18,7 +19,7 @@ public:
     void receiveGift();
     bool rituals();
     bool abilities(Enemy::Enemy*, short*, bool*);
-    uint16_t heal(const uint16_t);
+    uint16_t heal(float);
     uint16_t healMax();
     void addDebuff(Debuff::TYPE);
     void updateDebuffs();

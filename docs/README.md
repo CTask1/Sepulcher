@@ -118,8 +118,8 @@ It has many weapons and spells to keep track of, and the player must be smart ab
 
 ## Items
 
-There are currently 19 items you can find or craft in the game.  
-Armor and weapons have a chance to have prefixes and/or suffixes, which can affect the item in a few different ways.  
+There are currently 20 items you can find or craft in the game.  
+Armor and weapons have a chance to come with prefixes and/or suffixes, which can affect the item in a few different ways.  
 Here is a list of them:
 
 
@@ -173,6 +173,23 @@ Here is a list of them:
 - Crossbow
     - Dropped by Goblins
     - Medium attack
+- Staves (Wizards only)  
+Staves increase the strength of the player, and each has its own bonus effect.  
+    - Staff of the Warborn
+        - Increases mana points
+        - Magic weapon
+    - Staff of the Guardian
+        - Gives the Recovery spell
+        - Magic weapon
+    - Staff of the Shadow
+        - Gives a 100% chance to run from combat
+        - Magic weapon
+    - Staff of Fury
+        - Increases strength further
+        - Magic weapon
+    - Staff of the Weeping Spirit
+        - Decreases mana points
+        - Magic weapon
     
 
 #### Prefixes
@@ -193,13 +210,15 @@ Here is a list of them:
 
 ### General
 
+- Health Potion
+    - Found or crafted with 2 medicinal herbs
 - Arcane Focus (Wizards only)
     - Crafted with four crystals
 
 
 
 
-### Other
+### Special
 
 There are many special items you can get while playing.
 Here is a list of them:
@@ -216,23 +235,6 @@ You can only have one amulet at a time, and amulets are equipped automatically w
         - Decreases defense but increases strength
     - Amulet of the Weeping Spirit
         - Decreases defense and strength
-- Staves (Wizards only)  
-Staves increase the strength of the player, and each has its own bonus effect.  
-    - Staff of the Warborn
-        - Increases mana points
-        - Magic weapon
-    - Staff of the Guardian
-        - Gives the Recovery spell
-        - Magic weapon
-    - Staff of the Shadow
-        - Gives a 100% chance to run from combat
-        - Magic weapon
-    - Staff of Fury
-        - Increases strength further
-        - Magic weapon
-    - Staff of the Weeping Spirit
-        - Decreases mana points
-        - Magic weapon
 
 
 ## Events

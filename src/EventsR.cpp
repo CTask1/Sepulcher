@@ -1,3 +1,4 @@
+//CTask1
 #include"..\include\EventsR.h"
 #include"..\include\Events.h"
 #include"..\include\Player.h"
@@ -151,7 +152,7 @@ void EventsR::mysteriousCave() { // Mysterious Cave
         int encounter = randint(1, 2); // 50% chance for each event
         if (encounter == 1) {
             type("The cave is filled with valuable crystals. You gain some resources!\n");
-            player.resources["crystals"] += randint(1, player.level);
+            player.resources["Crystals"] += randint(1, player.level);
         }
         else {
             type("The cave is home to a hostile creature!\n");

@@ -1,3 +1,4 @@
+//CTask1
 #pragma once
 #include<unordered_map>
 #include<string>
@@ -28,7 +29,7 @@ public:
 
     void displayResources(const bool showTitle = true) const {
         if (showTitle)
-            type("\nResources:\n");
+            type("\nInventory:\n");
         if (resources.empty()) {
             setOutputSettings(true);
             type("\tNone\n");
