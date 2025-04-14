@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #pragma once
 #include"Player.h"
 #include"Enemy.h"
@@ -13,6 +13,8 @@ public:
     PlayerPublic(Player& p) : player(p), pPrv(p) {}
     ~PlayerPublic() {}
 
+    void addExp(uint16_t);
+    void levelUp(uint16_t);
     uint16_t getMaxHealth() const;
     short getStrength() const;
     short getDefense() const;

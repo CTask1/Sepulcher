@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #include"..\include\EventsS.h"
 #include"..\include\Events.h"
 #include"..\include\Trader.h"
@@ -27,15 +27,15 @@ void EventsS::hiddenArmory() { // Hidden Armory
 void EventsS::friendlyTraveler() { // Friendly Traveler
     type("You encounter a friendly traveler. They share some advice and give you a small gift.\n");
     {
-        int giftType = randint(1, 2);
+        int giftType = randint(1, 3);
         if (giftType == 1) {
             type("The traveler gives you a health potion!\n");
             player.resources.addResource("Health Potion");
         }
         else {
-            int expGain = (randint(1, 100) == 1) ? randint(25, 50) : randint(5, 15);
+            uint16_t expGain = (randint(1, 100) == 1) ? randint(25, player.level * 25) : randint(5, player.level * 10);
             type("The traveler shares valuable knowledge. You gained ", expGain, " experience points!\n");
-            player.exp += expGain;
+            player.addExp(expGain);
         }
     }
 }
@@ -65,7 +65,7 @@ void EventsS::travelingTrader() { // Traveling Trader
                 trader.displayWares();
                 std::string buyChoice = "";
                 do {
-                    buyChoice = input("\nEnter the resource you want to trade for: ");
+                    buyChoice = capitalize(input("\nEnter the resource you want to trade for: "));
                     if (trader.resources[buyChoice] < 1)
                         type("The trader doesn't have that resource!\n");
                 } while (trader.resources[buyChoice] < 1);
@@ -82,9 +82,13 @@ void EventsS::travelingTrader() { // Traveling Trader
                 
                 std::string sellChoice = "";
                 do {
-                    sellChoice = input("Enter the resource you want to trade: ");
+                    sellChoice = capitalize(input("Enter the resource you want to trade: "));
                     if (player.resources[sellChoice] < 1)
                         type("You don't have that resource!\n");
+                    if (player.special.name == sellChoice) {
+                        type("You can't trade your special item!\n");
+                        sellChoice = "";
+                    }
                 } while (player.resources[sellChoice] < 1);
 
                 int amountSell = 0;

@@ -659,3 +659,45 @@
         -Enemy stat balances
         -Updated README
         -Line Count: 2994
+        -Commit master d921d0a
+
+
+    -- 04/08/25 --
+
+        -Code efficiency
+        -Added comments
+        -Moved levelUp() to the Player class
+
+
+    -- 04/09/25 --
+
+        -Items can now level up
+        -Changed some messages
+        -Finished Sepulcher event
+
+
+    -- 04/10/25 --
+
+        -Code efficiency
+        -Added Medicinal Herbs to trader inventory
+        -Player can no longer trade special items
+        -Adjusted event probabilities
+            -Hidden garden is 50% less commmon
+            -Added Small Stream event
+            -Friendly Traveler will give a potion 50% less often
+            -Friendly Traveler will give more experience
+        -Enemy stat balances
+
+
+    -- 04/11/25 --
+
+        -Changed some messages
+        -Player no longer sees effects of prefixes/suffixes in crafting menu
+        -Updated README
+
+
+    -- 04/14/25 --
+
+        -Bug fixes
+            -Case sensitivity when trading
+        -Changed some messages

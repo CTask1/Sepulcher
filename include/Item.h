@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #pragma once
 #include<string_view>
 
@@ -86,8 +86,8 @@ namespace Item {
     public:
         std::string name;
         TYPE itemType;
-        
-        Item(const TYPE t = TYPE::NONE) : itemType(t), name(Data[static_cast<uint16_t>(t)].name) {}
+
+        Item(const TYPE type = TYPE::NONE) : itemType(type), name(Data[static_cast<uint16_t>(type)].name) {}
 
         virtual ~Item() {}
         
@@ -113,12 +113,18 @@ namespace Item {
     
     class Leveled : public Item {
     public:
+        uint16_t exp;
         uint16_t level;
+        uint16_t nextLevel;
 
-        Leveled(const TYPE t = TYPE::NONE) : Item(t), level(1) {}
+        Leveled(const TYPE t = TYPE::NONE) : Item(t), exp(0), level(1), nextLevel(11) {}
     
-        void levelUp() {
+        virtual uint16_t levelUp() {
             level++;
+            nextLevel = 10 + static_cast<uint16_t>(pow(level, 2)); // 10 + level to the power of 2
+            exp = 0; // reset experience
+            type ("\nYour ", name, " leveled up! It is now level ", level, ".\n");
+            return 0;
         }
     
         virtual void displayInfo(const Source source = Source::NONE) const {
@@ -156,13 +162,24 @@ namespace Item {
         Prefix prefix;
         Suffix suffix;
 
+        static short getStats(const TYPE armType, const uint16_t level, const short add = 1) {
+            return (short)std::round(pow(level + add, Data[static_cast<uint16_t>(armType)].defMod));
+        }
+
         Armor() : defenseBonus(0) {}
     
+        /**
+         * @brief Constructor for the Armor class
+         * @param armType The type of armor
+         * @param level The level of the player
+         * @param add The amount to add to the level when calculating
+         * @param crafted Whether the armor is crafted or not
+         */
         Armor(const TYPE armType, const uint16_t level, const short add = 1, const bool crafted = false) :
             Leveled(armType),
-            defenseBonus (crafted
-                ? (short)std::round(pow(level + add, Data[static_cast<uint16_t>(armType)].defMod))
-                : (short)randint(1, (uint16_t)std::round(pow(level + add, Data[static_cast<uint16_t>(armType)].defMod)))
+            defenseBonus (crafted // if the item is crafted
+                ? (short)std::round(pow(level + add, Data[static_cast<uint16_t>(armType)].defMod)) // (level + add) to the power of defMod
+                : (short)randint(1, (uint16_t)std::round(pow(level + add, Data[static_cast<uint16_t>(armType)].defMod))) // random number between 1 and the value above
             ),
             prefix(Prefix::NONE),
             suffix(Suffix::NONE) {
@@ -223,6 +240,16 @@ namespace Item {
                     return;
                 }
             }
+
+        uint16_t levelUp() override {
+            uint16_t bonus = 0;
+            if (exp >= nextLevel) {
+                bonus = (short)std::round(pow(level, Data[static_cast<uint16_t>(itemType)].defMod / 2)); // level to the power of defMod / 2
+                defenseBonus += bonus;
+                Leveled::levelUp();
+            }
+            return bonus;
+        }
     
         void displayInfo(const Source source = Source::NONE) const override {
             if (source == FIND)
@@ -259,13 +286,24 @@ namespace Item {
         Prefix prefix;
         Suffix suffix;
 
+        static short getStats(const TYPE wpnType, const uint16_t level, const short add = 1) {
+            return (short)std::abs(std::round(pow(level + add, Data[static_cast<uint16_t>(wpnType)].strMod)));
+        }
+
         Weapon() : strengthBonus(0) {}
     
+        /**
+         * @brief Constructor for the Weapon class
+         * @param wpnType The type of weapon
+         * @param level The level of the player
+         * @param add The amount to add to the level when calculating
+         * @param crafted Whether the weapon is crafted or not
+         */
         Weapon(const TYPE wpnType, const uint16_t level, const short add = 1, const bool crafted = false) :
             Leveled(wpnType),
-            strengthBonus (crafted
-                ? (short)std::abs(std::round(pow(level + add, Data[static_cast<uint16_t>(wpnType)].strMod)))
-                : (short)randint(1, (uint16_t)std::abs(std::round(pow(level + add, Data[static_cast<uint16_t>(wpnType)].strMod))))
+            strengthBonus (crafted // if the item is crafted
+                ? (short)std::abs(std::round(pow(level + add, Data[static_cast<uint16_t>(wpnType)].strMod))) // (level + add) to the power of strMod
+                : (short)randint(1, (uint16_t)std::abs(std::round(pow(level + add, Data[static_cast<uint16_t>(wpnType)].strMod)))) // random number between 1 and the value above
             ),
             prefix(Prefix::NONE),
             suffix(Suffix::NONE) {
@@ -330,6 +368,16 @@ namespace Item {
                     return;
                 }
             }
+
+        uint16_t levelUp() override {
+            uint16_t bonus = 0;
+            if (exp >= nextLevel) {
+                bonus = (short)std::round(pow(level, Data[static_cast<uint16_t>(itemType)].strMod / 2)); // level to the power of strMod / 2
+                strengthBonus += bonus;
+                Leveled::levelUp();
+            }
+            return bonus;
+        }
     
         void displayInfo(const Source source = Source::NONE) const override {
             if (source == FIND)
@@ -350,20 +398,25 @@ namespace Item {
 
         Special() : defenseBonus(0), strengthBonus(0) {}
     
+        /**
+         * @brief Constructor for the Special class
+         * @param splType The type of special item
+         * @param level The level of the player
+         */
         Special(const TYPE splType, const uint16_t level) :
             Item(splType),
-            defenseBonus (Data[static_cast<uint16_t>(splType)].defMod == 0
+            defenseBonus (Data[static_cast<uint16_t>(splType)].defMod == 0 // if defMod is 0
                 ? 0
-                : (short)randint(1, (uint16_t)std::round(pow(level, Data[static_cast<uint16_t>(splType)].defMod))) *
-                (Data[static_cast<uint16_t>(splType)].nDef
+                : (short)randint(1, (uint16_t)std::round(pow(level, Data[static_cast<uint16_t>(splType)].defMod))) * // a random number between 1 and the level to the power of defMod
+                (Data[static_cast<uint16_t>(splType)].nDef // ...multiplied by -1 if nDef is true
                     ? -1
                     : 1
                 )
             ),
-            strengthBonus (Data[static_cast<uint16_t>(splType)].strMod == 0
+            strengthBonus (Data[static_cast<uint16_t>(splType)].strMod == 0 // if strMod is 0
                 ? 0
-                : (short)randint(1, (uint16_t)std::round(pow(level, Data[static_cast<uint16_t>(splType)].strMod))) *
-                (Data[static_cast<uint16_t>(splType)].nStr
+                : (short)randint(1, (uint16_t)std::round(pow(level, Data[static_cast<uint16_t>(splType)].strMod))) * // a random number between 1 and the level to the power of strMod
+                (Data[static_cast<uint16_t>(splType)].nStr // ...multiplied by -1 if nStr is true
                     ? -1
                     : 1
                 )

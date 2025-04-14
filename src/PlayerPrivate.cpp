@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #include<initializer_list>
 
 #include"..\include\PlayerPrivate.h"
@@ -16,14 +16,14 @@ bool PlayerPrivate::initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<
         Item::Armor drakArmor(Item::TYPE::ARM_DRAKONIAN, player.level, 1, true);
         items[i] = std::make_unique<Item::Armor>(std::move(drakArmor));
         type (
-            ++i, ". Drakonian Armor (Defense Bonus: ", drakArmor.defenseBonus, ")",
+            ++i, ". Drakonian Armor (Defense Bonus: ", Item::Armor::getStats(Item::TYPE::ARM_DRAKONIAN, player.level), ")",
             displayComponents({ { "Fiber", u(2) }, { "Leather", u(6) } }), "\n"
         );
     } else {
         Item::Armor LeatherArmor(Item::TYPE::ARM_LEATHER, player.level, 1, true);
         items[i] = std::make_unique<Item::Armor>(std::move(LeatherArmor));
         type (
-            ++i, ". Leather Armor (Defense Bonus: ", LeatherArmor.defenseBonus, ")",
+            ++i, ". Leather Armor (Defense Bonus: ", Item::Armor::getStats(Item::TYPE::ARM_LEATHER, player.level), ")",
             displayComponents({ { "Fiber", u(2) }, { "Leather", u(6) } }), "\n"
         );
     }
@@ -34,38 +34,38 @@ bool PlayerPrivate::initCraftWeapons(std::unordered_map<uint16_t, std::unique_pt
     Item::Weapon longsword(Item::TYPE::WPN_LONG, player.level, (player.Class == Player::WIZARD ? -1 : 1), true);
     items[i] = std::make_unique<Item::Weapon>(std::move(longsword));
     type (
-        ++i, ". Longsword (Strength Bonus: ", longsword.strengthBonus, ")",
+        ++i, ". Longsword (Strength Bonus: ", Item::Weapon::getStats(Item::TYPE::WPN_LONG, player.level), ")",
         displayComponents({ { "Fiber", u(2) }, { "Iron", u(3) }, { "Wood", u(2) } }), "\n"
     );
     if (player.Class == Player::WIZARD) {
         Item::Weapon stWarborn(Item::TYPE::WPN_ST_WARBORN, player.level, (player.Race == Player::ELF ? 2 : 1), true);
         items[i] = std::make_unique<Item::Weapon>(std::move(stWarborn));
         type (
-            ++i, ". Staff of the Warborn (Strength Bonus: ", stWarborn.strengthBonus, ")",
+            ++i, ". Staff of the Warborn (Strength Bonus: ", Item::Weapon::getStats(Item::TYPE::WPN_ST_WARBORN, player.level), ")",
             displayComponents({ { "Amulet of the Warborn", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } }), "\n"
         );
         Item::Weapon stGuardian(Item::TYPE::WPN_ST_GUARDIAN, player.level, (player.Race == Player::ELF ? 2 : 1), true);
         items[i] = std::make_unique<Item::Weapon>(std::move(stGuardian));
         type (
-            ++i, ". Staff of the Guardian (Strength Bonus: ", stGuardian.strengthBonus, ")",
+            ++i, ". Staff of the Guardian (Strength Bonus: ", Item::Weapon::getStats(Item::TYPE::WPN_ST_GUARDIAN, player.level), ")",
             displayComponents({ { "Amulet of the Guardian", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } }), "\n"
         );
         Item::Weapon stShadow(Item::TYPE::WPN_ST_SHADOW, player.level, 1, true);
         items[i] = std::make_unique<Item::Weapon>(std::move(stShadow));
         type (
-            ++i, ". Staff of the Shadow (Strength Bonus: ", stShadow.strengthBonus, ")",
+            ++i, ". Staff of the Shadow (Strength Bonus: ", Item::Weapon::getStats(Item::TYPE::WPN_ST_SHADOW, player.level), ")",
             displayComponents({ { "Amulet of the Shadow", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } }), "\n"
         );
         Item::Weapon stFury(Item::TYPE::WPN_ST_FURY, player.level, (player.Race == Player::ELF ? 2 : 1), true);
         items[i] = std::make_unique<Item::Weapon>(std::move(stFury));
         type (
-            ++i, ". Staff of Fury (Strength Bonus: ", stFury.strengthBonus, ")",
+            ++i, ". Staff of Fury (Strength Bonus: ", Item::Weapon::getStats(Item::TYPE::WPN_ST_FURY, player.level), ")",
             displayComponents({ { "Amulet of Fury", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } }), "\n"
         );
         Item::Weapon stWeeping(Item::TYPE::WPN_ST_WEEPING, player.level, (player.Race == Player::ELF ? 2 : 1), true);
         items[i] = std::make_unique<Item::Weapon>(std::move(stWeeping));
         type (
-            ++i, ". Staff of the Weeping Spirit (Strength Bonus: ", stWeeping.strengthBonus, ")",
+            ++i, ". Staff of the Weeping Spirit (Strength Bonus: ", Item::Weapon::getStats(Item::TYPE::WPN_ST_WEEPING, player.level), ")",
             displayComponents({ { "Amulet of the Weeping Spirit", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } }), "\n"
         );
     }

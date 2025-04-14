@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #pragma once
 #include<initializer_list>
 #include<unordered_map>
@@ -25,12 +25,12 @@ public:
         RAVENOUS
     };
 
-    struct Info {
-        const std::string_view name = "None";
-        const uint16_t duration = 1;
-        const float hMod   = 0.f,
-                    strMod = 0.f,
-                    defMod = 0.f;
+    const struct Info {
+        std::string_view name = "None";
+        uint16_t duration = 1;
+        float hMod   = 0.f,
+              strMod = 0.f,
+              defMod = 0.f;
     };
 
     static constexpr Info Data[] {
@@ -85,6 +85,8 @@ public:
         WIZARD
     };
  
+    void addExp(uint16_t);
+    void levelUp(uint16_t);
     uint16_t getMaxHealth() const;
     short getStrength() const;
     short getDefense() const;

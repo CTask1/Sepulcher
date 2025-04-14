@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #include"..\include\EventsR.h"
 #include"..\include\Events.h"
 #include"..\include\Player.h"
@@ -23,9 +23,9 @@ void EventsR::lostTraveler() { // Lost Traveler
             type(" As you assist the traveler, they turn around and attack you!\n");
             events.initCombat(Enemy::TRAVELER, true);
         } else {
-            int expGain = (randint(1, 100) == 1) ? randint(35, 75) : randint(10, 20); // 1% chance of extra exp
+            uint16_t expGain = (randint(1, 100) == 1) ? randint(35, 75) : randint(10, 20); // 1% chance of extra exp
             type(" They are grateful and share a bit of their wisdom.\nYou gained ", expGain, " experience points!\n");
-            player.exp += expGain;
+            player.addExp(expGain);
         }
     } else
         type("You choose to ignore the lost traveler.\n");

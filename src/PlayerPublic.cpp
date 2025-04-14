@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #include<iostream>
 #include<memory>
 #include<string>
@@ -10,6 +10,40 @@
 #include"..\include\consts.h"
 #include"..\include\Enemy.h"
 #include"..\include\Util.h"
+
+void PlayerPublic::addExp(uint16_t exp) {
+    player.exp += exp;
+    if (player.armor != Item::TYPE::NONE)
+        player.armor.exp += exp;
+    if (player.weapon != Item::TYPE::NONE)
+        player.weapon.exp += exp;
+}
+
+void PlayerPublic::levelUp(uint16_t hitdie) {
+    uint16_t levels = 0;
+    while (player.exp >= player.nextLevel) {
+        player.level++;
+        player.exp -= player.nextLevel;
+        player.maxHealth += player.level + hitdie;
+        player.health = player.getMaxHealth();
+        player.strength += 3;
+        player.baseStrength += 3;
+        if (player.Race == Player::DRAKONIAN)
+            player.defense += 1;
+        player.nextLevel = 10 + static_cast<uint32_t>(pow(player.level, 2));
+        levels++;
+    }
+    if (levels > 0) {
+        type("You leveled up");
+        if (levels == 2)
+            type(" twice");
+        else if (levels == 3)
+            type(" three times");
+        type("! You are now level ", player.level, ".\n");
+    }
+    player.defense += player.armor.levelUp();
+    player.strength += player.weapon.levelUp();
+}
 
 uint16_t PlayerPublic::getMaxHealth() const {
     uint16_t maxHealth = player.maxHealth;

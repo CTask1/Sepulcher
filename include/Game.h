@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #pragma once
 #include<string>
 #include<cmath>
@@ -14,10 +14,11 @@ void gameLoop(Player& player, uint16_t hitdie) {
     // Main game loop
     while (true) {
         Choice choice;
-        if (time == 0) [[unlikely]] {
+        if (time == 0) [[unlikely]] { // if the day is over
             type (
-                "\nAs the sun dips below the horizon, you find a safe place to make camp and sleep through the night."
-                "\nYour health has been restored", (player.hasAbility ? " and your abilites have recharged!" : "!"),
+                "\nAs the sun dips below the horizon, you find a safe place to make camp and sleep through the night.\n",
+                (player.Race == Player::REVENANT ? "Another restless night passes" : "Your health has been restored"),
+                (player.hasAbility ? " and your abilites have recharged!" : "!"),
                 (player.Class == Player::WIZARD ? "\nYou also recovered 5 mana points!\n" : "\n")
             );
             /*type (
@@ -87,7 +88,7 @@ void gameLoop(Player& player, uint16_t hitdie) {
                     setOutputSettings(true);
                     type (
                         "\nOther options:\n"
-                        "\t1. Use a health potion\n"
+                        "\t1. Use a health potion (", player.resources["Health Potion"], ")\n"
                         "\t2. Unequip armor\n"
                         "\t3. Unequip weapon\n"
                         "\t4. Abilities\n",
@@ -144,7 +145,7 @@ void gameLoop(Player& player, uint16_t hitdie) {
             }
             time--;
             energy--;
-            levelUp(player, hitdie);
+            player.levelUp(hitdie);
             player.updateDebuffs();
         }
     }

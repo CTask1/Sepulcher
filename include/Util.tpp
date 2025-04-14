@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #pragma once
 #include<type_traits>
 #include<iostream>

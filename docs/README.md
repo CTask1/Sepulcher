@@ -4,7 +4,7 @@ This game can be compiled in release mode with MSVC using the following command 
 You can then run it with the command: `bin\release\Sepulcher.exe`  
 Alternatively, you can compile it in VSCode in the Run and Debug tab with the `Run RPG (Release)` option
 
-This game should be compatible with every OS, but you will have to find another compiler for non-Windows systems.
+This game should be compatible with every OS, but it has never been tested outside Windows.
 
 
 # Welcome to the game!
@@ -173,7 +173,7 @@ Here is a list of them:
 - Crossbow
     - Dropped by Goblins
     - Medium attack
-- Staves (Wizards only)  
+- Staves (Wizards only) (Cannot have prefixes)  
 Staves increase the strength of the player, and each has its own bonus effect.  
     - Staff of the Warborn
         - Increases mana points
@@ -250,6 +250,7 @@ There is no risk of damage, and most of these events give the player something.
     - Old Chest
     - Hidden Armory
     - Peaceful Meadow
+    - Small Stream
     - Hidden Garden
     - Traveling Trader
     - Nothing
@@ -265,4 +266,4 @@ Dangerous events happen 10% of the time.
 Combat and/or damage is highly likely.  
     - Enemy Encounter
     - Poacher's Snare
-    - Sepulcher (WIP)
+    - Sepulcher

@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #pragma once
 
 #define u(x) (uint16_t)(x)

@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #pragma once
 #include<initializer_list>
 #include<unordered_map>

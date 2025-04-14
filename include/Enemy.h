@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #pragma once
 #include<string_view>
 #include<iostream>
@@ -12,10 +12,13 @@ namespace Enemy {
         BEAR,
         CAVE_CREATURE,
         GOBLIN,
+        KING,
         POACHER,
         SHADOW,
+        SKELETON,
         SPIRIT,
-        TRAVELER
+        TRAVELER,
+        WRAITH
     };
 
     struct Info {
@@ -25,14 +28,18 @@ namespace Enemy {
     };
 
     constexpr Info eType[] {
+        // Name ---------- hMod - strMod -
         { "Bandit"       , 0.95f, 1.05f },
         { "Bear"         , 1.10f, 1.00f },
         { "Cave Creature", 1.05f, 1.05f },
         { "Goblin"       , 0.90f, 1.05f },
+        { "Revenant King", 1.25f, 1.10f },
         { "Poacher"      , 1.00f, 1.00f },
         { "Dark Shadow"  , 1.00f, 1.05f },
+        { "Skeleton"     , 0.90f, 1.10f },
         { "Cursed Spirit", 1.05f, 1.10f },
-        { "Lost Traveler", 0.95f, 1.00f }
+        { "Lost Traveler", 0.95f, 1.00f },
+        { "Wraith"       , 1.05f, 1.10f }
     };
 
     class Enemy {
@@ -47,18 +54,18 @@ namespace Enemy {
             name(eType[static_cast<uint16_t>(type)].name),
             health (
                 (uint16_t) (
-                    randint (
+                    randint ( // random number between playerHealth and playerHealth * healthMod
                         playerHealth,
                         (uint16_t)std::round(playerHealth * eType[static_cast<uint16_t>(type)].healthMod)
-                    ) * (playerLevel / 25.0 + 1)
+                    ) * (playerLevel / 25.0 + 1) // add 4% per level
                 )
             ),
             strength (
                 (uint16_t) (
-                    randint (
+                    randint ( // random number between playerStrength and playerStrength * strengthMod
                         playerStrength,
-                        (uint16_t)std::round(playerStrength * eType[static_cast<uint16_t>(type)].strengthMod)
-                    ) * (playerLevel / 25.0 + 1)
+                        (uint16_t)std::round(pow(playerStrength, 1.15f) * eType[static_cast<uint16_t>(type)].strengthMod)
+                    ) * (playerLevel / 25.0 + 1) // add 4% per level
                 )
             ) {}
 

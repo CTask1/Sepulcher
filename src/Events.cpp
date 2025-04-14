@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #include"..\include\Events.h"
 #include"..\include\Player.h"
 #include"..\include\Enemy.h"
@@ -6,7 +6,7 @@
 #include"..\include\Util.h"
 
 void Events::initCombat(const Enemy::TYPE eType, const bool surprise) {
-    Enemy::Enemy enemy(eType, player.maxHealth, player.strength, player.level);
+    Enemy::Enemy enemy(eType, player.maxHealth, player.baseStrength, player.level);
     combat(enemy, surprise);
 }
 
@@ -40,7 +40,7 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
                     "\n2. Display Stats"
                     "\n3. Display Enemy Stats"
                     "\n4. Abilities"
-                    "\n5. Use a health potion"
+                    "\n5. Use a health potion (", player.resources["Health Potion"], ")"
                     "\n6. Run\n"
                 );
                 Choice choice;
@@ -120,7 +120,7 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
                 player.health = (uint16_t)std::max(player.health - enemyDamage, 0);
                 type("\nThe ", enemy.name, " dealt ", enemyDamage, " damage to you!\nYour health is now ", player.health, ".\n");
                 if (player.armor.suffix == Item::Armor::Suffix::THORNS) {
-                    uint16_t thornsDamage = enemyDamage / 10;
+                    uint16_t thornsDamage = (uint16_t)ceil(enemyDamage / 10.0);
                     enemy.health = (uint16_t)std::max(enemy.health - thornsDamage, 0);
                     type("\nThe thorns on your armor dealt ", thornsDamage, " damage to the ", enemy.name, "!\nIts health is now ", enemy.health, ".\n");
                 }
@@ -135,7 +135,7 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
                 if (player.health > 0) [[likely]] {
                     uint16_t expGain = randint(5, player.level * 8);
                     type("\nYou defeated the ", enemy.name, "! You earned ", expGain, " experience points.\n");
-                    player.exp += expGain;
+                    player.addExp(expGain);
                     if (enemy.name == Enemy::eType[Enemy::GOBLIN].name && randint(1, 2) == 1)
                         player.initWeapon(Item::TYPE::WPN_CROSSBOW, Item::Source::DROP, (player.Class == Player::WIZARD ? -1 : 1));
                 } else {
@@ -162,30 +162,6 @@ bool checkDeath(Enemy::Enemy& enemy, Player& player) {
         return 1;
     }
     return 0;
-}
-
-void levelUp(Player& player, uint16_t hitdie) {
-    uint16_t levels = 0;
-    while (player.exp >= player.nextLevel) {
-        player.level++;
-        player.exp -= player.nextLevel;
-        player.maxHealth += player.level + hitdie;
-        player.health = player.getMaxHealth();
-        player.strength += 3;
-        player.baseStrength += 3;
-        if (player.Race == Player::DRAKONIAN)
-            player.defense += 1;
-        player.nextLevel = 10 + static_cast<uint32_t>(pow(player.level, 2));
-        levels++;
-    }
-    if (levels > 0) {
-        type("You leveled up");
-        if (levels == 2)
-            type(" twice");
-        else if (levels == 3)
-            type(" three times");
-        type("!\n");
-    }
 }
 
 void explore(Player& player) {
@@ -226,14 +202,21 @@ void explore(Player& player) {
                     player.mana++;
                 break;
             case 6:
+                events.travelingTrader();
+                break;
+            case 7:
+                if (randint(1, 2) == 1) {
+                    type("You find a small stream. The water is clear and refreshing.\n");
+                    player.heal(3);
+                    if (player.Class == Player::WIZARD && player.mana != player.maxMana)
+                        player.mana++;
+                    break;
+                }
                 type("You find a hidden garden with medicinal herbs. You gather some and regain health.\n");
                 player.resources.addResource("Medicinal Herbs", randint(1, 3));
                 player.heal(3);
                 if (player.Class == Player::WIZARD && player.mana != player.maxMana)
                     player.mana++;
-                break;
-            case 7:
-                events.travelingTrader();
                 break;
             }
         } else if (eventType <= 9) { // Risky - 30%
@@ -255,7 +238,7 @@ void explore(Player& player) {
                 events.strangeAmulet();
             }
         } else { // Dangerous - 10%
-            event = randint(1, 2); // ((player.level >= 10 ? 3 : 2));
+            event = randint(1, (player.level >= 10 ? 3 : 2));
             if (event == prevEvent)
                 continue;
             prevEvent = event;

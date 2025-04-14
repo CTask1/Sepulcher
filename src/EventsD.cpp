@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #include"..\include\EventsD.h"
 #include"..\include\Events.h"
 #include"..\include\Player.h"
@@ -109,6 +109,23 @@ void EventsD::hunterTrap() { // Poacher's Snare
     }}
 }
 
+namespace {
+    bool sepulcherContinue() {
+        setOutputSettings(false, 25);
+        type("\nDo you wish to continue (1. Yes / 2. No)?\n");
+        Choice continueChoice;
+        do continueChoice = input("Enter choice: ");
+        while (!continueChoice.isChoice(true, "yes", 1, "no", 2));
+
+        if (continueChoice.isChoice("no", 2)) {
+            setOutputSettings(false, 20);
+            type("\nYou decide to turn back, leaving the sepulcher to its slumber.\n");
+            return 0;
+        }
+        return 1;
+    }
+}
+
 void EventsD::sepulcher() {
     type (
         "You encounter an ancient sepulcher. A cold wind howls through its ruined archway, carrying whispers in a language long forgotten."
@@ -147,4 +164,60 @@ void EventsD::sepulcher() {
         );
         break;
     }
+
+    if (!sepulcherContinue()) return;
+    setOutputSettings(false, 25);
+    type("\nYou decide to venture deeper into the sepulcher, where the stench of decay grows stronger...\n");
+
+    uint16_t encounter = randint(1, 3);
+    setOutputSettings(false, 25);
+    switch (encounter) {
+    case 1:
+        type("Suddenly, a wraith materializes before you, screeching with rage!\n");
+        events.initCombat(Enemy::WRAITH);
+        break;
+    case 2:
+        type("A skeletal warrior rises from the ground, its eyes glowing with a malevolent light!\n");
+        events.initCombat(Enemy::SKELETON);
+        break;
+    case 3:
+        type("A cursed spirit emerges from the shadows, its form shifting and writhing!\n");
+        events.initCombat(Enemy::SPIRIT);
+        break;
+    }
+
+    if (!sepulcherContinue()) return;
+    setOutputSettings(false, 25);
+    type (
+        "\nYou descend into the lowest chamber. The silence is suffocating."
+        "\nCarvings on the walls depict a forgotten kingdom, its people twisted in agony.\n"
+    );
+    wait(500);
+    setOutputSettings(false, 25);
+    type (
+        "\nSuddenly, the sarcophagus at the center of the room bursts open."
+        "\nA figure, cloaked in shadows, rises from within, its eyes burning with an otherworldly fire.\n"
+    );
+    events.initCombat(Enemy::KING);
+    setOutputSettings(false, 25);
+    type (
+        "\nWith a final, echoing scream, the figure collapses into a pile of ash."
+        "\nThe sepulcher begins to tremble, dust cascading from the ceiling as the very walls groan in protest.\n"
+        "\nYou sprint back through the halls, the walls closing in around you."
+        "\nYou emerge into the light, gasping for breath, the weight of the sepulcher's curse lifted from your shoulders."
+        "\nBehind you the ancient structure crumbles, sealing its secrets away forever.\n"
+        "\nBirdsong returns to the skies above, as if the world itself sighs in relief."
+        "\nYou have faced the darkness and emerged victorious, a testament to your strength and resilience."
+        "\nThe journey is over, but you are no longer the same adventurer who entered that cursed tomb."
+        "\nYou are a warrior, a survivor, a legend.\n"
+    );
+    wait(1000);
+    setOutputSettings(true);
+    type (
+        "\nThanks for playing!\n"
+        "\nPress Enter key to continue . . . "
+    );
+    std::cin.ignore(SIZE_MAX, '\n');
+    std::cin.get();
+    exit(0);
 }

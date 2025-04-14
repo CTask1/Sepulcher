@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #pragma once
 #include<unordered_map>
 #include<string>
@@ -9,7 +9,7 @@ class Resources {
 public:
     std::unordered_map<std::string, uint16_t> resources;
 
-    Resources() {}
+    Resources() = default;
 
     Resources* addResource(const std::string& resource, const uint16_t amount = 1) {
         if (amount > 0)

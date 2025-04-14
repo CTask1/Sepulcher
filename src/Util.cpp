@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #include<chrono>
 #include<thread>
 #include<string>
@@ -32,6 +32,12 @@ _NODISCARD uint16_t randint(uint16_t min, uint16_t max) {
 
 void wait(const uint16_t milliseconds) {
     std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+}
+
+_NODISCARD std::string capitalize(std::string&& str) {
+    str = toLower(std::move(str));
+    str[0] = (char)std::toupper(str[0]);
+    return str;
 }
 
 _NODISCARD bool isInt(const std::string& str) {

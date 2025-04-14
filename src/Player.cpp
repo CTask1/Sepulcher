@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #include<initializer_list>
 #include<unordered_map>
 #include<iostream>
@@ -76,9 +76,9 @@ void Player::displayStats() const {
         "\nStrength: ", strength,
         "\nConstitution: ", CON,
         "\nDefense: ", defense,
-        "\nWeapon: ", weapon.name,
-        "\nArmor: ", armor.name,
-        "\nSpecial: ", special.name,
+        "\nWeapon: ", weapon.name, " (Level: ", weapon.level, ", Strength Bonus: ", weapon.strengthBonus, ")",
+        "\nArmor: ", armor.name, " (Level: ", armor.level, ", Defense Bonus: ", armor.defenseBonus, ")",
+        "\nSpecial: ", special.name, " (Defense Bonus: ", special.defenseBonus, ", Strength Bonus: ", special.strengthBonus, ")",
         "\nLevel: ", level,
         "\nExperience: ", exp, "/", nextLevel
     );
@@ -87,6 +87,8 @@ void Player::displayStats() const {
         displayDebuffs();
 }
 
+void Player::addExp(uint16_t xp)                                                                                                   {        (*pPub).addExp            ( xp                                   ); }
+void Player::levelUp(uint16_t hitdie)                                                                                              {        (*pPub).levelUp           ( hitdie                               ); }
 uint16_t Player::getMaxHealth() const                                                                                              { return (*pPub).getMaxHealth      (                                      ); }
 short Player::getStrength() const                                                                                                  { return (*pPub).getStrength       (                                      ); }
 short Player::getDefense() const                                                                                                   { return (*pPub).getDefense        (                                      ); }

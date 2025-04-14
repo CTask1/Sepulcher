@@ -1,4 +1,4 @@
-//CTask1
+//CTask
 #pragma once
 #include"Player.h"
 #include"Enemy.h"
@@ -42,7 +42,5 @@ private:
 };
 
 bool checkDeath(Enemy::Enemy&, Player&);
-    
-void levelUp(Player&, uint16_t);
 
 void explore(Player&);
