@@ -701,3 +701,5 @@
         -Bug fixes
             -Case sensitivity when trading
         -Changed some messages
+        -Commit master 2a8576d
+        -Updated README

@@ -9,7 +9,7 @@ This game should be compatible with every OS, but it has never been tested outsi
 
 # Welcome to the game!
 
-Welcome to the world of Sepulcher, a text-based RPG where you can explore and build your strength through random events where you can fight, gather resources, craft and find items, and trade until you eventually reach your final destination: the Sepulcher.
+Welcome to the world of Sepulcher, a text-based RPG where you can explore and build your strength through random events in which fight, gather resources, craft and find items, and trade until you eventually reach your final destination: the Sepulcher.
 
 Before you get started, there are a few things you should know:
 
