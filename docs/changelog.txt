@@ -703,3 +703,6 @@
         -Changed some messages
         -Commit master 2a8576d
         -Updated README
+        -Added license
+        -Commit master 628e934
+        -Publicized repo

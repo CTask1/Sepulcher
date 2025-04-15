@@ -1,6 +1,6 @@
 # BUILDING
 
-This game can be compiled in release mode with MSVC using the following command in the Developer Command Prompt for VS 2022: `cl.exe /std:c++20 /EHsc /O2 /DNDEBUG /MP /nologo /Febin\release\Sepulcher.exe /Fobin\release\ src\*.cpp`  
+This game can be compiled in release mode with MSVC using the following command in the Developer Command Prompt for VS 2022: `cl.exe /std:c++20 /EHsc /O2 /DNDEBUG /MP /MT /nologo /Febin\release\Sepulcher.exe /Fobin\release\ src\*.cpp`  
 You can then run it with the command: `bin\release\Sepulcher.exe`  
 Alternatively, you can compile it in VSCode in the Run and Debug tab with the `Run RPG (Release)` option
 
@@ -9,7 +9,7 @@ This game should be compatible with every OS, but it has never been tested outsi
 
 # Welcome to the game!
 
-Welcome to the world of Sepulcher, a text-based RPG where you can explore and build your strength through random events in which fight, gather resources, craft and find items, and trade until you eventually reach your final destination: the Sepulcher.
+Welcome to the world of Sepulcher, a text-based RPG where you can explore and build your strength through random events in which you fight, gather resources, craft and find items, and trade until you eventually reach your final destination: the Sepulcher.
 
 Before you get started, there are a few things you should know:
 
