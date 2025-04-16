@@ -3,10 +3,11 @@
 #include<string>
 #include<cmath>
 
+#include"Choice.h"
 #include"Events.h"
 #include"Player.h"
-#include"Util.h"
-#include"consts.h"
+#include"globals.h"
+#include"util.h"
 
 void gameLoop(Player& player, uint16_t hitdie) {
     uint16_t time = DAY_LENGTH;

@@ -1,9 +1,10 @@
 //CTask
+#include"..\include\Choice.h"
 #include"..\include\EventsR.h"
 #include"..\include\Events.h"
 #include"..\include\Player.h"
 #include"..\include\Enemy.h"
-#include"..\include\Util.h"
+#include"..\include\util.h"
 
 void EventsR::lostTraveler() { // Lost Traveler
     type (

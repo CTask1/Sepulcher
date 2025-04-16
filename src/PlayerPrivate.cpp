@@ -1,11 +1,12 @@
 //CTask
 #include<initializer_list>
 
+#include"..\include\Choice.h"
 #include"..\include\PlayerPrivate.h"
 #include"..\include\Player.h"
-#include"..\include\consts.h"
 #include"..\include\Item.h"
-#include"..\include\Util.h"
+#include"..\include\globals.h"
+#include"..\include\util.h"
 
 bool PlayerPrivate::initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const {
     if (player.Class == Player::WIZARD) {

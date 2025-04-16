@@ -4,21 +4,24 @@
 #include<iostream>
 #include<cmath>
 
-#include"Util.h"
+#include"util.h"
 
 namespace Enemy {
     enum TYPE {
+        // General
         BANDIT,
-        BEAR,
         CAVE_CREATURE,
         GOBLIN,
-        KING,
-        POACHER,
         SHADOW,
-        SKELETON,
         SPIRIT,
         TRAVELER,
-        WRAITH
+        // Poacher's Snare
+        BEAR,
+        POACHER,
+        // Sepulcher
+        SKELETON,
+        WRAITH,
+        KING
     };
 
     struct Info {
@@ -30,16 +33,16 @@ namespace Enemy {
     constexpr Info eType[] {
         // Name ---------- hMod - strMod -
         { "Bandit"       , 0.95f, 1.05f },
-        { "Bear"         , 1.10f, 1.00f },
         { "Cave Creature", 1.05f, 1.05f },
         { "Goblin"       , 0.90f, 1.05f },
-        { "Revenant King", 1.25f, 1.10f },
-        { "Poacher"      , 1.00f, 1.00f },
         { "Dark Shadow"  , 1.00f, 1.05f },
-        { "Skeleton"     , 0.90f, 1.10f },
         { "Cursed Spirit", 1.05f, 1.10f },
         { "Lost Traveler", 0.95f, 1.00f },
-        { "Wraith"       , 1.05f, 1.10f }
+        { "Bear"         , 1.10f, 1.00f },
+        { "Poacher"      , 1.00f, 1.00f },
+        { "Skeleton"     , 0.90f, 1.10f },
+        { "Wraith"       , 1.05f, 1.10f },
+        { "Revenant King", 1.25f, 1.10f }
     };
 
     class Enemy {

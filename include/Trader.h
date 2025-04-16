@@ -4,7 +4,7 @@
 #include<string>
 
 #include"Resources.h"
-#include"Util.h"
+#include"util.h"
 
 class TraderResources : public Resources {
 public:

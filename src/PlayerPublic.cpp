@@ -4,12 +4,13 @@
 #include<string>
 #include<vector>
 
+#include"..\include\Choice.h"
 #include"..\include\PlayerPrivate.h"
 #include"..\include\PlayerPublic.h"
 #include"..\include\Player.h"
-#include"..\include\consts.h"
+#include"..\include\globals.h"
 #include"..\include\Enemy.h"
-#include"..\include\Util.h"
+#include"..\include\util.h"
 
 void PlayerPublic::addExp(uint16_t exp) {
     player.exp += exp;

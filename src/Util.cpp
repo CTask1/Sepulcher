@@ -3,7 +3,7 @@
 #include<thread>
 #include<string>
 
-#include"..\include\Util.h"
+#include"..\include\util.h"
 
 bool outputAsList = false;
 uint16_t outputDelay = 2;
@@ -37,6 +37,10 @@ void wait(const uint16_t milliseconds) {
 _NODISCARD std::string capitalize(std::string&& str) {
     str = toLower(std::move(str));
     str[0] = (char)std::toupper(str[0]);
+    for (size_t i = 1; i < str.length(); i++) {
+        if (str[i] == ' ' && i + 1 < str.length())
+            str[i + 1] = (char)std::toupper(str[i + 1]);
+    }
     return str;
 }
 
@@ -56,16 +60,3 @@ void wheel(const uint16_t duration) {
         std::cout << "\r";
     }
 }
-
-Choice::Choice() : choice("") {}
-
-Choice& Choice::operator=(std::string str) {
-    choice = toLower(std::move(str));
-    return *this;
-}
-
-_NODISCARD Choice::operator std::string() const {
-    return choice;
-}
-
-_NODISCARD bool Choice::isChoice() const { return false; }

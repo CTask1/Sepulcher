@@ -8,7 +8,7 @@
 #include<thread>
 #include<random>
 
-#include"Util.h"
+#include"util.h"
 
 extern bool outputAsList;
 extern uint16_t outputDelay;
@@ -60,17 +60,4 @@ _NODISCARD std::string input(const Args&... args) {
     type(args...);
     std::getline(std::cin >> std::ws, entry);
     return entry;
-}
-
-template<typename T, typename... Args>
-_NODISCARD bool Choice::isChoice(const T& chk1, const Args&... args) const {
-    return choice == tostring(chk1) || isChoice(args...);
-}
-
-template<typename... Args>
-_NODISCARD bool Choice::isChoice(const bool showMessage, const Args&... args) const {
-    const bool CHECK_RESULT = isChoice(args...);
-    if (!CHECK_RESULT && showMessage)
-        type("\nThat's not an option!\n");
-    return CHECK_RESULT;
 }

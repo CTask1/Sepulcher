@@ -18,17 +18,4 @@ _NODISCARD bool isPos(const std::string&);
 template<typename... Args> _NODISCARD std::string input(const Args&...);
 void wheel(const uint16_t = 4);
 
-class Choice {
-public:
-    std::string choice;
-    
-    Choice();
-    Choice& operator=(std::string);
-    _NODISCARD operator std::string() const;
-    _NODISCARD bool isChoice() const;
-    template<typename T, typename... Args> _NODISCARD bool isChoice(const T& chk1, const Args&...) const;
-    template<typename... Args> _NODISCARD bool isChoice(const bool = false, const Args&...) const;
-
-};
-
 #include"Util.tpp"

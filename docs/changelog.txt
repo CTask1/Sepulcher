@@ -706,3 +706,24 @@
         -Added license
         -Commit master 628e934
         -Publicized repo
+
+
+    -- 04/15/25 --
+
+        -Compiling changes
+        -Updated README
+        -Commit master 6eedf5e
+
+
+    -- 04/16/25 --
+
+        -Bug fixes
+            -Fixed issue where the player could not trade medicinal herbs
+        -File changes
+            -Moved Choice class to Choice.h
+            -Renamed files
+                -consts.h to globals.h
+                -Game.h to game.h
+                -Util.h to util.h
+                -Util.tpp to util.tpp
+                -Util.cpp to util.cpp

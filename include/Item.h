@@ -2,8 +2,8 @@
 #pragma once
 #include<string_view>
 
-#include"consts.h"
-#include"Util.h"
+#include"globals.h"
+#include"util.h"
 
 namespace Item {
 

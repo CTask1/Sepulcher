@@ -9,7 +9,7 @@
 #include"..\include\PlayerPrivate.h"
 #include"..\include\PlayerPublic.h"
 #include"..\include\Player.h"
-#include"..\include\Util.h"
+#include"..\include\util.h"
 
 Player::Player(std::string_view n, RACE ra, CLASS cl, uint16_t h, uint16_t s, uint16_t co) :
   pPub(std::make_unique<PlayerPublic>(*this)),

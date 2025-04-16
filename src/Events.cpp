@@ -1,9 +1,10 @@
 //CTask
+#include"..\include\Choice.h"
 #include"..\include\Events.h"
 #include"..\include\Player.h"
 #include"..\include\Enemy.h"
 #include"..\include\Item.h"
-#include"..\include\Util.h"
+#include"..\include\util.h"
 
 void Events::initCombat(const Enemy::TYPE eType, const bool surprise) {
     Enemy::Enemy enemy(eType, player.maxHealth, player.baseStrength, player.level);

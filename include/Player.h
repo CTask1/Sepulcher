@@ -9,7 +9,7 @@
 #include"Resources.h"
 #include"Enemy.h"
 #include"Item.h"
-#include"consts.h"
+#include"globals.h"
 
 class PlayerPublic;
 class PlayerPrivate;
