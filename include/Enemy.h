@@ -54,20 +54,20 @@ namespace Enemy {
         Enemy() : name("None"), health(0), strength(0) {}
 
         Enemy(TYPE type, uint16_t playerHealth, uint16_t playerStrength, uint16_t playerLevel) :
-            name(eType[static_cast<uint16_t>(type)].name),
+            name(eType[ui16(type)].name),
             health (
-                (uint16_t) (
+                ui16 (
                     randint ( // random number between playerHealth and playerHealth * healthMod
                         playerHealth,
-                        (uint16_t)std::round(playerHealth * eType[static_cast<uint16_t>(type)].healthMod)
+                        ui16(std::round(playerHealth * eType[ui16(type)].healthMod))
                     ) * (playerLevel / 25.0 + 1) // add 4% per level
                 )
             ),
             strength (
-                (uint16_t) (
+                ui16 (
                     randint ( // random number between playerStrength and playerStrength * strengthMod
                         playerStrength,
-                        (uint16_t)std::round(pow(playerStrength, 1.15f) * eType[static_cast<uint16_t>(type)].strengthMod)
+                        ui16(std::round(pow(playerStrength, 1.15f) * eType[ui16(type)].strengthMod))
                     ) * (playerLevel / 25.0 + 1) // add 4% per level
                 )
             ) {}

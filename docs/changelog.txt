@@ -706,6 +706,7 @@
         -Added license
         -Commit master 628e934
         -Publicized repo
+        -Release v0.1.0
 
 
     -- 04/15/25 --
@@ -728,6 +729,7 @@
                 -Util.tpp to util.tpp
                 -Util.cpp to util.cpp
         -Commit master 48feda2
+        -Release v0.1.1
         -Code efficiency
             -Replaced variadic function tostring() with overloads, removing the necessity of:
                 -<type_traits>
@@ -744,3 +746,25 @@
             -Merged all util files into util.h
         -Bug fixes
             -Fixed infinite recursion in tostring()
+        -Commit master 434dcdd
+        -Release v0.1.2
+
+
+    -- 04/18/25 --
+
+        -Code efficiency
+            -Added General class for general items
+                -Removed redundant code in Item.h
+            -Merged initCraft(), craftArmor(), and craftWeapon() with craftItem()
+        -Readability
+            -Replaced all occurrences of (*x).y with x->y
+            -Renamed types
+                -std::initializer_list<std::pair<std::string, uint16_t>> is now PairList_t
+                -std::vector<unique_ptr<Item::Item>> is now ItemPtrVec_t
+                -std::unique_ptr<Item::Item> is now ItemPtr_t
+        -User-friendliness
+            -Player can now cancel a trade
+        -Bug fixes
+        -Changed some messages
+        -Wizard stat balances
+        -Updated license

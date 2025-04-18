@@ -83,7 +83,7 @@ Wizard is the hardest class.
 It has many weapons and spells to keep track of, and the player must be smart about how they manage their mana points.
 
 - Hitdie: 12
-- Strength: 4
+- Strength: 5
 - Mana points: 15
 - Cannot wear armor
 - Disadvantage with non-magic weapons

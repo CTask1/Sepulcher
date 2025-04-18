@@ -18,14 +18,14 @@ void EventsR::lostTraveler() { // Lost Traveler
     while (!travelerChoice.isChoice(true, "offer help", 1, "ignore them", 2));
     
     if (travelerChoice.isChoice("offer help", 1)) {
-        type("You offer help to the lost traveler.");
+        type("\nYou offer help to the lost traveler. ");
         int hostile = randint(1, 3); // 33% chance the traveler is hostile and attacks
         if (hostile == 1) {
-            type(" As you assist the traveler, they turn around and attack you!\n");
+            type("As you assist the traveler, they turn around and attack you!\n");
             events.initCombat(Enemy::TRAVELER, true);
         } else {
             uint16_t expGain = (randint(1, 100) == 1) ? randint(35, 75) : randint(10, 20); // 1% chance of extra exp
-            type(" They are grateful and share a bit of their wisdom.\nYou gained ", expGain, " experience points!\n");
+            type("They are grateful and share a bit of their wisdom.\nYou gained ", expGain, " experience points!\n");
             player.addExp(expGain);
         }
     } else

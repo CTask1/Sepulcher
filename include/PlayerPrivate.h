@@ -6,6 +6,7 @@
 #include<memory>
 #include<cmath>
 
+#include"Player.h"
 #include"Item.h"
 
 class Player;
@@ -14,20 +15,17 @@ class PlayerPrivate {
 public:
 
     PlayerPrivate(Player& p) : player(p) {}
-    ~PlayerPrivate() {}
+    ~PlayerPrivate() = default;
 
-    bool initCraftArmor(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
-    bool initCraftWeapons(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
-    bool initCraftItems(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
-    bool useComponents(const std::initializer_list<std::pair<std::string, uint16_t>> components);
-    bool initCraft(const Item::Item* const& item, const std::initializer_list<std::pair<std::string, uint16_t>> components);
-    bool craftArmor(Item::Armor& armor, const std::initializer_list<std::pair<std::string, uint16_t>> components);
-    bool craftWeapon(const Item::Weapon& weapon, const std::initializer_list<std::pair<std::string, uint16_t>> components);
-    bool craftItem(const Item::Item& item, const std::initializer_list<std::pair<std::string, uint16_t>> components);
+    bool initCraftArmor(ItemPtrVec_t& items, uint16_t& i) const;
+    bool initCraftWeapons(ItemPtrVec_t& items, uint16_t& i) const;
+    bool initCraftGeneral(ItemPtrVec_t& items, uint16_t& i) const;
+    bool useComponents(const PairList_t components);
+    bool craftItem(const ItemPtr_t& item, const PairList_t components);
     void equipArmor(const Item::Armor& armorItem);
     void equipWeapon(const Item::Weapon& weaponItem);
     void equipSpecial(const Item::Special& specialItem);
-    const std::string displayComponents(const std::initializer_list<std::pair<std::string, uint16_t>> components) const;
+    const std::string displayComponents(const PairList_t components) const;
 
 private:
     Player& player;
