@@ -6,6 +6,9 @@
 #include<thread>
 #include<random>
 
+#define shrt(x) static_cast<short>(x)
+#define ui16(x) static_cast<uint16_t>(x)
+
 inline bool outputAsList = false;
 inline uint16_t outputDelay = 2;
 inline static std::mt19937 gen(std::random_device{}());
@@ -36,12 +39,12 @@ _NODISCARD inline std::string tostring(const char* const& value) {
     return std::string(value);
 }
 
-_NODISCARD inline std::string tostring(const std::string& value) {
-    return value;
-}
-
 _NODISCARD inline std::string tostring(const std::string_view& value) {
     return std::string(value);
+}
+
+_NODISCARD inline std::string tostring(const std::string& value) {
+    return value;
 }
 
 template<typename T, typename... Args> _NODISCARD inline std::string tostring(const T& value, const Args&... args) {
@@ -49,7 +52,7 @@ template<typename T, typename... Args> _NODISCARD inline std::string tostring(co
 }
 
 _NODISCARD inline std::string toLower(std::string&& str) {
-    std::transform(str.begin(), str.end(), str.begin(), [](uint8_t ch) { return (uint8_t)std::tolower(ch); });
+    std::transform(str.begin(), str.end(), str.begin(), [](uint8_t ch) { return static_cast<uint8_t>(std::tolower(ch)); });
     return str;
 }
 

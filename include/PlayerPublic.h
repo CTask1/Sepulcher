@@ -11,7 +11,7 @@ class PlayerPublic {
 public:
 
     PlayerPublic(Player& p) : player(p), pPrv(p) {}
-    ~PlayerPublic() {}
+    ~PlayerPublic() = default;
 
     void addExp(uint16_t);
     void levelUp(uint16_t);
@@ -32,8 +32,8 @@ public:
     void initWeapon(const Item::TYPE, const Item::Source, const uint16_t);
     void initSpecial(const Item::Special&, const Item::Source);
     void initSpecial(const Item::TYPE, const Item::Source);
-    void initItem(const Item::Item&, const Item::Source);
-    void initItem(const Item::TYPE, const Item::Source);
+    void initGeneral(const Item::General&, const Item::Source);
+    void initGeneral(const Item::TYPE, const Item::Source);
     void unequipArmor(const bool);
     void unequipWeapon(const bool);
     void gatherResources();

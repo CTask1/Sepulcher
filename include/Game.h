@@ -209,7 +209,7 @@ void start() {
         } else {
             pClass = Player::WIZARD;
             hitdie = 12;
-            str = 4;
+            str = 5;
         }
     }
 

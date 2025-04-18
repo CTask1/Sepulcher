@@ -58,7 +58,7 @@ void EventsD::hunterTrap() { // Poacher's Snare
         bool fail = (randint(1, 3) == 1);
         if (fail) {
             uint16_t damage = randint(1, player.health / 3);
-            type("The log knocks you to the ground and you take ", damage, " damage.");
+            type("The log knocks you to the ground and you take ", damage, " damage.\n");
             player.health -= damage;
         } else
             type("You successfully dodge the log!\n");
@@ -72,7 +72,7 @@ void EventsD::hunterTrap() { // Poacher's Snare
         bool fail = (randint(1, 3) == 1);
         if (fail) {
             uint16_t damage = randint(1, player.health / 3);
-            type("You are knocked to the ground by a flying rock, taking ", damage, " damage.");
+            type("You are knocked to the ground by a flying rock, taking ", damage, " damage.\n");
             player.health -= damage;
         } else
             type("You successfully evade the falling rocks!\n");
@@ -86,7 +86,7 @@ void EventsD::hunterTrap() { // Poacher's Snare
         bool fail = (randint(1, 3) == 1);
         if (fail) {
             uint16_t damage = randint(1, player.health / 3);
-            type("The thorns cut through your skin and you take ", damage, " damage.");
+            type("The thorns cut through your skin and you take ", damage, " damage.\n");
             player.health -= damage;
         } else
             type("With some struggle, you are able to break free from the vines.\n");

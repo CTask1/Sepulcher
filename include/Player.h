@@ -10,6 +10,10 @@
 #include"Item.h"
 #include"globals.h"
 
+typedef std::initializer_list<std::pair<std::string, uint16_t>> PairList_t;
+typedef std::unique_ptr<Item::Item> ItemPtr_t;
+typedef std::vector<ItemPtr_t> ItemPtrVec_t;
+
 class PlayerPublic;
 class PlayerPrivate;
 
@@ -97,8 +101,8 @@ public:
     void addDebuff(Debuff::TYPE);
     void updateDebuffs();
     void displayDebuffs() const;
-    void initItem(const Item::Item&, const Item::Source);
-    void initItem(const Item::TYPE, const Item::Source);
+    void initGeneral(const Item::General&, const Item::Source);
+    void initGeneral(const Item::TYPE, const Item::Source);
     void initArmor(const Item::Armor&, const Item::Source);
     void initArmor(const Item::TYPE, const Item::Source, const uint16_t = 1);
     void initWeapon(const Item::Weapon&, const Item::Source);
@@ -149,18 +153,15 @@ private:
         { WIZARD,  "Wizard"  }
     };
 
-    bool initCraftArmor(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
-    bool initCraftWeapons(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
-    bool initCraftItems(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
-    bool useComponents(const std::initializer_list<std::pair<std::string, uint16_t>> components);
-    bool initCraft(const Item::Item* const& item, const std::initializer_list<std::pair<std::string, uint16_t>> components);
-    bool craftArmor(Item::Armor& armor, const std::initializer_list<std::pair<std::string, uint16_t>> components);
-    bool craftWeapon(const Item::Weapon& weapon, const std::initializer_list<std::pair<std::string, uint16_t>> componentss);
-    bool craftItem(const Item::Item& item, const std::initializer_list<std::pair<std::string, uint16_t>> components);
+    bool initCraftArmor(ItemPtrVec_t& items, uint16_t& i) const;
+    bool initCraftWeapons(ItemPtrVec_t& items, uint16_t& i) const;
+    bool initCraftGeneral(ItemPtrVec_t& items, uint16_t& i) const;
+    bool useComponents(const PairList_t components);
+    bool craftItem(const ItemPtr_t& item, const PairList_t components);
     void equipArmor(const Item::Armor& armorItem);
     void equipWeapon(const Item::Weapon& weaponItem);
     void equipSpecial(const Item::Special& specialItem);
-    const std::string displayComponents(const std::initializer_list<std::pair<std::string, uint16_t>> components) const;
+    const std::string displayComponents(const PairList_t components) const;
 
 public:
 

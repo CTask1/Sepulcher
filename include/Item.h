@@ -2,7 +2,6 @@
 #pragma once
 #include<string_view>
 
-#include"globals.h"
 #include"util.h"
 
 namespace Item {
@@ -75,9 +74,9 @@ namespace Item {
         { ItemClass::WPN, "Staff of Fury"               , 0.00f, 1.35f, false             },
         { ItemClass::WPN, "Staff of the Weeping Spirit" , 0.00f, 1.10f, false             },
 
-        { ItemClass::SPL, "Amulet of the Warborn"       , 1.20f, 1.20f,                   },
-        { ItemClass::SPL, "Amulet of the Guardian"      , 1.30f, 0.00f,                   },
-        { ItemClass::SPL, "Amulet of the Shadow"        , 0.00f, 0.00f,                   },
+        { ItemClass::SPL, "Amulet of the Warborn"       , 1.20f, 1.20f                    },
+        { ItemClass::SPL, "Amulet of the Guardian"      , 1.30f, 0.00f                    },
+        { ItemClass::SPL, "Amulet of the Shadow"        , 0.00f, 0.00f                    },
         { ItemClass::SPL, "Amulet of Fury"              , 1.25f, 1.25f, false, true       },
         { ItemClass::SPL, "Amulet of the Weeping Spirit", 1.20f, 1.20f, false, true, true }
     };
@@ -87,7 +86,7 @@ namespace Item {
         std::string name;
         TYPE itemType;
 
-        Item(const TYPE type = TYPE::NONE) : itemType(type), name(Data[static_cast<uint16_t>(type)].name) {}
+        Item(const TYPE type = TYPE::NONE) : itemType(type), name(Data[ui16(type)].name) {}
 
         virtual ~Item() = default;
         
@@ -98,7 +97,7 @@ namespace Item {
                 type("You crafted an item: ");
             else if (source == DROP)
                 type("The enemy dropped an item: ");
-            type(name, "\n");
+            type(name);
         }
         
         bool operator!=(const TYPE Type) const {
@@ -107,6 +106,18 @@ namespace Item {
         
         bool operator==(const TYPE Type) const {
             return itemType == Type;
+        }
+
+    };
+
+    class General : public Item {
+    public:
+
+        General(const TYPE t = TYPE::NONE) : Item(t) {}
+    
+        void displayInfo(const Source source = Source::NONE) const override {
+            Item::displayInfo(source);
+            type("\n");
         }
 
     };
@@ -121,20 +132,10 @@ namespace Item {
     
         virtual uint16_t levelUp() {
             level++;
-            nextLevel = 10 + static_cast<uint16_t>(pow(level, 2)); // 10 + level to the power of 2
+            nextLevel = 10 + ui16(pow(level, 2)); // 10 + level to the power of 2
             exp = 0; // reset experience
             type ("\nYour ", name, " leveled up! It is now level ", level, ".\n");
             return 0;
-        }
-    
-        virtual void displayInfo(const Source source = Source::NONE) const {
-            if (source == FIND)
-                type("\nYou found an item: ");
-            else if (source == CRAFT)
-                type("You crafted an item: ");
-            else if (source == DROP)
-                type("The enemy dropped an item: ");
-            type(name, "\n");
         }
     
     };
@@ -163,7 +164,7 @@ namespace Item {
         Suffix suffix;
 
         static short getStats(const TYPE armType, const uint16_t level, const short add = 1) {
-            return (short)std::round(pow(level + add, Data[static_cast<uint16_t>(armType)].defMod));
+            return shrt(std::round(pow(level + add, Data[ui16(armType)].defMod)));
         }
 
         Armor() : defenseBonus(0) {}
@@ -178,8 +179,8 @@ namespace Item {
         Armor(const TYPE armType, const uint16_t level, const short add = 1, const bool crafted = false) :
             Leveled(armType),
             defenseBonus (crafted // if the item is crafted
-                ? (short)std::round(pow(level + add, Data[static_cast<uint16_t>(armType)].defMod)) // (level + add) to the power of defMod
-                : (short)randint(1, (uint16_t)std::round(pow(level + add, Data[static_cast<uint16_t>(armType)].defMod))) // random number between 1 and the value above
+                ? shrt(std::round(pow(level + add, Data[ui16(armType)].defMod))) // (level + add) to the power of defMod
+                : shrt(randint(1, ui16(std::round(pow(level + add, Data[ui16(armType)].defMod))))) // random number between 1 and the value above
             ),
             prefix(Prefix::NONE),
             suffix(Suffix::NONE) {
@@ -189,25 +190,25 @@ namespace Item {
                 if (num > prb && num <= prb + ui16(Prefix::RUSTED)) {
                     name = "Rusted " + name;
                     prefix = Prefix::RUSTED;
-                    defenseBonus = (short)(defenseBonus * 0.8f);
+                    defenseBonus = shrt(defenseBonus * 0.8f);
                 }
                 prb += ui16(Prefix::RUSTED);
                 if (num > prb && num <= prb + ui16(Prefix::WORN)) {
                     name = "Worn " + name;
                     prefix = Prefix::WORN;
-                    defenseBonus = (short)(defenseBonus * 0.9f);
+                    defenseBonus = shrt(defenseBonus * 0.9f);
                 }
                 prb += ui16(Prefix::WORN);
                 if (num > prb && num <= prb + ui16(Prefix::HEAVY)) {
                     name = "Heavy " + name;
                     prefix = Prefix::HEAVY;
-                    defenseBonus = (short)(defenseBonus * 1.1f);
+                    defenseBonus = shrt(defenseBonus * 1.1f);
                 }
                 prb += ui16(Prefix::HEAVY);
                 if (num > prb && num <= prb + ui16(Prefix::ENCHANTED)) {
                     name = "Enchanted " + name;
                     prefix = Prefix::ENCHANTED;
-                    defenseBonus = (short)(defenseBonus * 1.2f);
+                    defenseBonus = shrt(defenseBonus * 1.2f);
                 }
 
                 // Set suffix
@@ -222,21 +223,21 @@ namespace Item {
                 if (num > prb && num <= prb + ui16(Suffix::KNIGHT)) {
                     name += " of the Knight";
                     suffix = Suffix::KNIGHT;
-                    defenseBonus = (short)(defenseBonus * 1.1f);
+                    defenseBonus = shrt(defenseBonus * 1.1f);
                     return;
                 }
                 prb += ui16(Suffix::KNIGHT);
                 if (num > prb && num <= prb + ui16(Suffix::FORTITUDE)) {
                     name += " of Fortitude";
                     suffix = Suffix::FORTITUDE;
-                    defenseBonus = (short)(defenseBonus * 1.2f);
+                    defenseBonus = shrt(defenseBonus * 1.2f);
                     return;
                 }
                 prb += ui16(Suffix::FORTITUDE);
                 if (num > prb && num <= prb + ui16(Suffix::RESILIENCE)) {
                     name += " of Resilience";
                     suffix = Suffix::RESILIENCE;
-                    defenseBonus = (short)(defenseBonus * 1.3f);
+                    defenseBonus = shrt(defenseBonus * 1.3f);
                     return;
                 }
             }
@@ -244,7 +245,7 @@ namespace Item {
         uint16_t levelUp() override {
             uint16_t bonus = 0;
             if (exp >= nextLevel) {
-                bonus = (short)std::round(pow(level, Data[static_cast<uint16_t>(itemType)].defMod / 2)); // level to the power of defMod / 2
+                bonus = shrt(std::round(pow(level, Data[ui16(itemType)].defMod / 2))); // level to the power of defMod / 2
                 defenseBonus += bonus;
                 Leveled::levelUp();
             }
@@ -252,13 +253,8 @@ namespace Item {
         }
     
         void displayInfo(const Source source = Source::NONE) const override {
-            if (source == FIND)
-                type("\nYou found an item: ");
-            else if (source == CRAFT)
-                type("You crafted an item: ");
-            else if (source == DROP)
-                type("The enemy dropped an item: ");
-            type(name, " (Defense Bonus: ", defenseBonus, ")\n");
+            Item::displayInfo(source);
+            type(" (Defense Bonus: ", defenseBonus, ")\n");
         }
     
     };
@@ -287,7 +283,7 @@ namespace Item {
         Suffix suffix;
 
         static short getStats(const TYPE wpnType, const uint16_t level, const short add = 1) {
-            return (short)std::abs(std::round(pow(level + add, Data[static_cast<uint16_t>(wpnType)].strMod)));
+            return shrt(std::abs(std::round(pow(level + add, Data[ui16(wpnType)].strMod))));
         }
 
         Weapon() : strengthBonus(0) {}
@@ -302,39 +298,39 @@ namespace Item {
         Weapon(const TYPE wpnType, const uint16_t level, const short add = 1, const bool crafted = false) :
             Leveled(wpnType),
             strengthBonus (crafted // if the item is crafted
-                ? (short)std::abs(std::round(pow(level + add, Data[static_cast<uint16_t>(wpnType)].strMod))) // (level + add) to the power of strMod
-                : (short)randint(1, (uint16_t)std::abs(std::round(pow(level + add, Data[static_cast<uint16_t>(wpnType)].strMod)))) // random number between 1 and the value above
+                ? shrt(std::abs(std::round(pow(level + add, Data[ui16(wpnType)].strMod)))) // (level + add) to the power of strMod
+                : shrt(randint(1, ui16(std::abs(std::round(pow(level + add, Data[ui16(wpnType)].strMod)))))) // random number between 1 and the value above
             ),
             prefix(Prefix::NONE),
             suffix(Suffix::NONE) {
                 uint16_t num;
                 uint16_t prb;
                 // Set prefix
-                if (Data[static_cast<uint16_t>(wpnType)].canHavePrefix) {
+                if (Data[ui16(wpnType)].canHavePrefix) {
                     num = randint(1, 100);
                     prb = ui16(Prefix::NONE);
                     if (num > prb && num <= prb + ui16(Prefix::CURSED)) {
                         name = "Cursed " + name;
                         prefix = Prefix::CURSED;
-                        strengthBonus = (short)(strengthBonus * 0.8f);
+                        strengthBonus = shrt(strengthBonus * 0.8f);
                     }
                     prb += ui16(Prefix::CURSED);
                     if (num > prb && num <= prb + ui16(Prefix::DULL)) {
                         name = "Dull " + name;
                         prefix = Prefix::DULL;
-                        strengthBonus = (short)(strengthBonus * 0.9f);
+                        strengthBonus = shrt(strengthBonus * 0.9f);
                     }
                     prb += ui16(Prefix::DULL);
                     if (num > prb && num <= prb + ui16(Prefix::SHARP)) {
                         name = "Sharp " + name;
                         prefix = Prefix::SHARP;
-                        strengthBonus = (short)(strengthBonus * 1.1f);
+                        strengthBonus = shrt(strengthBonus * 1.1f);
                     }
                     prb += ui16(Prefix::SHARP);
                     if (num > prb && num <= prb + ui16(Prefix::LEGENDARY)) {
                         name = "Legendary " + name;
                         prefix = Prefix::LEGENDARY;
-                        strengthBonus = (short)(strengthBonus * 1.2f);
+                        strengthBonus = shrt(strengthBonus * 1.2f);
                     }
                 }
 
@@ -350,21 +346,21 @@ namespace Item {
                 if (num > prb && num <= prb + ui16(Suffix::VENGEANCE)) {
                     name += " of Vengeance";
                     suffix = Suffix::VENGEANCE;
-                    strengthBonus = (short)(strengthBonus * 1.1f);
+                    strengthBonus = shrt(strengthBonus * 1.1f);
                     return;
                 }
                 prb += ui16(Suffix::VENGEANCE);
                 if (num > prb && num <= prb + ui16(Suffix::SLAYER)) {
                     name += " of the Slayer";
                     suffix = Suffix::SLAYER;
-                    strengthBonus = (short)(strengthBonus * 1.2f);
+                    strengthBonus = shrt(strengthBonus * 1.2f);
                     return;
                 }
                 prb += ui16(Suffix::SLAYER);
                 if (num > prb && num <= prb + ui16(Suffix::EXECUTIONER)) {
                     name += " of the Executioner";
                     suffix = Suffix::EXECUTIONER;
-                    strengthBonus = (short)(strengthBonus * 1.3f);
+                    strengthBonus = shrt(strengthBonus * 1.3f);
                     return;
                 }
             }
@@ -372,7 +368,7 @@ namespace Item {
         uint16_t levelUp() override {
             uint16_t bonus = 0;
             if (exp >= nextLevel) {
-                bonus = (short)std::round(pow(level, Data[static_cast<uint16_t>(itemType)].strMod / 2)); // level to the power of strMod / 2
+                bonus = shrt(std::round(pow(level, Data[ui16(itemType)].strMod / 2))); // level to the power of strMod / 2
                 strengthBonus += bonus;
                 Leveled::levelUp();
             }
@@ -380,13 +376,8 @@ namespace Item {
         }
     
         void displayInfo(const Source source = Source::NONE) const override {
-            if (source == FIND)
-                type("\nYou found an item: ");
-            else if (source == CRAFT)
-                type("You crafted an item: ");
-            else if (source == DROP)
-                type("The enemy dropped an item: ");
-            type(name, " (Strength Bonus: ", strengthBonus, ")\n");
+            Item::displayInfo(source);
+            type(" (Strength Bonus: ", strengthBonus, ")\n");
         }
     
     };
@@ -405,31 +396,36 @@ namespace Item {
          */
         Special(const TYPE splType, const uint16_t level) :
             Item(splType),
-            defenseBonus (Data[static_cast<uint16_t>(splType)].defMod == 0 // if defMod is 0
+            defenseBonus (Data[ui16(splType)].defMod == 0 // if defMod is 0
                 ? 0
-                : (short)randint(1, (uint16_t)std::round(pow(level, Data[static_cast<uint16_t>(splType)].defMod))) * // a random number between 1 and the level to the power of defMod
-                (Data[static_cast<uint16_t>(splType)].nDef // ...multiplied by -1 if nDef is true
-                    ? -1
-                    : 1
+                : shrt (
+                    randint ( // a random number between 1 and the level to the power of defMod
+                        1,
+                        ui16(std::round(pow(level, Data[ui16(splType)].defMod)))
+                    ) *
+                    (Data[ui16(splType)].nDef // ...multiplied by -1 if nDef is true
+                        ? -1
+                        : 1
+                    )
                 )
             ),
-            strengthBonus (Data[static_cast<uint16_t>(splType)].strMod == 0 // if strMod is 0
+            strengthBonus (Data[ui16(splType)].strMod == 0 // if strMod is 0
                 ? 0
-                : (short)randint(1, (uint16_t)std::round(pow(level, Data[static_cast<uint16_t>(splType)].strMod))) * // a random number between 1 and the level to the power of strMod
-                (Data[static_cast<uint16_t>(splType)].nStr // ...multiplied by -1 if nStr is true
-                    ? -1
-                    : 1
+                : shrt (
+                    randint ( // a random number between 1 and the level to the power of strMod
+                        1,
+                        ui16(std::round(pow(level, Data[ui16(splType)].strMod)))
+                    ) *
+                    (Data[ui16(splType)].nStr // ...multiplied by -1 if nStr is true
+                        ? -1
+                        : 1
+                    )
                 )
             ) {}
     
         void displayInfo(const Source source = Source::NONE) const override {
-            if (source == FIND)
-                type("\nYou found an item: ");
-            else if (source == CRAFT)
-                type("\nYou crafted an item: ");
-            else if (source == DROP)
-                type("The enemy dropped an item: ");
-            type(name, " (Defense Bonus: ", defenseBonus, ", Strength Bonus: ", strengthBonus, ")\n");
+            Item::displayInfo(source);
+            type(" (Defense Bonus: ", defenseBonus, ", Strength Bonus: ", strengthBonus, ")\n");
         }
         
     };

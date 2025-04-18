@@ -66,10 +66,14 @@ void EventsS::travelingTrader() { // Traveling Trader
                 trader.displayWares();
                 std::string buyChoice = "";
                 do {
-                    buyChoice = capitalize(input("\nEnter the resource you want to trade for: "));
+                    buyChoice = capitalize(input("\nEnter the resource you want to trade for (or enter q to go back): "));
+                    if (buyChoice == "Q")
+                        break;
                     if (trader.resources[buyChoice] < 1)
                         type("The trader doesn't have that resource!\n");
                 } while (trader.resources[buyChoice] < 1);
+                if (buyChoice == "Q")
+                    continue;
 
                 bool noResources = true;
                 int amountBuy = 0;
@@ -83,7 +87,9 @@ void EventsS::travelingTrader() { // Traveling Trader
                 
                 std::string sellChoice = "";
                 do {
-                    sellChoice = capitalize(input("Enter the resource you want to trade: "));
+                    sellChoice = capitalize(input("Enter the resource you want to trade (or enter q to go back): "));
+                    if (sellChoice == "Q")
+                        break;
                     if (player.resources[sellChoice] < 1)
                         type("You don't have that resource!\n");
                     if (player.special.name == sellChoice) {
@@ -91,6 +97,8 @@ void EventsS::travelingTrader() { // Traveling Trader
                         sellChoice = "";
                     }
                 } while (player.resources[sellChoice] < 1);
+                if (sellChoice == "Q")
+                    continue;
 
                 int amountSell = 0;
                 do {
@@ -102,7 +110,7 @@ void EventsS::travelingTrader() { // Traveling Trader
                 } while (noResources);
 
                 if (trader.resources.prices[buyChoice] * amountBuy != trader.resources.prices[sellChoice] * amountSell) {
-                    type("This trade is unbalanced. Do you want to do it anyway?\n");
+                    type("\nThis trade is unbalanced. Do you want to do it anyway?\n");
                     Choice confirmChoice;
                     do confirmChoice = input("Enter choice (1. Yes / 2. No): ");
                     while (!confirmChoice.isChoice(true, "yes", 1, "no", 2));
@@ -112,10 +120,10 @@ void EventsS::travelingTrader() { // Traveling Trader
                 }
 
                 type("\nYou got ", amountBuy, " ", buyChoice, " from the trader for ", amountSell, " ", sellChoice, ".\n");
-                trader.resources[sellChoice] += (uint16_t)amountSell;
-                trader.resources[buyChoice] -= (uint16_t)amountBuy;
-                player.resources[sellChoice] -= (uint16_t)amountSell;
-                player.resources[buyChoice] += (uint16_t)amountBuy;
+                trader.resources[sellChoice] += ui16(amountSell);
+                trader.resources[buyChoice] -= ui16(amountBuy);
+                player.resources[sellChoice] -= ui16(amountSell);
+                player.resources[buyChoice] += ui16(amountBuy);
                 continue;
             } else
                 type("You leave the trader.\n");
