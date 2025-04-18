@@ -768,3 +768,5 @@
         -Changed some messages
         -Wizard stat balances
         -Updated license
+        -Commit master 7f2d151
+        -Moved license to docs/
