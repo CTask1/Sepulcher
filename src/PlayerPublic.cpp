@@ -31,7 +31,7 @@ void PlayerPublic::levelUp(uint16_t hitdie) {
         player.baseStrength += 3;
         if (player.Race == Player::DRAKONIAN)
             player.defense += 1;
-        player.nextLevel = 10 + static_cast<uint32_t>(pow(player.level, 2));
+        player.nextLevel = 10 + static_cast<uint16_t>(pow(player.level, 2));
         levels++;
     }
     if (levels > 0) {
@@ -434,8 +434,9 @@ void PlayerPublic::initItem(const Item::TYPE iType, const Item::Source source) {
 
 void PlayerPublic::unequipArmor(const bool confirmation) {
     if (confirmation) {
+        type("Are you sure you want to unequip your " + player.armor.name + " (1. Yes / 2. No)?\n");
         Choice choice;
-        do choice = input("Are you sure you want to unequip your ", player.armor.name, " (1. Yes / 2. No)? ");
+        do choice = input("Enter choice: ");
         while (!choice.isChoice(true, "yes", 1, "no", 2));
         if (choice.isChoice("no", 2))
             return;
@@ -447,8 +448,9 @@ void PlayerPublic::unequipArmor(const bool confirmation) {
 
 void PlayerPublic::unequipWeapon(const bool confirmation) {
     if (confirmation) {
+        type("Are you sure you want to unequip your " + player.weapon.name + " (1. Yes / 2. No)?\n");
         Choice choice;
-        do choice = input("Are you sure you want to unequip your ", player.weapon.name, " (1. Yes / 2. No)? ");
+        do choice = input("Enter choice: ");
         while (!choice.isChoice(true, "yes", 1, "no", 2));
         if (choice.isChoice("no", 2))
             return;
@@ -483,7 +485,7 @@ void PlayerPublic::gatherResources() {
 
 void PlayerPublic::craft() {
     do {
-        std::unordered_map<uint16_t, std::unique_ptr<Item::Item>> items;
+        std::vector<std::unique_ptr<Item::Item>> items;
         uint16_t i = 0;
         type (
             "\nWhat do you want to craft?"
@@ -529,36 +531,36 @@ void PlayerPublic::craft() {
             if (choiceNum == i)
                 break;
 
-            switch ((*items[choiceNum]).itemType) {
+            switch ((*items.at(choiceNum)).itemType) {
             case Item::TYPE::ARM_DRAKONIAN: // Drakonian Armor
-                pPrv.craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), { { "Fiber", u(2) }, { "Leather", u(6) } });
+                pPrv.craftArmor(static_cast<Item::Armor&>(*items.at(choiceNum)), { { "Fiber", ui16(2) }, { "Leather", ui16(6) } });
                 break;
             case Item::TYPE::ARM_LEATHER: // Leather Armor
-                pPrv.craftArmor(static_cast<Item::Armor&>(*items[choiceNum]), { { "Fiber", u(2) }, { "Leather", u(6) } });
+                pPrv.craftArmor(static_cast<Item::Armor&>(*items.at(choiceNum)), { { "Fiber", ui16(2) }, { "Leather", ui16(6) } });
                 break;
             case Item::TYPE::WPN_LONG: // Longsword
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Fiber", u(2) }, { "Iron", u(3) }, { "Wood", u(2) } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items.at(choiceNum)), { { "Fiber", ui16(2) }, { "Iron", ui16(3) }, { "Wood", ui16(2) } });
                 break;
             case Item::TYPE::WPN_ST_WARBORN: // Staff of the Warborn
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Warborn", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items.at(choiceNum)), { { "Amulet of the Warborn", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } });
                 break;
             case Item::TYPE::WPN_ST_GUARDIAN: // Staff of the Guardian
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Guardian", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items.at(choiceNum)), { { "Amulet of the Guardian", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } });
                 break;
             case Item::TYPE::WPN_ST_SHADOW: // Staff of the Shadow
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Shadow", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items.at(choiceNum)), { { "Amulet of the Shadow", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } });
                 break;
             case Item::TYPE::WPN_ST_FURY: // Staff of Fury
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of Fury", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items.at(choiceNum)), { { "Amulet of Fury", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } });
                 break;
             case Item::TYPE::WPN_ST_WEEPING: // Staff of the Weeping Spirit
-                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items[choiceNum]), { { "Amulet of the Weeping Spirit", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } });
+                pPrv.craftWeapon(static_cast<Item::Weapon&>(*items.at(choiceNum)), { { "Amulet of the Weeping Spirit", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } });
                 break;
             case Item::TYPE::POTION: // Health Potion
-                pPrv.craftItem(*items[choiceNum], { { "Medicinal Herbs", u(2) } });
+                pPrv.craftItem(*items.at(choiceNum), { { "Medicinal Herbs", ui16(2) } });
                 break;
             case Item::TYPE::FOCUS: // Arcane Focus
-                pPrv.craftItem(*items[choiceNum], { { "Crystals", u(4) } });
+                pPrv.craftItem(*items.at(choiceNum), { { "Crystals", ui16(4) } });
                 break;
             }
             return;

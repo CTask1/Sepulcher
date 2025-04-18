@@ -75,7 +75,11 @@ namespace Enemy {
         void displayStats() {
             setOutputSettings();
             std::cout << "\n-------------------------";
-            type("\nEnemy: ", name, "\nHealth: ", health, "\nStrength: ", strength);
+            type (
+                "\nEnemy: ", name,
+                "\nHealth: ", health,
+                "\nStrength: ", strength
+            );
             std::cout << "\n-------------------------\n";
         }
     };

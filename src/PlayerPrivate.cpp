@@ -8,85 +8,75 @@
 #include"..\include\globals.h"
 #include"..\include\util.h"
 
-bool PlayerPrivate::initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const {
+bool PlayerPrivate::initCraftArmor(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const {
     if (player.Class == Player::WIZARD) {
         type("There is no armor available to craft.\n");
         return false;
     }
     if (player.Race == Player::DRAKONIAN) {
-        Item::Armor drakArmor(Item::TYPE::ARM_DRAKONIAN, player.level, 1, true);
-        items[i] = std::make_unique<Item::Armor>(std::move(drakArmor));
+        items.emplace_back(std::make_unique<Item::Armor>(Item::TYPE::ARM_DRAKONIAN, player.level, shrt(1), true));
         type (
             ++i, ". Drakonian Armor (Defense Bonus: ", Item::Armor::getStats(Item::TYPE::ARM_DRAKONIAN, player.level), ")",
-            displayComponents({ { "Fiber", u(2) }, { "Leather", u(6) } }), "\n"
+            displayComponents({ { "Fiber", ui16(2) }, { "Leather", ui16(6) } }), "\n"
         );
     } else {
-        Item::Armor LeatherArmor(Item::TYPE::ARM_LEATHER, player.level, 1, true);
-        items[i] = std::make_unique<Item::Armor>(std::move(LeatherArmor));
+        items.emplace_back(std::make_unique<Item::Armor>(Item::TYPE::ARM_LEATHER, player.level, shrt(1), true));
         type (
             ++i, ". Leather Armor (Defense Bonus: ", Item::Armor::getStats(Item::TYPE::ARM_LEATHER, player.level), ")",
-            displayComponents({ { "Fiber", u(2) }, { "Leather", u(6) } }), "\n"
+            displayComponents({ { "Fiber", ui16(2) }, { "Leather", ui16(6) } }), "\n"
         );
     }
     return true;
 }
 
-bool PlayerPrivate::initCraftWeapons(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const {
-    Item::Weapon longsword(Item::TYPE::WPN_LONG, player.level, (player.Class == Player::WIZARD ? -1 : 1), true);
-    items[i] = std::make_unique<Item::Weapon>(std::move(longsword));
+bool PlayerPrivate::initCraftWeapons(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const {
+    items.emplace_back(std::make_unique<Item::Weapon>(Item::TYPE::WPN_LONG, player.level, shrt(player.Class == Player::WIZARD ? -1 : 1), true));
     type (
         ++i, ". Longsword (Strength Bonus: ", Item::Weapon::getStats(Item::TYPE::WPN_LONG, player.level), ")",
-        displayComponents({ { "Fiber", u(2) }, { "Iron", u(3) }, { "Wood", u(2) } }), "\n"
+        displayComponents({ { "Fiber", ui16(2) }, { "Iron", ui16(3) }, { "Wood", ui16(2) } }), "\n"
     );
     if (player.Class == Player::WIZARD) {
-        Item::Weapon stWarborn(Item::TYPE::WPN_ST_WARBORN, player.level, (player.Race == Player::ELF ? 2 : 1), true);
-        items[i] = std::make_unique<Item::Weapon>(std::move(stWarborn));
+        items.emplace_back(std::make_unique<Item::Weapon>(Item::TYPE::WPN_ST_WARBORN, player.level, shrt(player.Race == Player::ELF ? 2 : 1), true));
         type (
             ++i, ". Staff of the Warborn (Strength Bonus: ", Item::Weapon::getStats(Item::TYPE::WPN_ST_WARBORN, player.level), ")",
-            displayComponents({ { "Amulet of the Warborn", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } }), "\n"
+            displayComponents({ { "Amulet of the Warborn", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }), "\n"
         );
-        Item::Weapon stGuardian(Item::TYPE::WPN_ST_GUARDIAN, player.level, (player.Race == Player::ELF ? 2 : 1), true);
-        items[i] = std::make_unique<Item::Weapon>(std::move(stGuardian));
+        items.emplace_back(std::make_unique<Item::Weapon>(Item::TYPE::WPN_ST_GUARDIAN, player.level, shrt(player.Race == Player::ELF ? 2 : 1), true));
         type (
             ++i, ". Staff of the Guardian (Strength Bonus: ", Item::Weapon::getStats(Item::TYPE::WPN_ST_GUARDIAN, player.level), ")",
-            displayComponents({ { "Amulet of the Guardian", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } }), "\n"
+            displayComponents({ { "Amulet of the Guardian", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }), "\n"
         );
-        Item::Weapon stShadow(Item::TYPE::WPN_ST_SHADOW, player.level, 1, true);
-        items[i] = std::make_unique<Item::Weapon>(std::move(stShadow));
+        items.emplace_back(std::make_unique<Item::Weapon>(Item::TYPE::WPN_ST_SHADOW, player.level, shrt(1), true));
         type (
             ++i, ". Staff of the Shadow (Strength Bonus: ", Item::Weapon::getStats(Item::TYPE::WPN_ST_SHADOW, player.level), ")",
-            displayComponents({ { "Amulet of the Shadow", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } }), "\n"
+            displayComponents({ { "Amulet of the Shadow", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }), "\n"
         );
-        Item::Weapon stFury(Item::TYPE::WPN_ST_FURY, player.level, (player.Race == Player::ELF ? 2 : 1), true);
-        items[i] = std::make_unique<Item::Weapon>(std::move(stFury));
+        items.emplace_back(std::make_unique<Item::Weapon>(Item::TYPE::WPN_ST_FURY, player.level, shrt(player.Race == Player::ELF ? 2 : 1), true));
         type (
             ++i, ". Staff of Fury (Strength Bonus: ", Item::Weapon::getStats(Item::TYPE::WPN_ST_FURY, player.level), ")",
-            displayComponents({ { "Amulet of Fury", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } }), "\n"
+            displayComponents({ { "Amulet of Fury", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }), "\n"
         );
-        Item::Weapon stWeeping(Item::TYPE::WPN_ST_WEEPING, player.level, (player.Race == Player::ELF ? 2 : 1), true);
-        items[i] = std::make_unique<Item::Weapon>(std::move(stWeeping));
+        items.emplace_back(std::make_unique<Item::Weapon>(Item::TYPE::WPN_ST_WEEPING, player.level, shrt(player.Race == Player::ELF ? 2 : 1), true));
         type (
             ++i, ". Staff of the Weeping Spirit (Strength Bonus: ", Item::Weapon::getStats(Item::TYPE::WPN_ST_WEEPING, player.level), ")",
-            displayComponents({ { "Amulet of the Weeping Spirit", u(1) }, { "Fiber", u(2) }, { "Wood", u(4) } }), "\n"
+            displayComponents({ { "Amulet of the Weeping Spirit", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }), "\n"
         );
     }
     return true;
 }
 
-bool PlayerPrivate::initCraftItems(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const {
-    Item::Item potion(Item::TYPE::POTION);
-    items[i] = std::make_unique<Item::Item>(std::move(potion));
+bool PlayerPrivate::initCraftItems(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const {
+    items.emplace_back(std::make_unique<Item::Item>(Item::TYPE::POTION));
     type (
         ++i, ". Health Potion",
-        displayComponents({ { "Medicinal Herbs", u(2) } }), "\n"
+        displayComponents({ { "Medicinal Herbs", ui16(2) } }), "\n"
     );
     
     if (player.Class == Player::WIZARD) {
-        Item::Item focus(Item::TYPE::FOCUS);
-        items[i] = std::make_unique<Item::Item>(std::move(focus));
+        items.emplace_back(std::make_unique<Item::Item>(Item::TYPE::FOCUS));
         type (
             ++i, ". Arcane Focus",
-            displayComponents({ { "Crystals", u(4) } }), "\n"
+            displayComponents({ { "Crystals", ui16(4) } }), "\n"
         );
     }
     return true;

@@ -727,3 +727,20 @@
                 -Util.h to util.h
                 -Util.tpp to util.tpp
                 -Util.cpp to util.cpp
+        -Commit master 48feda2
+        -Code efficiency
+            -Replaced variadic function tostring() with overloads, removing the necessity of:
+                -<type_traits>
+                -<stringstream>
+            -Replaced variadic function input() with char pointer parameter
+
+
+    -- 04/17/25 --
+
+        -Code efficiency
+            -Replaced unordered_maps in craft(), initCraftArmor(), initCraftWeapons(), and initCraftItems() with vectors
+            -Replaced uint32_t variables with uint16_t
+            -Removed an overload of tostring()
+            -Merged all util files into util.h
+        -Bug fixes
+            -Fixed infinite recursion in tostring()

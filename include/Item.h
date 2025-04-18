@@ -89,7 +89,7 @@ namespace Item {
 
         Item(const TYPE type = TYPE::NONE) : itemType(type), name(Data[static_cast<uint16_t>(type)].name) {}
 
-        virtual ~Item() {}
+        virtual ~Item() = default;
         
         virtual void displayInfo(const Source source = Source::NONE) const {
             if (source == FIND)
@@ -185,26 +185,26 @@ namespace Item {
             suffix(Suffix::NONE) {
                 // Set prefix
                 uint16_t num = randint(1, 100);
-                uint16_t prb = u(Prefix::NONE);
-                if (num > prb && num <= prb + u(Prefix::RUSTED)) {
+                uint16_t prb = ui16(Prefix::NONE);
+                if (num > prb && num <= prb + ui16(Prefix::RUSTED)) {
                     name = "Rusted " + name;
                     prefix = Prefix::RUSTED;
                     defenseBonus = (short)(defenseBonus * 0.8f);
                 }
-                prb += u(Prefix::RUSTED);
-                if (num > prb && num <= prb + u(Prefix::WORN)) {
+                prb += ui16(Prefix::RUSTED);
+                if (num > prb && num <= prb + ui16(Prefix::WORN)) {
                     name = "Worn " + name;
                     prefix = Prefix::WORN;
                     defenseBonus = (short)(defenseBonus * 0.9f);
                 }
-                prb += u(Prefix::WORN);
-                if (num > prb && num <= prb + u(Prefix::HEAVY)) {
+                prb += ui16(Prefix::WORN);
+                if (num > prb && num <= prb + ui16(Prefix::HEAVY)) {
                     name = "Heavy " + name;
                     prefix = Prefix::HEAVY;
                     defenseBonus = (short)(defenseBonus * 1.1f);
                 }
-                prb += u(Prefix::HEAVY);
-                if (num > prb && num <= prb + u(Prefix::ENCHANTED)) {
+                prb += ui16(Prefix::HEAVY);
+                if (num > prb && num <= prb + ui16(Prefix::ENCHANTED)) {
                     name = "Enchanted " + name;
                     prefix = Prefix::ENCHANTED;
                     defenseBonus = (short)(defenseBonus * 1.2f);
@@ -212,28 +212,28 @@ namespace Item {
 
                 // Set suffix
                 num = randint(1, 100);
-                prb = u(Suffix::NONE);
-                if (num > prb && num <= prb + u(Suffix::THORNS)) {
+                prb = ui16(Suffix::NONE);
+                if (num > prb && num <= prb + ui16(Suffix::THORNS)) {
                     name += " of Thorns";
                     suffix = Suffix::THORNS;
                     return;
                 }
-                prb += u(Suffix::THORNS);
-                if (num > prb && num <= prb + u(Suffix::KNIGHT)) {
+                prb += ui16(Suffix::THORNS);
+                if (num > prb && num <= prb + ui16(Suffix::KNIGHT)) {
                     name += " of the Knight";
                     suffix = Suffix::KNIGHT;
                     defenseBonus = (short)(defenseBonus * 1.1f);
                     return;
                 }
-                prb += u(Suffix::KNIGHT);
-                if (num > prb && num <= prb + u(Suffix::FORTITUDE)) {
+                prb += ui16(Suffix::KNIGHT);
+                if (num > prb && num <= prb + ui16(Suffix::FORTITUDE)) {
                     name += " of Fortitude";
                     suffix = Suffix::FORTITUDE;
                     defenseBonus = (short)(defenseBonus * 1.2f);
                     return;
                 }
-                prb += u(Suffix::FORTITUDE);
-                if (num > prb && num <= prb + u(Suffix::RESILIENCE)) {
+                prb += ui16(Suffix::FORTITUDE);
+                if (num > prb && num <= prb + ui16(Suffix::RESILIENCE)) {
                     name += " of Resilience";
                     suffix = Suffix::RESILIENCE;
                     defenseBonus = (short)(defenseBonus * 1.3f);
@@ -312,26 +312,26 @@ namespace Item {
                 // Set prefix
                 if (Data[static_cast<uint16_t>(wpnType)].canHavePrefix) {
                     num = randint(1, 100);
-                    prb = u(Prefix::NONE);
-                    if (num > prb && num <= prb + u(Prefix::CURSED)) {
+                    prb = ui16(Prefix::NONE);
+                    if (num > prb && num <= prb + ui16(Prefix::CURSED)) {
                         name = "Cursed " + name;
                         prefix = Prefix::CURSED;
                         strengthBonus = (short)(strengthBonus * 0.8f);
                     }
-                    prb += u(Prefix::CURSED);
-                    if (num > prb && num <= prb + u(Prefix::DULL)) {
+                    prb += ui16(Prefix::CURSED);
+                    if (num > prb && num <= prb + ui16(Prefix::DULL)) {
                         name = "Dull " + name;
                         prefix = Prefix::DULL;
                         strengthBonus = (short)(strengthBonus * 0.9f);
                     }
-                    prb += u(Prefix::DULL);
-                    if (num > prb && num <= prb + u(Prefix::SHARP)) {
+                    prb += ui16(Prefix::DULL);
+                    if (num > prb && num <= prb + ui16(Prefix::SHARP)) {
                         name = "Sharp " + name;
                         prefix = Prefix::SHARP;
                         strengthBonus = (short)(strengthBonus * 1.1f);
                     }
-                    prb += u(Prefix::SHARP);
-                    if (num > prb && num <= prb + u(Prefix::LEGENDARY)) {
+                    prb += ui16(Prefix::SHARP);
+                    if (num > prb && num <= prb + ui16(Prefix::LEGENDARY)) {
                         name = "Legendary " + name;
                         prefix = Prefix::LEGENDARY;
                         strengthBonus = (short)(strengthBonus * 1.2f);
@@ -340,28 +340,28 @@ namespace Item {
 
                 // Set suffix
                 num = randint(1, 100);
-                prb = u(Suffix::NONE);
-                if (num > prb && num <= prb + u(Suffix::INFERNO)) {
+                prb = ui16(Suffix::NONE);
+                if (num > prb && num <= prb + ui16(Suffix::INFERNO)) {
                     name += " of the Inferno";
                     suffix = Suffix::INFERNO;
                     return;
                 }
-                prb += u(Suffix::INFERNO);
-                if (num > prb && num <= prb + u(Suffix::VENGEANCE)) {
+                prb += ui16(Suffix::INFERNO);
+                if (num > prb && num <= prb + ui16(Suffix::VENGEANCE)) {
                     name += " of Vengeance";
                     suffix = Suffix::VENGEANCE;
                     strengthBonus = (short)(strengthBonus * 1.1f);
                     return;
                 }
-                prb += u(Suffix::VENGEANCE);
-                if (num > prb && num <= prb + u(Suffix::SLAYER)) {
+                prb += ui16(Suffix::VENGEANCE);
+                if (num > prb && num <= prb + ui16(Suffix::SLAYER)) {
                     name += " of the Slayer";
                     suffix = Suffix::SLAYER;
                     strengthBonus = (short)(strengthBonus * 1.2f);
                     return;
                 }
-                prb += u(Suffix::SLAYER);
-                if (num > prb && num <= prb + u(Suffix::EXECUTIONER)) {
+                prb += ui16(Suffix::SLAYER);
+                if (num > prb && num <= prb + ui16(Suffix::EXECUTIONER)) {
                     name += " of the Executioner";
                     suffix = Suffix::EXECUTIONER;
                     strengthBonus = (short)(strengthBonus * 1.3f);

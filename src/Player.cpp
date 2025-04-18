@@ -1,7 +1,7 @@
 //CTask
 #include<initializer_list>
-#include<unordered_map>
 #include<iostream>
+#include<vector>
 #include<memory>
 #include<string>
 #include<cmath>
@@ -33,7 +33,7 @@ Player::Player(std::string_view n, RACE ra, CLASS cl, uint16_t h, uint16_t s, ui
   defense(0),
   mageArmorDefense(0),
   level(1),
-  nextLevel(10 + static_cast<uint32_t>(pow(level, 2))),
+  nextLevel(10 + static_cast<uint16_t>(pow(level, 2))),
   exp(0),
   bloodMeter(0),
   hasAbility(false),
@@ -112,9 +112,9 @@ void Player::unequipArmor(const bool confirmation)                              
 void Player::unequipWeapon(const bool confirmation)                                                                                {        (*pPub).unequipWeapon     ( confirmation                         ); }
 void Player::gatherResources()                                                                                                     {        (*pPub).gatherResources   (                                      ); }
 void Player::craft()                                                                                                               {        (*pPub).craft             (                                      ); }
-bool Player::initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const                   { return (*pPrv).initCraftArmor    ( items      , i                       ); }
-bool Player::initCraftWeapons(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const                 { return (*pPrv).initCraftWeapons  ( items      , i                       ); }
-bool Player::initCraftItems(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const                   { return (*pPrv).initCraftItems    ( items      , i                       ); }
+bool Player::initCraftArmor(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const                                    { return (*pPrv).initCraftArmor    ( items      , i                       ); }
+bool Player::initCraftWeapons(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const                                  { return (*pPrv).initCraftWeapons  ( items      , i                       ); }
+bool Player::initCraftItems(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const                                    { return (*pPrv).initCraftItems    ( items      , i                       ); }
 bool Player::useComponents(const std::initializer_list<std::pair<std::string, uint16_t>> components)                               { return (*pPrv).useComponents     ( components                           ); }
 bool Player::initCraft(const Item::Item* const& item, const std::initializer_list<std::pair<std::string, uint16_t>> components)    { return (*pPrv).initCraft         ( item       , components              ); }
 bool Player::craftArmor(Item::Armor& armorItem, const std::initializer_list<std::pair<std::string, uint16_t>> components)          { return (*pPrv).craftArmor        ( armorItem  , components              ); }

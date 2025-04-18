@@ -21,13 +21,11 @@ public:
 
     _NODISCARD bool isChoice() const { return false; }
 
-    template<typename T, typename... Args>
-    _NODISCARD bool isChoice(const T& chk1, const Args&... args) const {
+    template<typename T, typename... Args> _NODISCARD bool isChoice(const T& chk1, const Args&... args) const {
         return choice == tostring(chk1) || isChoice(args...);
     }
 
-    template<typename... Args>
-    _NODISCARD bool isChoice(const bool showMessage = false, const Args&... args) const {
+    template<typename... Args> _NODISCARD bool isChoice(const bool showMessage = false, const Args&... args) const {
         const bool CHECK_RESULT = isChoice(args...);
         if (!CHECK_RESULT && showMessage)
             type("\nThat's not an option!\n");

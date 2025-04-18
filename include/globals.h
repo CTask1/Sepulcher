@@ -1,7 +1,8 @@
 //CTask
 #pragma once
 
-#define u(x) (uint16_t)(x)
+#define shrt(x) static_cast<short>((x))
+#define ui16(y) static_cast<uint16_t>((y))
 
 // inline bool day = true;
 

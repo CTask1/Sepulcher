@@ -1,7 +1,6 @@
 //CTask
 #pragma once
 #include<initializer_list>
-#include<unordered_map>
 #include<string_view>
 #include<vector>
 #include<memory>
@@ -60,7 +59,7 @@ public:
              bloodMeter;
     short strength, defense, 
     mageArmorDefense;
-    uint32_t nextLevel, exp;
+    uint16_t nextLevel, exp;
     Item::Weapon weapon;
     Item::Armor armor;
     Item::Special special;
@@ -115,13 +114,13 @@ private:
     std::unique_ptr<PlayerPublic>  pPub;
     std::unique_ptr<PlayerPrivate> pPrv;
     
-    struct RaceInfo {
-        const RACE Race;
-        const std::string_view name;
-        const bool operator==(const RACE compRace) const {
+    const struct RaceInfo {
+        RACE Race;
+        std::string_view name;
+        bool operator==(const RACE compRace) const {
             return Race == compRace;
         }
-        const bool operator!=(const RACE compRace) const {
+        bool operator!=(const RACE compRace) const {
             return Race != compRace;
         }
     };
@@ -133,13 +132,13 @@ private:
         { REVENANT,  "Revenant"  }
     };
     
-    struct ClassInfo {
-        const CLASS Class;
-        const std::string_view name;
-        const bool operator==(const CLASS compClass) const {
+    const struct ClassInfo {
+        CLASS Class;
+        std::string_view name;
+        bool operator==(const CLASS compClass) const {
             return Class == compClass;
         }
-        const bool operator!=(const CLASS compClass) const {
+        bool operator!=(const CLASS compClass) const {
             return Class != compClass;
         }
     };
@@ -150,9 +149,9 @@ private:
         { WIZARD,  "Wizard"  }
     };
 
-    bool initCraftArmor(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
-    bool initCraftWeapons(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
-    bool initCraftItems(std::unordered_map<uint16_t, std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
+    bool initCraftArmor(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
+    bool initCraftWeapons(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
+    bool initCraftItems(std::vector<std::unique_ptr<Item::Item>>& items, uint16_t& i) const;
     bool useComponents(const std::initializer_list<std::pair<std::string, uint16_t>> components);
     bool initCraft(const Item::Item* const& item, const std::initializer_list<std::pair<std::string, uint16_t>> components);
     bool craftArmor(Item::Armor& armor, const std::initializer_list<std::pair<std::string, uint16_t>> components);
