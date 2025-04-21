@@ -42,9 +42,9 @@ void EventsS::friendlyTraveler() { // Friendly Traveler
 }
 
 void EventsS::travelingTrader() { // Traveling Trader
-    type("You encounter a traveling trader!\nWould you like to browse their wares?\n");
+    type("You encounter a traveling trader!\nWould you like to browse their wares (1. Yes / 2. No)?\n");
     Choice tradeChoice;
-    do tradeChoice = input("Enter choice (1. Yes / 2. No): ");
+    do tradeChoice = input(prompt.data());
     while (!tradeChoice.isChoice(true, "yes", 1, "no", 2));
 
     if (tradeChoice.isChoice("yes", 1)) {
@@ -58,7 +58,7 @@ void EventsS::travelingTrader() { // Traveling Trader
                 "\n2. Leave\n"
             );
             Choice choice;
-            do choice = input("Enter choice: ");
+            do choice = input(prompt.data());
             while (!choice.isChoice(true, "trade", 1, "leave", 2));
 
             if (choice.isChoice("trade", 1)) {
@@ -110,9 +110,9 @@ void EventsS::travelingTrader() { // Traveling Trader
                 } while (noResources);
 
                 if (trader.resources.prices[buyChoice] * amountBuy != trader.resources.prices[sellChoice] * amountSell) {
-                    type("\nThis trade is unbalanced. Do you want to do it anyway?\n");
+                    type("\nThis trade is unbalanced. Do you want to do it anyway (1. Yes / 2. No)?\n");
                     Choice confirmChoice;
-                    do confirmChoice = input("Enter choice (1. Yes / 2. No): ");
+                    do confirmChoice = input(prompt.data());
                     while (!confirmChoice.isChoice(true, "yes", 1, "no", 2));
 
                     if (confirmChoice.isChoice("no", 2))

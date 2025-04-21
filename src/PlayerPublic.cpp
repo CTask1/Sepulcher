@@ -96,7 +96,7 @@ bool PlayerPublic::rituals() {
     ;
     bool isValidRitualChoice = false;
     do {
-        ritualChoice = input("Enter choice: ");
+        ritualChoice = input(prompt.data());
         for (uint16_t i = 0; i < ritualNum && !isValidRitualChoice; i++) {
             isValidRitualChoice = ritualChoice.isChoice(rituals.at(i), i + 1);
             if (isValidRitualChoice)
@@ -185,7 +185,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
     uint16_t choiceNum = abilityNum + 1;
     bool isValidChoice = false;
     do {
-        abilityChoice = input("Enter choice: ");
+        abilityChoice = input(prompt.data());
         for (uint16_t i = 0; i < abilityNum && !isValidChoice; i++) {
             isValidChoice = abilityChoice.isChoice(abilities.at(i), i + 1);
             if (isValidChoice)
@@ -435,7 +435,7 @@ void PlayerPublic::unequipArmor(const bool confirmation) {
     if (confirmation) {
         type("Are you sure you want to unequip your " + player.armor.name + " (1. Yes / 2. No)?\n");
         Choice choice;
-        do choice = input("Enter choice: ");
+        do choice = input(prompt.data());
         while (!choice.isChoice(true, "yes", 1, "no", 2));
         if (choice.isChoice("no", 2))
             return;
@@ -449,7 +449,7 @@ void PlayerPublic::unequipWeapon(const bool confirmation) {
     if (confirmation) {
         type("Are you sure you want to unequip your " + player.weapon.name + " (1. Yes / 2. No)?\n");
         Choice choice;
-        do choice = input("Enter choice: ");
+        do choice = input(prompt.data());
         while (!choice.isChoice(true, "yes", 1, "no", 2));
         if (choice.isChoice("no", 2))
             return;
@@ -494,7 +494,7 @@ void PlayerPublic::craft() {
             "\n4. (go back)\n"
         );
         Choice typeChoice;
-        do typeChoice = input("Enter choice: ");
+        do typeChoice = input(prompt.data());
         while (!typeChoice.isChoice(true, "armor", 1, "weapons", 2, "items", 3, "(go back)", "go back", 4));
 
         if (typeChoice.isChoice("(go back)", "go back", 4))
@@ -519,7 +519,7 @@ void PlayerPublic::craft() {
             uint16_t choiceNum = i;
             bool isValidChoice = false;
             do {
-                craftChoice = input("Enter choice: ");
+                craftChoice = input(prompt.data());
                 for (uint16_t j = 0; j < i && !isValidChoice; j++) {
                     isValidChoice = craftChoice.isChoice(items[j]->name, j + 1);
                     if (isValidChoice)

@@ -6,6 +6,7 @@
 #include"Choice.h"
 #include"Events.h"
 #include"Player.h"
+#include"settings.h"
 #include"globals.h"
 #include"util.h"
 
@@ -62,10 +63,11 @@ void gameLoop(Player& player, uint16_t hitdie) {
                 "\n4. Craft"
                 "\n5. Rest"
                 "\n6. Other options"
-                "\n7. Quit\n"
+                "\n7. Settings"
+                "\n8. Quit\n"
             );
-            do choice = input("Enter choice: ");
-            while (!choice.isChoice(true, "explore", 1, "display stats", 2, "gather resources", 3, "craft", 4, "rest", 5, "other options", 6, "quit", 7));
+            do choice = input(prompt.data());
+            while (!choice.isChoice(true, "explore", 1, "display stats", 2, "gather resources", 3, "craft", 4, "rest", 5, "other options", 6, "settings", 7, "quit", 8));
             
             if (choice.isChoice("explore", 1)) {
                 explore(player);
@@ -100,7 +102,7 @@ void gameLoop(Player& player, uint16_t hitdie) {
                     Choice optionsChoice;
                     bool isValidChoice;
                     do {
-                        optionsChoice = input("Enter choice: ");
+                        optionsChoice = input(prompt.data());
                         isValidChoice = optionsChoice.isChoice("use a healing potion", 1, "unequip armor", 2, "unequip weapon", 3, "abilities", 4, "(go back)", 5);
                         if (player.Class == Player::WIZARD)
                             isValidChoice |= optionsChoice.isChoice("rituals", 6);
@@ -131,6 +133,9 @@ void gameLoop(Player& player, uint16_t hitdie) {
                     }
                     break;
                 }
+                continue;
+            } else if (choice.isChoice("settings", 7)) {
+                settings();
                 continue;
             } else {
                 Choice quitChoice;
@@ -168,7 +173,7 @@ void start() {
             "\n4. Revenant  - Revenants are restless souls bound to the mortal plane. They endure with unnatural vitality but must feed on the life force of others.\n"
         );
         Choice raceChoice;
-        do raceChoice = input("Please enter your choice: ");
+        do raceChoice = input(prompt.data());
         while (!raceChoice.isChoice(true, "elf", 1, "human", 2, "drakonian", 3, "revenant", 4));
         
         if (raceChoice.isChoice("elf", 1)) {
@@ -195,7 +200,7 @@ void start() {
             "\n3. Wizard    - A scholar in the arcane arts          - Difficulty: High\n"
         );
         Choice classChoice;
-        do classChoice = input("Please enter your choice: ");
+        do classChoice = input(prompt.data());
         while (!classChoice.isChoice(true, "fighter", 1, "rogue", 2, "wizard", 3));
         
         if (classChoice.isChoice("fighter", 1)) {

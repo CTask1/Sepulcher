@@ -45,7 +45,7 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
                     "\n6. Run\n"
                 );
                 Choice choice;
-                do choice = input("Enter choice: ");
+                do choice = input(prompt.data());
                 while (!choice.isChoice(true, "attack", 1, "display stats", 2, "display enemy stats", 3, "abilities", 4, "use a health potion", 5, "run", 6));
 
                 if (choice.isChoice("attack", 1)) {

@@ -125,9 +125,9 @@ void PlayerPrivate::equipArmor(const Item::Armor& armorItem) {
     if (player.armor != Item::TYPE::NONE)
         type("Your current ", player.armor.name, " has (Defense Bonus: ", player.armor.defenseBonus, ")\n");
 
-    type("\nDo you want to equip the ", armorItem.name, "? ");
+    type("\nDo you want to equip the ", armorItem.name, " (1. Yes / 2. No)?\n");
     Choice choice;
-    do choice = input("(1. Yes / 2. No): ");
+    do choice = input(prompt.data());
     while (!choice.isChoice(true, "yes", 1, "no", 2));
 
     if (choice.isChoice("yes", 1)) {
@@ -143,9 +143,9 @@ void PlayerPrivate::equipWeapon(const Item::Weapon& weaponItem) {
     if (player.weapon != Item::TYPE::NONE)
         type("Your current ", player.weapon.name, " has (Strength Bonus: ", player.weapon.strengthBonus, ")\n");
 
-    type("\nDo you want to equip the ", weaponItem.name, "? ");
+    type("\nDo you want to equip the ", weaponItem.name, " (1. Yes / 2. No)?\n");
     Choice choice;
-    do choice = input("(1. Yes / 2. No): ");
+    do choice = input(prompt.data());
     while (!choice.isChoice(true, "yes", 1, "no", 2));
 
     if (choice.isChoice("yes", 1)) {

@@ -9,9 +9,14 @@
 #define shrt(x) static_cast<short>(x)
 #define ui16(x) static_cast<uint16_t>(x)
 
-inline bool outputAsList = false;
-inline uint16_t outputDelay = 2;
-inline static std::mt19937 gen(std::random_device{}());
+inline std::string prompt = "Enter choice: ";
+constexpr bool DEF_OUTPUT_AS_LIST = false;
+inline bool defList = DEF_OUTPUT_AS_LIST;
+inline bool outputAsList = defList;
+constexpr uint16_t DEF_DELAY = 2;
+inline uint16_t defDelay = DEF_DELAY;
+inline uint16_t outputDelay = defDelay;
+inline std::mt19937 gen(std::random_device{}());
 
 _NODISCARD inline std::string tostring() { return ""; }
 
@@ -51,6 +56,12 @@ template<typename T, typename... Args> _NODISCARD inline std::string tostring(co
     return tostring(value) + tostring(args...);
 }
 
+_NODISCARD inline std::string trim(std::string&& str) {
+    str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](uint8_t ch) { return !std::isspace(ch); }));
+    str.erase(std::find_if(str.rbegin(), str.rend(), [](uint8_t ch) { return !std::isspace(ch); }).base(), str.end());
+    return str;
+}
+
 _NODISCARD inline std::string toLower(std::string&& str) {
     std::transform(str.begin(), str.end(), str.begin(), [](uint8_t ch) { return static_cast<uint8_t>(std::tolower(ch)); });
     return str;
@@ -80,23 +91,27 @@ inline void wait(const uint16_t milliseconds) {
     std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
 
-inline void setOutputSettings(const bool list = false, const uint16_t delay = 2) {
+inline void setOutputSettings(const bool list = defList, const uint16_t delay = defDelay) {
     outputAsList = list;
     outputDelay = delay;
 }
 
 template<typename... Args> inline void type(const Args&... args) {
     std::string text = tostring(args...);
+    if (outputDelay == 0) {
+        std::cout << text;
+        return;
+    }
     if (outputAsList) {
         while (!text.empty()) {
             if (text.find('\n') == std::string::npos) {
                 std::cout << text << std::flush;
-                wait(outputDelay * 75);
+                wait(ui16(120 + 43.44 * log(outputDelay)));
                 break;
             }
             std::cout << text.substr(0, text.find('\n') + 1) << std::flush;
             text.erase(0, text.find('\n') + 1);
-            wait(outputDelay * 75);
+            wait(ui16(120 + 43.44 * log(outputDelay)));
         }
     } else {
         for (const char character : text) {
@@ -107,9 +122,9 @@ template<typename... Args> inline void type(const Args&... args) {
     setOutputSettings();
 }
 
-_NODISCARD inline std::string input(const char* const& prompt) {
+_NODISCARD inline std::string input(const char* const& prmpt) {
     std::string entry;
-    type(prompt);
+    type(prmpt);
     std::getline(std::cin >> std::ws, entry);
     return entry;
 }

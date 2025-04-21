@@ -14,7 +14,7 @@ void EventsR::lostTraveler() { // Lost Traveler
         "2. Ignore them\n"
     );
     Choice travelerChoice;
-    do travelerChoice = input("Enter choice: ");
+    do travelerChoice = input(prompt.data());
     while (!travelerChoice.isChoice(true, "offer help", 1, "ignore them", 2));
     
     if (travelerChoice.isChoice("offer help", 1)) {
@@ -40,7 +40,7 @@ void EventsR::mountainPass() { // Mountain Pass
         "\n2. Find an alternate route\n"
     );
     Choice climbChoice;
-    do climbChoice = input("Enter choice: ");
+    do climbChoice = input(prompt.data());
     while (!climbChoice.isChoice(true, "attempt the climb", 1, "find an alternate route", 2));
     
     if (climbChoice.isChoice("attempt the climb", 1)) {
@@ -75,7 +75,7 @@ void EventsR::mountainPass() { // Mountain Pass
                     "\n2. Follow the right path\n"
                 );
                 Choice pathChoice;
-                do pathChoice = input("Enter choice: ");
+                do pathChoice = input(prompt.data());
                 while (!pathChoice.isChoice(true, "left", 1, "right", 2));
                 
                 if (pathChoice.isChoice("left", 1)) {
@@ -91,7 +91,7 @@ void EventsR::mountainPass() { // Mountain Pass
                             "\n2. Continue on the path\n"
                         );
                         Choice campsiteChoice;
-                        do campsiteChoice = input("Enter choice: ");
+                        do campsiteChoice = input(prompt.data());
                         while (!campsiteChoice.isChoice(true, "investigate the campsite", 1, "continue on the path", 2));
                         
                         if (campsiteChoice.isChoice("investigate the campsite", 1)) {
@@ -119,7 +119,7 @@ void EventsR::mountainPass() { // Mountain Pass
                             "\n2. Retreat slowly\n"
                         );
                         Choice animalChoice;
-                        do animalChoice = input("Enter choice: ");
+                        do animalChoice = input(prompt.data());
                         while (!animalChoice.isChoice(true, "try to calm the animal", 1, "retreat slowly", 2));
                         
                         if (animalChoice.isChoice("try to calm the animal", 1)) {
@@ -145,7 +145,7 @@ void EventsR::mysteriousCave() { // Mysterious Cave
         "\n2. Move on\n"
     );
     Choice caveChoice;
-    do caveChoice = input("Enter choice: ");
+    do caveChoice = input(prompt.data());
     while (!caveChoice.isChoice(true, "enter the cave", 1, "move on", 2));
     
     if (caveChoice.isChoice("enter the cave", 1)) {
@@ -173,7 +173,7 @@ void EventsR::strangeAmulet() { // Strange Amulet
         "2. Leave it\n"
     );
     Choice choice;
-    do choice = input("Enter Choice: ");
+    do choice = input(prompt.data());
     while (!choice.isChoice(true, "pick it up", 1, "leave it", 2));
 
     if (choice.isChoice("pick it up", 1)) {
