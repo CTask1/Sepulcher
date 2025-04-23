@@ -116,9 +116,9 @@ namespace {
         type("\nDo you wish to continue (1. Yes / 2. No)?\n");
         Choice continueChoice;
         do continueChoice = input(prompt.data());
-        while (!continueChoice.isChoice(true, "yes", 1, "no", 2));
+        while (!continueChoice.isChoice(true, { { "yes", 1 }, { "no", 2 } }));
 
-        if (continueChoice.isChoice("no", 2)) {
+        if (continueChoice.isChoice({{"no", 2}})) {
             setOutputSettings(false, 20);
             type("\nYou decide to turn back, leaving the sepulcher to its slumber.\n");
             return 0;
@@ -138,9 +138,9 @@ void EventsD::sepulcher() {
     );
     Choice enterChoice;
     do enterChoice = input(prompt.data());
-    while (!enterChoice.isChoice(true, "enter", 1, "turn back", 2));
+    while (!enterChoice.isChoice(true, { { "enter", 1 }, { "turn back", 2 } }));
 
-    if (enterChoice.isChoice("turn back", 2)) {
+    if (enterChoice.isChoice({{"turn back", 2}})) {
         type("\nYou decide to turn back, leaving the sepulcher to its slumber.\n");
         return;
     }

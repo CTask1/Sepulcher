@@ -20,9 +20,16 @@ void settings() {
         );
         Choice choice;
         do choice = input(prompt.data());
-        while (!choice.isChoice(true, "change output speed", 1, "change output mode", 2, "change prompt", 3, "save settings", 4, "reset to defaults", 5, "go back", 6));
+        while (!choice.isChoice (true, {
+            { "change output speed", 1 },
+            { "change output mode" , 2 },
+            { "change prompt"      , 3 },
+            { "save settings"      , 4 },
+            { "reset to defaults"  , 5 },
+            { "go back"            , 6 }
+        }));
 
-        if (choice.isChoice("change output speed", 1)) {
+        if (choice.isChoice({{"change output speed", 1}})) {
             setOutputSettings(true);
             type (
                 "\nWhat would you like the output speed to be?"
@@ -34,19 +41,25 @@ void settings() {
             );
             Choice speedChoice;
             do speedChoice = input(prompt.data());
-            while (!speedChoice.isChoice(true, "instant", 1, "fast", 2, "moderate", 3, "slow", 4, "(go back)", 5));
+            while (!speedChoice.isChoice (true, {
+                { "instant"  , 1 },
+                { "fast"     , 2 },
+                { "moderate" , 3 },
+                { "slow"     , 4 },
+                { "(go back)", 5 }
+            }));
 
-            if (speedChoice.isChoice("instant", 1)) {
+            if (speedChoice.isChoice({{"instant", 1}})) {
                 defDelay = 0;
-            } else if (speedChoice.isChoice("fast", 2)) {
+            } else if (speedChoice.isChoice({{"fast", 2}})) {
                 defDelay = 1;
-            } else if (speedChoice.isChoice("moderate", 3)) {
+            } else if (speedChoice.isChoice({{"moderate", 3}})) {
                 defDelay = 2;
-            } else if (speedChoice.isChoice("slow", 4)) {
+            } else if (speedChoice.isChoice({{"slow", 4}})) {
                 defDelay = 10;
             }
             setOutputSettings();
-        } else if (choice.isChoice("change output mode", 2)) {
+        } else if (choice.isChoice({{"change output mode", 2}})) {
             setOutputSettings(true);
             type (
                 "\nWhat would you like the output mode to be?"
@@ -56,15 +69,19 @@ void settings() {
             );
             Choice modeChoice;
             do modeChoice = input(prompt.data());
-            while (!modeChoice.isChoice(true, "text", 1, "list", 2, "(go back)", 3));
+            while (!modeChoice.isChoice (true, {
+                { "text"     , 1 },
+                { "list"     , 2 },
+                { "(go back)", 3 }
+            }));
 
-            if (modeChoice.isChoice("text", 1)) {
+            if (modeChoice.isChoice({{"text", 1}})) {
                 defList = false;
-            } else if (modeChoice.isChoice("list", 2)) {
+            } else if (modeChoice.isChoice({{"list", 2}})) {
                 defList = true;
             }
             setOutputSettings();
-        } else if (choice.isChoice("change prompt", 3)) {
+        } else if (choice.isChoice({{"change prompt", 3}})) {
             setOutputSettings(true);
             type (
                 "\nWhat would you like the prompt to be?"
@@ -78,22 +95,30 @@ void settings() {
             );
             Choice promptChoice;
             do promptChoice = input(prompt.data());
-            while (!promptChoice.isChoice(true, "enter choice:", 1, "what say you?", 2, "what is your choice?", 3, "->", 4, ">", 5, "(custom)", 6, "(go back)", 7));
+            while (!promptChoice.isChoice (true, {
+                { "enter choice:"       , 1 },
+                { "what say you?"       , 2 },
+                { "what is your choice?", 3 },
+                { "->"                  , 4 },
+                { ">"                   , 5 },
+                { "(custom)"            , 6 },
+                { "(go back)"           , 7 }
+            }));
 
-            if (promptChoice.isChoice("enter choice:", 1)) {
+            if (promptChoice.isChoice({{"enter choice:", 1}})) {
                 prompt = "Enter choice: ";
-            } else if (promptChoice.isChoice("what say you?", 2)) {
+            } else if (promptChoice.isChoice({{"what say you?", 2}})) {
                 prompt = "What say you? ";
-            } else if (promptChoice.isChoice("what is your choice?", 3)) {
+            } else if (promptChoice.isChoice({{"what is your choice?", 3}})) {
                 prompt = "What is your choice? ";
-            } else if (promptChoice.isChoice("->", 4)) {
+            } else if (promptChoice.isChoice({{"->", 4}})) {
                 prompt = "-> ";
-            } else if (promptChoice.isChoice(">", 5)) {
+            } else if (promptChoice.isChoice({{">", 5}})) {
                 prompt = "> ";
-            } else if (promptChoice.isChoice("(custom)", 6)) {
+            } else if (promptChoice.isChoice({{"(custom)", 6}})) {
                 prompt = trim(input("\nEnter custom prompt: ")) + ' ';
             }
-        } else if (choice.isChoice("save settings", 4)) {
+        } else if (choice.isChoice({{"save settings", 4}})) {
             std::ofstream settingsFile("settings.txt");
             if (settingsFile.is_open()) {
                 settingsFile << outputAsList << '\n' << outputDelay << '\n' << prompt << '\n';
@@ -102,11 +127,11 @@ void settings() {
             } else {
                 type("\nUnable to open settings file.\n");
             }
-        } else if (choice.isChoice("reset to defaults", 5)) {
+        } else if (choice.isChoice({{"reset to defaults", 5}})) {
             outputAsList = DEF_OUTPUT_AS_LIST;
             outputDelay = DEF_DELAY;
             prompt = "Enter choice: ";
             type("\nSettings reset to defaults.\n");
-        } else if (choice.isChoice("go back", 6)) return;
+        } else if (choice.isChoice({{"go back", 6}})) return;
     }
 }

@@ -6,6 +6,103 @@
 #include"..\include\Item.h"
 #include"..\include\util.h"
 
+void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorImage, bool& shadowmeld) {
+    while (true) {
+        setOutputSettings(true);
+        type (
+            "\nWhat would you like to do?"
+            "\n1. Attack"
+            "\n2. Display Stats"
+            "\n3. Display Enemy Stats"
+            "\n4. Abilities"
+            "\n5. Use a health potion (", player.resources["Health Potion"], ")"
+            "\n6. Run\n"
+        );
+        Choice choice;
+        do choice = input(prompt.data());
+        while (!choice.isChoice (true, {
+            { "attack"             , 1 },
+            { "display stats"      , 2 },
+            { "display enemy stats", 3 },
+            { "abilities"          , 4 },
+            { "use a health potion", 5 },
+            { "run"                , 6 }
+        }));
+
+        if (choice.isChoice({{"attack", 1}})) {
+            int damage = player.strength + randint(1, 6);  // Player's attack based on strength + a six-sided die–roll
+            if (player.weapon.suffix == Item::Weapon::Suffix::INFERNO) {
+                damage += randint(1, 4);
+                type("\nYour weapon ignites with a fiery glow!\n");
+            }
+            enemy.health = ui16(std::max(enemy.health - damage, 0));
+            type("\nYou dealt ", damage, " damage to the ", enemy.name, "!\nIts health is now ", enemy.health, ".\n");
+        } else if (choice.isChoice({{"display stats", 2}})) {
+            player.displayStats();
+            continue;
+        } else if (choice.isChoice({{"display enemy stats", 3}})) {
+            enemy.displayStats();
+            continue;
+        } else if (choice.isChoice({{"abilities", 4}})) {
+            if (player.abilities(&enemy, &mirrorImage, &shadowmeld))
+                break;
+            continue;
+        } else if (choice.isChoice({{"use a health potion", 5}})) {
+            if (player.resources["Health Potion"] < 1) {
+                type("\nYou don't have any health potions!\n");
+                continue;
+            }
+            player.resources["Health Potion"]--;
+            player.heal(1);
+            type("\nYou used a health potion!\nYour health is now ", player.health, ".\n");
+            continue;
+        } else {
+            Choice runChoice;
+            do runChoice = input("Are you sure you want to run (1. Yes / 2. No)? ");
+            while (!runChoice.isChoice(true, { { "yes", 1 }, { "no", 2 } }));
+
+            if (runChoice.isChoice({{"no", 2}}))
+                continue;
+                
+            run = true;
+            type("You try to run away.\n");
+            if (randint(1, 10) == 1 && player.weapon != Item::TYPE::WPN_ST_SHADOW) {
+                run = false;
+                type("The ", enemy.name, " stopped you!\n");
+            }
+        }
+        break;
+    }
+}
+
+void enemyTurn(Player& player, Enemy::Enemy& enemy, short& mirrorImage, bool& shadowmeld) {
+    if (player.special == Item::TYPE::SPL_AM_SHADOW && randint(1, 10) == 1) [[unlikely]] {
+        type (
+            "\nAs the enemy swings to attack, their weapon passes through you, as if you weren't even there."
+            "\nYour amulet has spared you from harm!\n"
+        );
+    } else if (mirrorImage > 0 && randint(1, 2) == 1 || mirrorImage == 2) [[unlikely]] {
+        mirrorImage--;
+        type (
+            "\nThe enemy's precise attack finds its mark, only for the image to shimmer and dissolve."
+            "\nThey stare in confusion, momentarily thrown off their attack.\n"
+        );
+    } else if (shadowmeld) [[unlikely]] {
+        type ("\nYou remain hidden in the shadows, evading the enemy's attack.\n");
+        shadowmeld = false;
+    } else {
+        uint16_t enemyDamage = ui16(std::max(enemy.strength + randint(1, 6) - player.CON - player.defense, 0));  // Enemy's attack based on its attack stat + a six-sided die roll - player's CON and defense
+        enemyDamage = (enemyDamage > 0) ? enemyDamage : 0;
+        player.health = ui16(std::max(player.health - enemyDamage, 0));
+        type("\nThe ", enemy.name, " dealt ", enemyDamage, " damage to you!\nYour health is now ", player.health, ".\n");
+        if (player.armor.suffix == Item::Armor::Suffix::THORNS) {
+            uint16_t thornsDamage = ui16(ceil(enemyDamage / 10.0));
+            enemy.health = ui16(std::max(enemy.health - thornsDamage, 0));
+            type("\nThe thorns on your armor dealt ", thornsDamage, " damage to the ", enemy.name, "!\nIts health is now ", enemy.health, ".\n");
+        }
+    }
+}
+
 void Events::initCombat(const Enemy::TYPE eType, const bool surprise) {
     Enemy::Enemy enemy(eType, player.maxHealth, player.baseStrength, player.level);
     combat(enemy, surprise);
@@ -31,68 +128,8 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
             }
             type("\nThe enemy surprised you!\n");
             surprise = 1;
-        } else {
-            // Player's turn
-            while (true) {
-                setOutputSettings(true);
-                type (
-                    "\nWhat would you like to do?"
-                    "\n1. Attack"
-                    "\n2. Display Stats"
-                    "\n3. Display Enemy Stats"
-                    "\n4. Abilities"
-                    "\n5. Use a health potion (", player.resources["Health Potion"], ")"
-                    "\n6. Run\n"
-                );
-                Choice choice;
-                do choice = input(prompt.data());
-                while (!choice.isChoice(true, "attack", 1, "display stats", 2, "display enemy stats", 3, "abilities", 4, "use a health potion", 5, "run", 6));
-
-                if (choice.isChoice("attack", 1)) {
-                    int damage = player.strength + randint(1, 6);  // Player's attack based on strength + a six-sided die–roll
-                    if (player.weapon.suffix == Item::Weapon::Suffix::INFERNO) {
-                        damage += randint(1, 4);
-                        type("\nYour weapon ignites with a fiery glow!\n");
-                    }
-                    enemy.health = ui16(std::max(enemy.health - damage, 0));
-                    type("\nYou dealt ", damage, " damage to the ", enemy.name, "!\nIts health is now ", enemy.health, ".\n");
-                } else if (choice.isChoice("display stats", 2)) {
-                    player.displayStats();
-                    continue;
-                } else if (choice.isChoice("display enemy stats", 3)) {
-                    enemy.displayStats();
-                    continue;
-                } else if (choice.isChoice("abilities", 4)) {
-                    if (player.abilities(&enemy, &mirrorImage, &shadowmeld))
-                        break;
-                    continue;
-                } else if (choice.isChoice("use a health potion", 5)) {
-                    if (player.resources["Health Potion"] < 1) {
-                        type("\nYou don't have any health potions!\n");
-                        continue;
-                    }
-                    player.resources["Health Potion"]--;
-                    player.heal(1);
-                    type("\nYou used a health potion!\nYour health is now ", player.health, ".\n");
-                    continue;
-                } else {
-                    Choice runChoice;
-                    do runChoice = input("Are you sure you want to run (1. Yes / 2. No)? ");
-                    while (!runChoice.isChoice(true, "yes", 1, "no", 2));
-
-                    if (runChoice.isChoice("no", 2))
-                        continue;
-                        
-                    run = true;
-                    type("You try to run away.\n");
-                    if (randint(1, 10) == 1 && player.weapon != Item::TYPE::WPN_ST_SHADOW) {
-                        run = false;
-                        type("The ", enemy.name, " stopped you!\n");
-                    }
-                }
-                break;
-            }
-        }
+        } else
+            playerTurn(player, enemy, run, mirrorImage, shadowmeld);
 
         if (player.Class == Player::ROGUE && first && surprise > 1 && enemy.name != Enemy::eType[Enemy::TRAVELER].name && !run)
             type("You surprised the enemy!\n");
@@ -101,31 +138,7 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
             break;
         } else if (enemy.health > 0) {
             // Enemy's turn
-            if (player.special == Item::TYPE::SPL_AM_SHADOW && randint(1, 10) == 1) [[unlikely]] {
-                type (
-                    "\nAs the enemy swings to attack, their weapon passes through you, as if you weren't even there."
-                    "\nYour amulet has spared you from harm!\n"
-                );
-            } else if (mirrorImage > 0 && randint(1, 2) == 1 || mirrorImage == 2) {
-                mirrorImage--;
-                type (
-                    "\nThe enemy's precise attack finds its mark, only for the image to shimmer and dissolve."
-                    "\nThey stare in confusion, momentarily thrown off their attack.\n"
-                );
-            } else if (shadowmeld) {
-                type ("\nYou remain hidden in the shadows, evading the enemy's attack.\n");
-                shadowmeld = false;
-            } else {
-                uint16_t enemyDamage = ui16(std::max(enemy.strength + randint(1, 6) - player.CON - player.defense, 0));  // Enemy's attack based on its attack stat + a six-sided die roll - player's CON and defense
-                enemyDamage = (enemyDamage > 0) ? enemyDamage : 0;
-                player.health = ui16(std::max(player.health - enemyDamage, 0));
-                type("\nThe ", enemy.name, " dealt ", enemyDamage, " damage to you!\nYour health is now ", player.health, ".\n");
-                if (player.armor.suffix == Item::Armor::Suffix::THORNS) {
-                    uint16_t thornsDamage = ui16(ceil(enemyDamage / 10.0));
-                    enemy.health = ui16(std::max(enemy.health - thornsDamage, 0));
-                    type("\nThe thorns on your armor dealt ", thornsDamage, " damage to the ", enemy.name, "!\nIts health is now ", enemy.health, ".\n");
-                }
-            }
+            enemyTurn(player, enemy, mirrorImage, shadowmeld);
         }
 
         first = false;

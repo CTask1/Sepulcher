@@ -118,9 +118,9 @@ void Player::craft()                                                            
 bool Player::initCraftArmor(ItemPtrVec_t& items, uint16_t& i) const                            { return pPrv->initCraftArmor    ( items      , i                       ); }
 bool Player::initCraftWeapons(ItemPtrVec_t& items, uint16_t& i) const                          { return pPrv->initCraftWeapons  ( items      , i                       ); }
 bool Player::initCraftGeneral(ItemPtrVec_t& items, uint16_t& i) const                          { return pPrv->initCraftGeneral  ( items      , i                       ); }
-bool Player::useComponents(const PairList_t components)                                        { return pPrv->useComponents     ( components                           ); }
-bool Player::craftItem(const ItemPtr_t& item, const PairList_t components)                     { return pPrv->craftItem         ( item       , components              ); }
+bool Player::useComponents(const PairList_t& components)                                       { return pPrv->useComponents     ( components                           ); }
+bool Player::craftItem(const ItemPtr_t& item, const PairList_t& components)                    { return pPrv->craftItem         ( item       , components              ); }
 void Player::equipArmor(const Item::Armor& armorItem)                                          {        pPrv->equipArmor        ( armorItem                            ); }
 void Player::equipWeapon(const Item::Weapon& weaponItem)                                       {        pPrv->equipWeapon       ( weaponItem                           ); }
 void Player::equipSpecial(const Item::Special& specialItem)                                    {        pPrv->equipSpecial      ( specialItem                          ); }
-const std::string Player::displayComponents(const PairList_t components) const                 { return pPrv->displayComponents ( components                           ); }
+const std::string Player::displayComponents(const PairList_t& components) const                { return pPrv->displayComponents ( components                           ); }

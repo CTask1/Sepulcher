@@ -66,27 +66,37 @@ void gameLoop(Player& player, uint16_t hitdie) {
                 "\n7. Settings"
                 "\n8. Quit\n"
             );
-            do choice = input(prompt.data());
-            while (!choice.isChoice(true, "explore", 1, "display stats", 2, "gather resources", 3, "craft", 4, "rest", 5, "other options", 6, "settings", 7, "quit", 8));
             
-            if (choice.isChoice("explore", 1)) {
+            do choice = input(prompt.data());
+            while (!choice.isChoice (true, {
+                { "explore"         , 1 },
+                { "display stats"   , 2 },
+                { "gather resources", 3 },
+                { "craft"           , 4 },
+                { "rest"            , 5 },
+                { "other options"   , 6 },
+                { "settings"        , 7 },
+                { "quit"            , 8 }
+            }));
+            
+            if (choice.isChoice({{"explore", 1}})) {
                 explore(player);
-            } else if (choice.isChoice("display stats", 2)) {
+            } else if (choice.isChoice({{"display stats", 2}})) {
                 player.displayStats();
                 player.resources.displayResources();
                 continue;
-            } else if (choice.isChoice("gather resources", 3)) {
+            } else if (choice.isChoice({{"gather resources", 3}})) {
                 player.gatherResources();
-            } else if (choice.isChoice("craft", 4)) {
+            } else if (choice.isChoice({{"craft", 4}})) {
                 player.craft();
                 continue;
-            } else if (choice.isChoice("rest", 5)) {
+            } else if (choice.isChoice({{"rest", 5}})) {
                 type("\nYou find a place to rest and gain some health.\n");
                 player.heal();
                 if (player.Class == Player::WIZARD && player.mana != player.maxMana)
                     player.mana++;
                energy++;
-            } else if (choice.isChoice("other options", 6)) {
+            } else if (choice.isChoice({{"other options", 6}})) {
                 while (true) {
                     setOutputSettings(true);
                     type (
@@ -103,14 +113,20 @@ void gameLoop(Player& player, uint16_t hitdie) {
                     bool isValidChoice;
                     do {
                         optionsChoice = input(prompt.data());
-                        isValidChoice = optionsChoice.isChoice("use a healing potion", 1, "unequip armor", 2, "unequip weapon", 3, "abilities", 4, "(go back)", 5);
+                        isValidChoice = optionsChoice.isChoice ({
+                            { "use a healing potion", 1 },
+                            { "unequip armor"       , 2 },
+                            { "unequip weapon"      , 3 },
+                            { "abilities"           , 4 },
+                            { "(go back)"           , 5 }
+                        });
                         if (player.Class == Player::WIZARD)
-                            isValidChoice |= optionsChoice.isChoice("rituals", 6);
+                            isValidChoice |= optionsChoice.isChoice({{"rituals", 6}});
                         if (!isValidChoice)
                             type("\nThat's not an option!\n");
                     } while (!isValidChoice);
                     
-                    if (optionsChoice.isChoice("use a health potion", 1)) {
+                    if (optionsChoice.isChoice({{"use a health potion", 1}})) {
                         if (player.resources["Health Potion"] < 1) {
                             type("\nYou don't have any health potions!\n");
                             continue;
@@ -118,30 +134,30 @@ void gameLoop(Player& player, uint16_t hitdie) {
                         player.resources["Health Potion"]--;
                         player.heal(1);
                         type("\nYou used a health potion!\nYour health is now full (", player.health, ").\n");
-                    } else if (optionsChoice.isChoice("unequip armor", 2)) {
+                    } else if (optionsChoice.isChoice({{"unequip armor", 2}})) {
                         player.unequipArmor();
                         continue;
-                    } else if (optionsChoice.isChoice("unequip weapon", 3)) {
+                    } else if (optionsChoice.isChoice({{"unequip weapon", 3}})) {
                         player.unequipWeapon();
                         continue;
-                    } else if (optionsChoice.isChoice("abilities", 4)) {
+                    } else if (optionsChoice.isChoice({{"abilities", 4}})) {
                         if (!player.abilities())
                             continue;
-                    } else if (player.Class == Player::WIZARD && optionsChoice.isChoice("rituals", 5)) {
+                    } else if (player.Class == Player::WIZARD && optionsChoice.isChoice({{"rituals", 5}})) {
                         if (!player.rituals())
                             continue;
                     }
                     break;
                 }
                 continue;
-            } else if (choice.isChoice("settings", 7)) {
+            } else if (choice.isChoice({{"settings", 7}})) {
                 settings();
                 continue;
             } else {
                 Choice quitChoice;
                 do quitChoice = input("Are you sure you want to quit (1. Yes / 2. No)? ");
-                while (!quitChoice.isChoice(true, "yes", 1, "no", 2));
-                if (quitChoice.isChoice("yes", 1))
+                while (!quitChoice.isChoice(true, { { "yes", 1 }, { "no", 2 } }));
+                if (quitChoice.isChoice({{"yes", 1}}))
                     return;
             }
 
@@ -174,15 +190,15 @@ void start() {
         );
         Choice raceChoice;
         do raceChoice = input(prompt.data());
-        while (!raceChoice.isChoice(true, "elf", 1, "human", 2, "drakonian", 3, "revenant", 4));
+        while (!raceChoice.isChoice(true, { { "elf", 1 }, { "human", 2 }, { "drakonian", 3 }, { "revenant", 4 } }));
         
-        if (raceChoice.isChoice("elf", 1)) {
+        if (raceChoice.isChoice({{"elf", 1}})) {
             pRace = Player::ELF;
             con = 3;
-        } else if (raceChoice.isChoice("human", 2)) {
+        } else if (raceChoice.isChoice({{"human", 2}})) {
             pRace = Player::HUMAN;
             con = 3;
-        } else if (raceChoice.isChoice("drakonian", 3)) {
+        } else if (raceChoice.isChoice({{"drakonian", 3}})) {
             pRace = Player::DRAKONIAN;
             con = 3;
             def = 1;
@@ -201,13 +217,13 @@ void start() {
         );
         Choice classChoice;
         do classChoice = input(prompt.data());
-        while (!classChoice.isChoice(true, "fighter", 1, "rogue", 2, "wizard", 3));
+        while (!classChoice.isChoice(true, { { "fighter", 1 }, { "rogue", 2 }, { "wizard", 3 } }));
         
-        if (classChoice.isChoice("fighter", 1)) {
+        if (classChoice.isChoice({{"fighter", 1}})) {
             pClass = Player::FIGHTER;
             hitdie = 16;
             str = 4;
-        } else if (classChoice.isChoice("rogue", 2)) {
+        } else if (classChoice.isChoice({{"rogue", 2}})) {
             pClass = Player::ROGUE;
             hitdie = 14;
             str = 4;

@@ -1,8 +1,9 @@
-settings.txt
-bin/debug/*
-bin/release/*
-docs/*
+*
+!*/
+!.vscode/*
+!include/*
+!src/*
 !docs/changelog.txt
-!docs/LICENSE.md
-!docs/README.md
+!*.md
 !*.gitkeep
+!.gitignore

@@ -15,9 +15,9 @@ void EventsR::lostTraveler() { // Lost Traveler
     );
     Choice travelerChoice;
     do travelerChoice = input(prompt.data());
-    while (!travelerChoice.isChoice(true, "offer help", 1, "ignore them", 2));
+    while (!travelerChoice.isChoice(true, { { "offer help", 1 }, { "ignore them", 2 } }));
     
-    if (travelerChoice.isChoice("offer help", 1)) {
+    if (travelerChoice.isChoice({{"offer help", 1}})) {
         type("\nYou offer help to the lost traveler. ");
         int hostile = randint(1, 3); // 33% chance the traveler is hostile and attacks
         if (hostile == 1) {
@@ -41,9 +41,9 @@ void EventsR::mountainPass() { // Mountain Pass
     );
     Choice climbChoice;
     do climbChoice = input(prompt.data());
-    while (!climbChoice.isChoice(true, "attempt the climb", 1, "find an alternate route", 2));
+    while (!climbChoice.isChoice(true, { { "attempt the climb", 1 }, { "find an alternate route", 2 } }));
     
-    if (climbChoice.isChoice("attempt the climb", 1)) {
+    if (climbChoice.isChoice({{"attempt the climb", 1}})) {
         type("You decide to attempt the climb. It's steep and dangerous, but you press on.\n");
         int success = randint(1, 3); // 33% chance of failure
         if (success != 1)
@@ -76,9 +76,9 @@ void EventsR::mountainPass() { // Mountain Pass
                 );
                 Choice pathChoice;
                 do pathChoice = input(prompt.data());
-                while (!pathChoice.isChoice(true, "left", 1, "right", 2));
+                while (!pathChoice.isChoice(true, { { "left", 1 }, { "right", 2 } }));
                 
-                if (pathChoice.isChoice("left", 1)) {
+                if (pathChoice.isChoice({{"left", 1}})) {
                     type("\nYou decide to follow the left path, guided by the mysterious markings.\n");
                     int outcome = randint(1, 2);
                     if (outcome == 1) {
@@ -92,9 +92,9 @@ void EventsR::mountainPass() { // Mountain Pass
                         );
                         Choice campsiteChoice;
                         do campsiteChoice = input(prompt.data());
-                        while (!campsiteChoice.isChoice(true, "investigate the campsite", 1, "continue on the path", 2));
+                        while (!campsiteChoice.isChoice(true, { { "investigate the campsite", 1 }, { "continue on the path", 2 } }));
                         
-                        if (campsiteChoice.isChoice("investigate the campsite", 1)) {
+                        if (campsiteChoice.isChoice({{"investigate the campsite", 1}})) {
                             type("\nYou decide to investigate the campsite. It seems abandoned, but you find a hidden stash of supplies!\n");
                             player.receiveGift();
                             if (randint(1, 4) == 1) {
@@ -120,9 +120,9 @@ void EventsR::mountainPass() { // Mountain Pass
                         );
                         Choice animalChoice;
                         do animalChoice = input(prompt.data());
-                        while (!animalChoice.isChoice(true, "try to calm the animal", 1, "retreat slowly", 2));
+                        while (!animalChoice.isChoice(true, { { "try to calm the animal", 1 }, { "retreat slowly", 2 } }));
                         
-                        if (animalChoice.isChoice("try to calm the animal", 1)) {
+                        if (animalChoice.isChoice({{"try to calm the animal", 1}})) {
                             type("\nYou attempt to calm the wild animal. Surprisingly, it responds peacefully and leaves.\n");
                         } else
                             type("\nYou choose to retreat slowly, avoiding confrontation with the wild animal.\n");
@@ -146,9 +146,9 @@ void EventsR::mysteriousCave() { // Mysterious Cave
     );
     Choice caveChoice;
     do caveChoice = input(prompt.data());
-    while (!caveChoice.isChoice(true, "enter the cave", 1, "move on", 2));
+    while (!caveChoice.isChoice(true, { { "enter the cave", 1 }, { "move on", 2 } }));
     
-    if (caveChoice.isChoice("enter the cave", 1)) {
+    if (caveChoice.isChoice({{"enter the cave", 1}})) {
         type("You decide to enter the mysterious cave, drawn by its allure.\n");
         int encounter = randint(1, 2); // 50% chance for each event
         if (encounter == 1) {
@@ -174,9 +174,9 @@ void EventsR::strangeAmulet() { // Strange Amulet
     );
     Choice choice;
     do choice = input(prompt.data());
-    while (!choice.isChoice(true, "pick it up", 1, "leave it", 2));
+    while (!choice.isChoice(true, { { "pick it up", 1 }, { "leave it", 2 } }));
 
-    if (choice.isChoice("pick it up", 1)) {
+    if (choice.isChoice({{"pick it up", 1}})) {
         uint16_t amuletType = randint(1, 5);
         switch (amuletType) {
         case 1: {

@@ -81,7 +81,7 @@ bool PlayerPrivate::initCraftGeneral(ItemPtrVec_t& items, uint16_t& i) const {
     return true;
 }
 
-bool PlayerPrivate::useComponents(const PairList_t components) {
+bool PlayerPrivate::useComponents(const PairList_t& components) {
     for (const std::pair<std::string, uint16_t>& component : components) {
         if (player.resources[component.first] < component.second) {
             type("You don't have enough resources!\n");
@@ -92,7 +92,7 @@ bool PlayerPrivate::useComponents(const PairList_t components) {
     return true;
 }
 
-bool PlayerPrivate::craftItem(const ItemPtr_t& item, const PairList_t components) {
+bool PlayerPrivate::craftItem(const ItemPtr_t& item, const PairList_t& components) {
     if (!useComponents(components))
         return false;
     type("\nCrafting ", item->name, "...\n");
@@ -128,9 +128,9 @@ void PlayerPrivate::equipArmor(const Item::Armor& armorItem) {
     type("\nDo you want to equip the ", armorItem.name, " (1. Yes / 2. No)?\n");
     Choice choice;
     do choice = input(prompt.data());
-    while (!choice.isChoice(true, "yes", 1, "no", 2));
+    while (!choice.isChoice(true, { { "yes", 1 }, { "no", 2 } }));
 
-    if (choice.isChoice("yes", 1)) {
+    if (choice.isChoice({{"yes", 1}})) {
         type("You equip the ", armorItem.name, ".\n");
         player.unequipArmor(false);
         player.defense += armorItem.defenseBonus;
@@ -146,9 +146,9 @@ void PlayerPrivate::equipWeapon(const Item::Weapon& weaponItem) {
     type("\nDo you want to equip the ", weaponItem.name, " (1. Yes / 2. No)?\n");
     Choice choice;
     do choice = input(prompt.data());
-    while (!choice.isChoice(true, "yes", 1, "no", 2));
+    while (!choice.isChoice(true, { { "yes", 1 }, { "no", 2 } }));
 
-    if (choice.isChoice("yes", 1)) {
+    if (choice.isChoice({{"yes", 1}})) {
         type("You equip the ", weaponItem.name, ".\n");
         player.unequipWeapon(false);
         player.strength += weaponItem.strengthBonus;
@@ -176,7 +176,7 @@ void PlayerPrivate::equipSpecial(const Item::Special& specialItem) {
     player.special = specialItem;
 }
 
-const std::string PlayerPrivate::displayComponents(const PairList_t components) const {
+const std::string PlayerPrivate::displayComponents(const PairList_t& components) const {
     std::string result = "\nComponents:";
     for (const std::pair<std::string, uint16_t>& component : components) {
         if (player.resources.resources.count(component.first) != 0)

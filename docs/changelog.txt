@@ -797,3 +797,10 @@
     -- 04/21/25 --
 
         -Changed settings
+        -Commit master 0485702
+        -Renamed Git index for game.h and util.h
+
+    
+    -- 04/22/25 --
+        -Code efficiency
+            -Replaced variadic method isChoice() with initializer_list parameter

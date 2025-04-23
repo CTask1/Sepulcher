@@ -9,6 +9,8 @@
 #define shrt(x) static_cast<short>(x)
 #define ui16(x) static_cast<uint16_t>(x)
 
+typedef std::initializer_list<std::pair<std::string, int>> IntPairList_t;
+
 inline std::string prompt = "Enter choice: ";
 constexpr bool DEF_OUTPUT_AS_LIST = false;
 inline bool defList = DEF_OUTPUT_AS_LIST;

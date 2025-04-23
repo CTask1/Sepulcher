@@ -98,11 +98,11 @@ bool PlayerPublic::rituals() {
     do {
         ritualChoice = input(prompt.data());
         for (uint16_t i = 0; i < ritualNum && !isValidRitualChoice; i++) {
-            isValidRitualChoice = ritualChoice.isChoice(rituals.at(i), i + 1);
+            isValidRitualChoice = ritualChoice.isChoice({{rituals.at(i), i + 1}});
             if (isValidRitualChoice)
                 ritualChoiceNum = i;
         }
-        if (!isValidRitualChoice && ritualChoice.isChoice(true, "(go back)", ritualNum + 1))
+        if (!isValidRitualChoice && ritualChoice.isChoice(true, {{"(go back)", ritualNum + 1}}))
             return 0;
     } while (!isValidRitualChoice);
 
@@ -187,11 +187,11 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
     do {
         abilityChoice = input(prompt.data());
         for (uint16_t i = 0; i < abilityNum && !isValidChoice; i++) {
-            isValidChoice = abilityChoice.isChoice(abilities.at(i), i + 1);
+            isValidChoice = abilityChoice.isChoice({{abilities.at(i), i + 1}});
             if (isValidChoice)
                 choiceNum = i;
         }
-        if (!isValidChoice && abilityChoice.isChoice(true, "(go back)", abilityNum + 1))
+        if (!isValidChoice && abilityChoice.isChoice(true, {{"(go back)", abilityNum + 1}}))
             return 0;
     } while (!isValidChoice);
 
@@ -436,8 +436,8 @@ void PlayerPublic::unequipArmor(const bool confirmation) {
         type("Are you sure you want to unequip your " + player.armor.name + " (1. Yes / 2. No)?\n");
         Choice choice;
         do choice = input(prompt.data());
-        while (!choice.isChoice(true, "yes", 1, "no", 2));
-        if (choice.isChoice("no", 2))
+        while (!choice.isChoice(true, { { "yes", 1 }, { "no", 2 } }));
+        if (choice.isChoice({{"no", 2}}))
             return;
         type("You unequip your ", player.armor.name, ".\n");
     }
@@ -450,8 +450,8 @@ void PlayerPublic::unequipWeapon(const bool confirmation) {
         type("Are you sure you want to unequip your " + player.weapon.name + " (1. Yes / 2. No)?\n");
         Choice choice;
         do choice = input(prompt.data());
-        while (!choice.isChoice(true, "yes", 1, "no", 2));
-        if (choice.isChoice("no", 2))
+        while (!choice.isChoice(true, { { "yes", 1 }, { "no", 2 } }));
+        if (choice.isChoice({{"no", 2}}))
             return;
         type("You unequip your ", player.weapon.name, ".\n");
     }
@@ -495,20 +495,25 @@ void PlayerPublic::craft() {
         );
         Choice typeChoice;
         do typeChoice = input(prompt.data());
-        while (!typeChoice.isChoice(true, "armor", 1, "weapons", 2, "items", 3, "(go back)", "go back", 4));
+        while (!typeChoice.isChoice (true, {
+            { "armor"    , 1 },
+            { "weapons"  , 2 },
+            { "items"    , 3 },
+            { "(go back)", 4 }
+        }));
 
-        if (typeChoice.isChoice("(go back)", "go back", 4))
+        if (typeChoice.isChoice({{"(go back)", 4}}))
             return;
 
         std::cout << '\n';
 
-        if (typeChoice.isChoice("armor", 1)) {
+        if (typeChoice.isChoice({{"armor", 1}})) {
             if (!pPrv.initCraftArmor(items, i))
                 continue;
-        } else if (typeChoice.isChoice("weapons", 2)) {
+        } else if (typeChoice.isChoice({{"weapons", 2}})) {
             if (!pPrv.initCraftWeapons(items, i)) [[unlikely]]
                 continue;
-        } else if (typeChoice.isChoice("items", 3)) {
+        } else if (typeChoice.isChoice({{"items", 3}})) {
             if (!pPrv.initCraftGeneral(items, i))
                 continue;
         }
@@ -521,11 +526,11 @@ void PlayerPublic::craft() {
             do {
                 craftChoice = input(prompt.data());
                 for (uint16_t j = 0; j < i && !isValidChoice; j++) {
-                    isValidChoice = craftChoice.isChoice(items[j]->name, j + 1);
+                    isValidChoice = craftChoice.isChoice({{items[j]->name, j + 1}});
                     if (isValidChoice)
                         choiceNum = j;
                 }
-            } while (!(isValidChoice || craftChoice.isChoice(true, "(go back)", i + 1)));
+            } while (!(isValidChoice || craftChoice.isChoice(true, {{"(go back)", i + 1}})));
 
             if (choiceNum == i)
                 break;
