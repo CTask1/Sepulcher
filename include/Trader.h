@@ -21,7 +21,7 @@ public:
             ->addResource("Iron", randint(0, 3));
         } while (resources.empty());
 
-        for (std::pair<std::string, uint16_t> pair : resources)
+        for (const std::pair<std::string, uint16_t>& pair : resources)
             if (pair.first == "Crystals" || pair.first == "Iron")
                 prices[pair.first] = 5;
             else if (pair.first == "Medicinal Herbs")

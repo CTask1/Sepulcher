@@ -9,7 +9,7 @@
 #define shrt(x) static_cast<short>(x)
 #define ui16(x) static_cast<uint16_t>(x)
 
-typedef std::initializer_list<std::pair<std::string, int>> IntPairList_t;
+typedef std::initializer_list<const char* const> cstrList_t;
 
 inline std::string prompt = "Enter choice: ";
 constexpr bool DEF_OUTPUT_AS_LIST = false;
@@ -77,6 +77,10 @@ _NODISCARD inline std::string capitalize(std::string&& str) {
             str[i] = (char)std::toupper(str[i]);
     }
     return str;
+}
+
+_NODISCARD inline bool streq(const char* const& str1, const char* const& str2) {
+    return std::strcmp(str1, str2) == 0;
 }
 
 _NODISCARD inline uint16_t randint(uint16_t min, uint16_t max) {

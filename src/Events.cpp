@@ -18,18 +18,12 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
             "\n5. Use a health potion (", player.resources["Health Potion"], ")"
             "\n6. Run\n"
         );
-        Choice choice;
-        do choice = input(prompt.data());
-        while (!choice.isChoice (true, {
-            { "attack"             , 1 },
-            { "display stats"      , 2 },
-            { "display enemy stats", 3 },
-            { "abilities"          , 4 },
-            { "use a health potion", 5 },
-            { "run"                , 6 }
-        }));
+        int choice;
+        do choice = Choice(input(prompt.data())).isChoice({"attack", "display stats", "display enemy stats", "abilities", "use a health potion", "run"});
+        while (choice == 0);
 
-        if (choice.isChoice({{"attack", 1}})) {
+        switch (choice) {
+        case 1: {
             int damage = player.strength + randint(1, 6);  // Player's attack based on strength + a six-sided die–roll
             if (player.weapon.suffix == Item::Weapon::Suffix::INFERNO) {
                 damage += randint(1, 4);
@@ -37,17 +31,18 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
             }
             enemy.health = ui16(std::max(enemy.health - damage, 0));
             type("\nYou dealt ", damage, " damage to the ", enemy.name, "!\nIts health is now ", enemy.health, ".\n");
-        } else if (choice.isChoice({{"display stats", 2}})) {
+            break;
+        } case 2:
             player.displayStats();
             continue;
-        } else if (choice.isChoice({{"display enemy stats", 3}})) {
+        case 3:
             enemy.displayStats();
             continue;
-        } else if (choice.isChoice({{"abilities", 4}})) {
+        case 4:
             if (player.abilities(&enemy, &mirrorImage, &shadowmeld))
                 break;
             continue;
-        } else if (choice.isChoice({{"use a health potion", 5}})) {
+        case 5:
             if (player.resources["Health Potion"] < 1) {
                 type("\nYou don't have any health potions!\n");
                 continue;
@@ -56,21 +51,21 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
             player.heal(1);
             type("\nYou used a health potion!\nYour health is now ", player.health, ".\n");
             continue;
-        } else {
-            Choice runChoice;
-            do runChoice = input("Are you sure you want to run (1. Yes / 2. No)? ");
-            while (!runChoice.isChoice(true, { { "yes", 1 }, { "no", 2 } }));
+        case 6: {
+            int runChoice;
+            do runChoice = Choice(input("Are you sure you want to run (1. Yes / 2. No)? ")).isChoice({"yes", "no"});
+            while (runChoice == 0);
 
-            if (runChoice.isChoice({{"no", 2}}))
+            if (runChoice == 2)
                 continue;
-                
+
             run = true;
             type("You try to run away.\n");
             if (randint(1, 10) == 1 && player.weapon != Item::TYPE::WPN_ST_SHADOW) {
                 run = false;
                 type("The ", enemy.name, " stopped you!\n");
             }
-        }
+        }}
         break;
     }
 }

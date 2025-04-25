@@ -85,40 +85,32 @@ bool PlayerPublic::rituals() {
         type("\nYou cannot perform any more rituals today.\n");
         return 0;
     }
-    std::vector<std::string> rituals;
+    std::vector<const char*> rituals;
     uint16_t ritualNum = 0;
-    rituals.push_back("Mana Restoration");
     type("\t", ++ritualNum, ". Mana Restoration\n");
     type(ritualNum + 1, ". (go back)\n");
 
-    Choice ritualChoice;
-    uint16_t ritualChoiceNum = ritualNum + 1
-    ;
-    bool isValidRitualChoice = false;
-    do {
-        ritualChoice = input(prompt.data());
-        for (uint16_t i = 0; i < ritualNum && !isValidRitualChoice; i++) {
-            isValidRitualChoice = ritualChoice.isChoice({{rituals.at(i), i + 1}});
-            if (isValidRitualChoice)
-                ritualChoiceNum = i;
-        }
-        if (!isValidRitualChoice && ritualChoice.isChoice(true, {{"(go back)", ritualNum + 1}}))
-            return 0;
-    } while (!isValidRitualChoice);
+    rituals.push_back("Mana Restoration");
+    rituals.push_back("(go back)");
 
-    if (rituals.at(ritualChoiceNum) == "Mana Restoration") {
-        if (player.resources["Arcane Focus"] < 1) {
-            type("\nThis ritual requires an arcane focus.\n");
-            return 0;
-        }
-        player.resources["Arcane Focus"]--;
-        player.mana = std::min(ui16(player.mana + 4), player.maxMana);
-        type (
-            "\nYou channel the energy of your Arcane Focus."
-            "\nAs it dissolves, its energy seeps into you, leaving you refreshed and ready to cast once more.\n"
-        );
-        player.classAbilityReady = false;
+    int ritualChoice;
+    do ritualChoice = Choice(input(prompt.data())).isChoice(rituals);
+    while (ritualChoice == 0);
+
+    if (streq(rituals.at(--ritualChoice), "(go back)"))
+        return 1;
+        
+    if (player.resources["Arcane Focus"] < 1) {
+        type("\nThis ritual requires an arcane focus.\n");
+        return 0;
     }
+    player.resources["Arcane Focus"]--;
+    player.mana = std::min(ui16(player.mana + 4), player.maxMana);
+    type (
+        "\nYou channel the energy of your Arcane Focus."
+        "\nAs it dissolves, its energy seeps into you, leaving you refreshed and ready to cast once more.\n"
+    );
+    player.classAbilityReady = false;
     return 1;
 }
 
@@ -134,7 +126,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         }
     }
     std::string output = "\nAbilities:\n";
-    std::vector<std::string> abilities;
+    std::vector<const char*> abilities;
     uint16_t abilityNum = 0;
     // Race abilities
     if (enemy != nullptr && player.Race == Player::DRAKONIAN && player.raceAbilityReady) {
@@ -181,21 +173,11 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
     }
     type(output);
 
-    Choice abilityChoice;
-    uint16_t choiceNum = abilityNum + 1;
-    bool isValidChoice = false;
-    do {
-        abilityChoice = input(prompt.data());
-        for (uint16_t i = 0; i < abilityNum && !isValidChoice; i++) {
-            isValidChoice = abilityChoice.isChoice({{abilities.at(i), i + 1}});
-            if (isValidChoice)
-                choiceNum = i;
-        }
-        if (!isValidChoice && abilityChoice.isChoice(true, {{"(go back)", abilityNum + 1}}))
-            return 0;
-    } while (!isValidChoice);
+    int abilityChoice;
+    do abilityChoice = Choice(input(prompt.data())).isChoice(abilities);
+    while (abilityChoice == 0);
 
-    if (abilities.at(choiceNum) == "Dragon's Breath") {
+    if (streq(abilities.at(--abilityChoice), "Dragon's Breath")) {
         const uint16_t damage = player.strength + randint(1, 6);
         const uint16_t burn = randint(1, 4);
         enemy->health = ui16(std::max(enemy->health - damage - burn, 0));
@@ -205,7 +187,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
             "\nIts health is now ", enemy->health, ".\n"
         );
         player.raceAbilityReady = false;
-    } else if (abilities.at(choiceNum) == "Shadowmeld") {
+    } else if (streq(abilities.at(abilityChoice), "Shadowmeld")) {
         type (
             "\nYou meld into the shadows, becoming nearly invisible."
             "\nThe enemy can't see you!\n"
@@ -213,7 +195,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         *shadowmeld = true;
         player.raceAbilityReady = false;
         return 0;
-    } else if (abilities.at(choiceNum) == "Necrotic Drain") {
+    } else if (streq(abilities.at(abilityChoice), "Necrotic Drain")) {
         const uint16_t damage = player.strength / 2 + randint(1, 6);
         enemy->health = ui16(std::max(enemy->health - damage, 0));
         player.health = std::min(ui16(player.health + damage / 2), player.getMaxHealth());
@@ -225,7 +207,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
             "\nYour health is now ", player.health, "."
             "\nYour blood meter is now at ", player.bloodMeter, "/3.\n"
         );
-    } else if (abilities.at(choiceNum) == "Second Wind") {
+    } else if (streq(abilities.at(abilityChoice), "Second Wind")) {
         const uint16_t healing = player.heal();
         type (
             "\nYou get a surge of adrenaline and heal ", healing, " points!"
@@ -233,7 +215,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         );
         player.classAbilityReady = false;
         return 0;
-    } else if (abilities.at(choiceNum) == "Fire Bolt") {
+    } else if (streq(abilities.at(abilityChoice), "Fire Bolt")) {
         if (player.mana < 1) {
             type("\nYou don't have enough mana points!\n");
             return 0;
@@ -249,7 +231,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
             "\nThe ", enemy->name, " is burned for an additional ", burn, " damage!"
             "\nIts health is now ", enemy->health, ".\n"
         );
-    } else if (abilities.at(choiceNum) == "Mirror Image") {
+    } else if (streq(abilities.at(abilityChoice), "Mirror Image")) {
         if (player.mana < 2) {
             type("\nYou don't have enough mana points!\n");
             return 0;
@@ -262,7 +244,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
             "\nThey flicker and shift, making it difficult for the enemy to land its strikes.\n"
         );
         return 0;
-    } else if (abilities.at(choiceNum) == "Mage Armor") {
+    } else if (streq(abilities.at(abilityChoice), "Mage Armor")) {
         if (player.mageArmorDefense > 0) {
             type("\nThis spell is already active!\n");
             return 0;
@@ -276,7 +258,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         player.mana -= 5;
         player.health = std::min(ui16(player.health + 5), player.getMaxHealth());
         type ("\nA protective shielding aura surrounds you, boosting your defense by ", player.mageArmorDefense, "!\n");
-    } else if (abilities.at(choiceNum) == "Arcane Eye") {
+    } else if (streq(abilities.at(abilityChoice), "Arcane Eye")) {
         if (player.mana < 3) {
             type("\nYou don't have enough mana points!\n");
             return 0;
@@ -288,7 +270,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
             "\nYou materialize your magic, forming an invisible, floating eye."
             "\nIt scouts ahead, ensuring you are never caught off guard.\n"
         );
-    } else if (abilities.at(choiceNum) == "Recovery") {
+    } else if (streq(abilities.at(abilityChoice), "Recovery")) {
         if (player.mana < 2) {
             type("\nYou don't have enough mana points!\n");
             return 0;
@@ -434,10 +416,10 @@ void PlayerPublic::initGeneral(const Item::TYPE iType, const Item::Source source
 void PlayerPublic::unequipArmor(const bool confirmation) {
     if (confirmation) {
         type("Are you sure you want to unequip your " + player.armor.name + " (1. Yes / 2. No)?\n");
-        Choice choice;
-        do choice = input(prompt.data());
-        while (!choice.isChoice(true, { { "yes", 1 }, { "no", 2 } }));
-        if (choice.isChoice({{"no", 2}}))
+        int choice;
+        do choice = Choice(input(prompt.data())).isChoice({"yes", "no"});
+        while (choice == 0);
+        if (choice == 2)
             return;
         type("You unequip your ", player.armor.name, ".\n");
     }
@@ -448,10 +430,10 @@ void PlayerPublic::unequipArmor(const bool confirmation) {
 void PlayerPublic::unequipWeapon(const bool confirmation) {
     if (confirmation) {
         type("Are you sure you want to unequip your " + player.weapon.name + " (1. Yes / 2. No)?\n");
-        Choice choice;
-        do choice = input(prompt.data());
-        while (!choice.isChoice(true, { { "yes", 1 }, { "no", 2 } }));
-        if (choice.isChoice({{"no", 2}}))
+        int choice;
+        do choice = Choice(input(prompt.data())).isChoice({"yes", "no"});
+        while (choice == 0);
+        if (choice == 2)
             return;
         type("You unequip your ", player.weapon.name, ".\n");
     }
@@ -493,29 +475,19 @@ void PlayerPublic::craft() {
             "\n3. Items"
             "\n4. (go back)\n"
         );
-        Choice typeChoice;
-        do typeChoice = input(prompt.data());
-        while (!typeChoice.isChoice (true, {
-            { "armor"    , 1 },
-            { "weapons"  , 2 },
-            { "items"    , 3 },
-            { "(go back)", 4 }
-        }));
+        int typeChoice;
+        do typeChoice = Choice(input(prompt.data())).isChoice({"armor", "weapons", "items", "(go back)"});
+        while (typeChoice == 0);
 
-        if (typeChoice.isChoice({{"(go back)", 4}}))
+        if (typeChoice == 4)
             return;
 
         std::cout << '\n';
 
-        if (typeChoice.isChoice({{"armor", 1}})) {
-            if (!pPrv.initCraftArmor(items, i))
-                continue;
-        } else if (typeChoice.isChoice({{"weapons", 2}})) {
-            if (!pPrv.initCraftWeapons(items, i)) [[unlikely]]
-                continue;
-        } else if (typeChoice.isChoice({{"items", 3}})) {
-            if (!pPrv.initCraftGeneral(items, i))
-                continue;
+        switch (typeChoice) {
+            case 1: if (!pPrv.initCraftArmor(items, i)) continue; break;
+            case 2: if (!pPrv.initCraftWeapons(items, i)) continue; break;
+            case 3: if (!pPrv.initCraftGeneral(items, i)) continue; break;
         }
         type(i + 1, ". (go back)\n");
 
@@ -526,11 +498,11 @@ void PlayerPublic::craft() {
             do {
                 craftChoice = input(prompt.data());
                 for (uint16_t j = 0; j < i && !isValidChoice; j++) {
-                    isValidChoice = craftChoice.isChoice({{items[j]->name, j + 1}});
+                    isValidChoice = craftChoice.isChoice(items[j]->name.c_str(), j + 1);
                     if (isValidChoice)
                         choiceNum = j;
                 }
-            } while (!(isValidChoice || craftChoice.isChoice(true, {{"(go back)", i + 1}})));
+            } while (!(isValidChoice || craftChoice.isChoice("(go back)", i + 1, true)));
 
             if (choiceNum == i)
                 break;

@@ -64,7 +64,7 @@ Player::Player(std::string_view n, RACE ra, CLASS cl, uint16_t h, uint16_t s, ui
 
 Player::~Player() = default;
 
-void Player::displayStats() const {
+void Player::displayStats(const bool showResources) const {
     setOutputSettings(true);
     std::cout << "\n-------------------------";
     type (
@@ -86,6 +86,8 @@ void Player::displayStats() const {
     std::cout << "\n-------------------------\n";
     if (Race == REVENANT)
         displayDebuffs();
+    if (showResources)
+        resources.displayResources();
 }
 
 // ---------- Public Methods ----------

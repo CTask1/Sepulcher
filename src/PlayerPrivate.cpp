@@ -126,17 +126,18 @@ void PlayerPrivate::equipArmor(const Item::Armor& armorItem) {
         type("Your current ", player.armor.name, " has (Defense Bonus: ", player.armor.defenseBonus, ")\n");
 
     type("\nDo you want to equip the ", armorItem.name, " (1. Yes / 2. No)?\n");
-    Choice choice;
-    do choice = input(prompt.data());
-    while (!choice.isChoice(true, { { "yes", 1 }, { "no", 2 } }));
+    int choice;
+    do choice = Choice(input(prompt.data())).isChoice({"yes", "no"});
+    while (choice == 0);
 
-    if (choice.isChoice({{"yes", 1}})) {
-        type("You equip the ", armorItem.name, ".\n");
-        player.unequipArmor(false);
-        player.defense += armorItem.defenseBonus;
-        player.armor = armorItem;
-    } else
+    if (choice == 2) {
         type("You choose to leave the ", armorItem.name, ".\n");
+        return;
+    }
+    type("You equip the ", armorItem.name, ".\n");
+    player.unequipArmor(false);
+    player.defense += armorItem.defenseBonus;
+    player.armor = armorItem;
 }
 
 void PlayerPrivate::equipWeapon(const Item::Weapon& weaponItem) {
@@ -144,24 +145,25 @@ void PlayerPrivate::equipWeapon(const Item::Weapon& weaponItem) {
         type("Your current ", player.weapon.name, " has (Strength Bonus: ", player.weapon.strengthBonus, ")\n");
 
     type("\nDo you want to equip the ", weaponItem.name, " (1. Yes / 2. No)?\n");
-    Choice choice;
-    do choice = input(prompt.data());
-    while (!choice.isChoice(true, { { "yes", 1 }, { "no", 2 } }));
+    int choice;
+    do choice = Choice(input(prompt.data())).isChoice({"yes", "no"});
+    while (choice == 0);
 
-    if (choice.isChoice({{"yes", 1}})) {
-        type("You equip the ", weaponItem.name, ".\n");
-        player.unequipWeapon(false);
-        player.strength += weaponItem.strengthBonus;
-        player.weapon = weaponItem;
-        if (player.weapon == Item::TYPE::WPN_ST_WARBORN) {
-            player.maxMana += 3;
-            player.mana += 3;
-        } else if (player.weapon == Item::TYPE::WPN_ST_WEEPING) {
-            player.maxMana -= 3;
-            player.mana = ui16(std::max(player.mana - 3, 0));
-        }
-    } else
+    if (choice == 2) {
         type("You choose to leave the ", weaponItem.name, ".\n");
+        return;
+    }
+    type("You equip the ", weaponItem.name, ".\n");
+    player.unequipWeapon(false);
+    player.strength += weaponItem.strengthBonus;
+    player.weapon = weaponItem;
+    if (player.weapon == Item::TYPE::WPN_ST_WARBORN) {
+        player.maxMana += 3;
+        player.mana += 3;
+    } else if (player.weapon == Item::TYPE::WPN_ST_WEEPING) {
+        player.maxMana -= 3;
+        player.mana = ui16(std::max(player.mana - 3, 0));
+    }
 }
 
 void PlayerPrivate::equipSpecial(const Item::Special& specialItem) {

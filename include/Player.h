@@ -171,6 +171,6 @@ public:
     Player(std::string_view, RACE, CLASS, uint16_t, uint16_t, uint16_t);
     ~Player();
 
-    void displayStats() const;
+    void displayStats(const bool = false) const;
 
 };

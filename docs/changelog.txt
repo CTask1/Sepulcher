@@ -802,5 +802,33 @@
 
     
     -- 04/22/25 --
+
         -Code efficiency
             -Replaced variadic method isChoice() with initializer_list parameter
+        -Commit master 9f60aff
+
+
+    -- 04/23/25 --
+
+        -Code efficiency
+            -Renamed type
+                -std::initializer_list<const char* const> is now cstrList_t
+            -Removed the need for std::pair in isChoice()
+            -Other changes
+        -Redesigning Choice class
+            -Changed to a struct
+
+    
+    -- 04/24/25 --
+
+        -Redesigning Choice class
+            -Simplified choice checking
+                -Changed isChoice return type to int
+                -Changed all if chains to switch statements
+
+
+    -- 04/25/25 --
+
+        -Continued...
+        -Updated user input system
+        -Changed some messages

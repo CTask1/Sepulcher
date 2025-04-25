@@ -114,11 +114,11 @@ namespace {
     bool sepulcherContinue() {
         setOutputSettings(false, 25);
         type("\nDo you wish to continue (1. Yes / 2. No)?\n");
-        Choice continueChoice;
-        do continueChoice = input(prompt.data());
-        while (!continueChoice.isChoice(true, { { "yes", 1 }, { "no", 2 } }));
+        int continueChoice;
+        do continueChoice = Choice(input(prompt.data())).isChoice({"yes", "no"});
+        while (continueChoice == 0);
 
-        if (continueChoice.isChoice({{"no", 2}})) {
+        if (continueChoice == 2) {
             setOutputSettings(false, 20);
             type("\nYou decide to turn back, leaving the sepulcher to its slumber.\n");
             return 0;
@@ -136,11 +136,11 @@ void EventsD::sepulcher() {
         "\n1. Enter"
         "\n2. Turn back\n"
     );
-    Choice enterChoice;
-    do enterChoice = input(prompt.data());
-    while (!enterChoice.isChoice(true, { { "enter", 1 }, { "turn back", 2 } }));
+    int enterChoice;
+    do enterChoice = Choice(input(prompt.data())).isChoice({"enter", "turn back"});
+    while (enterChoice == 0);
 
-    if (enterChoice.isChoice({{"turn back", 2}})) {
+    if (enterChoice == 2) {
         type("\nYou decide to turn back, leaving the sepulcher to its slumber.\n");
         return;
     }
