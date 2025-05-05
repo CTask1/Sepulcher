@@ -1,25 +1,27 @@
 //CTask
-#include"..\include\Choice.h"
-#include"..\include\EventsD.h"
-#include"..\include\Events.h"
-#include"..\include\Player.h"
-#include"..\include\Enemy.h"
-#include"..\include\util.h"
+#include"pch.h"
+
+#include"Choice.h"
+#include"EventsD.h"
+#include"Events.h"
+#include"Player.h"
+#include"Enemy.h"
+#include"util.h"
 
 void EventsD::enemyEncounter() { // Enemy Encounter
     int encounter = randint(1, 3);
     switch (encounter) {
     case 1: {
         type("You stumble upon a dark cave. As you enter, you encounter a fearsome enemy!\n");
-        events.initCombat(Enemy::SHADOW);
+        events.combat(events.initEnemy(Enemy::SHADOW));
         break;
     } case 2: {
         type("You find a lit campfire. As you approach, you encounter a fearsome enemy!\n");
-        events.initCombat(Enemy::GOBLIN);
+        events.combat(events.initEnemy(Enemy::GOBLIN));
         break;
     } case 3: {
         type("You venture into a cursed forest. Strange occurrences unsettle your senses.\n");
-        events.initCombat(Enemy::SPIRIT);
+        events.combat(events.initEnemy(Enemy::SPIRIT));
         break;
     }}
 }
@@ -36,7 +38,7 @@ void EventsD::hunterTrap() { // Poacher's Snare
         wheel(3);
         bool fail = (randint(1, 3) == 1);
         type(fail ? "You failed to cut yourself down in time!" : "You successfully cut yourself out of the rope!");
-        events.initCombat(Enemy::POACHER, fail);
+        events.combat(events.initEnemy(Enemy::POACHER), fail);
         break;
     } case 2: { // Falling Net
         type (
@@ -47,7 +49,7 @@ void EventsD::hunterTrap() { // Poacher's Snare
         wheel(3);
         bool fail = (randint(1, 3) == 1);
         type(fail ? "You failed to get out of the net in time!" : "You got out of the net before the trapper arrived!");
-        events.initCombat(Enemy::POACHER, fail);
+        events.combat(events.initEnemy(Enemy::POACHER), fail);
         break;
     } case 3: { // Swinging Log
         type (
@@ -97,7 +99,7 @@ void EventsD::hunterTrap() { // Poacher's Snare
             "\nAs you approach, an arrow flies past with a sharp whistle and embeds itself into the dirt beside you!"
             "\nShadows flicker in the trees...you are not alone."
         );
-        events.initCombat(Enemy::POACHER);
+        events.combat(events.initEnemy(Enemy::POACHER));
         break;
     } case 7: { // Carnivore's Den
         type (
@@ -105,26 +107,24 @@ void EventsD::hunterTrap() { // Poacher's Snare
             "\nA low growl rumbles behind you as a pair of glowing eyes emerge from the darkness."
             "\nWhatever killed the owners of these bones is not done feeding."
         );
-        events.initCombat(Enemy::BEAR);
+        events.combat(events.initEnemy(Enemy::BEAR));
         break;
     }}
 }
 
-namespace {
-    bool sepulcherContinue() {
-        setOutputSettings(false, 25);
-        type("\nDo you wish to continue (1. Yes / 2. No)?\n");
-        int continueChoice;
-        do continueChoice = Choice(input(prompt.data())).isChoice({"yes", "no"});
-        while (continueChoice == 0);
+bool sepulcherContinue() {
+    setDelay(25);
+    type("\nDo you wish to continue (1. Yes / 2. No)?\n");
+    int continueChoice;
+    do continueChoice = Choice(input(prompt.data())).isChoice({"yes", "no"});
+    while (continueChoice == 0);
 
-        if (continueChoice == 2) {
-            setOutputSettings(false, 20);
-            type("\nYou decide to turn back, leaving the sepulcher to its slumber.\n");
-            return 0;
-        }
-        return 1;
+    if (continueChoice == 2) {
+        setDelay(20);
+        type("\nYou decide to turn back, leaving the sepulcher to its slumber.\n");
+        return 0;
     }
+    return 1;
 }
 
 void EventsD::sepulcher() {
@@ -148,7 +148,7 @@ void EventsD::sepulcher() {
     type("\nYou decide to enter the sepulcher...\n");
 
     uint16_t message = randint(1, 2);
-    setOutputSettings(false, 20);
+    setDelay(20);
     switch (message) {
     case 1:
         type (
@@ -167,43 +167,88 @@ void EventsD::sepulcher() {
     }
 
     if (!sepulcherContinue()) return;
-    setOutputSettings(false, 25);
+
+    setDelay(25);
     type("\nYou decide to venture deeper into the sepulcher, where the stench of decay grows stronger...\n");
 
     uint16_t encounter = randint(1, 3);
-    setOutputSettings(false, 25);
+    setDelay(15);
     switch (encounter) {
     case 1:
         type("Suddenly, a wraith materializes before you, screeching with rage!\n");
-        events.initCombat(Enemy::WRAITH);
+        if (!events.combat(events.initEnemy(Enemy::WRAITH), false, true))
+            return;
         break;
     case 2:
         type("A skeletal warrior rises from the ground, its eyes glowing with a malevolent light!\n");
-        events.initCombat(Enemy::SKELETON);
+        if (!events.combat(events.initEnemy(Enemy::SKELETON), false, true))
+            return;
         break;
     case 3:
         type("A cursed spirit emerges from the shadows, its form shifting and writhing!\n");
-        events.initCombat(Enemy::SPIRIT);
+        if (!events.combat(events.initEnemy(Enemy::SPIRIT), false, true))
+            return;
         break;
     }
 
     if (!sepulcherContinue()) return;
-    setOutputSettings(false, 25);
+
+    setDelay(25);
+    type (
+        "\nAs you continue deeper into the sepulcher, you pass a cracked obelisk half-buried in dust and rubble."
+        "\nInscribed in a forgotten tongue, a single line glows faintly."
+        "\nThough the language is ancient, the curse that lingers here seems to whisper its truth to all who dar enter."
+        "\nYou understand the words without knowing how:"
+        "\n\"He sought what spirits have. He found what none should.\"\n"
+    );
+    
+    if (!sepulcherContinue()) return;
+
+    setDelay(25);
     type (
         "\nYou descend into the lowest chamber. The silence is suffocating."
         "\nCarvings on the walls depict a forgotten kingdom, its people twisted in agony.\n"
     );
     wait(500);
-    setOutputSettings(false, 25);
+    setDelay(15);
     type (
         "\nSuddenly, the sarcophagus at the center of the room bursts open."
         "\nA figure, cloaked in shadows, rises from within, its eyes burning with an otherworldly fire.\n"
     );
-    events.initCombat(Enemy::KING);
-    setOutputSettings(false, 25);
+    if (!events.combat(events.initEnemy(Enemy::KING, true), false, true))
+        return;
+    setDelay(25);
     type (
-        "\nWith a final, echoing scream, the figure collapses into a pile of ash."
+        "\nWith an echoing scream, the figure collapses into a pile of ash."
         "\nThe sepulcher begins to tremble, dust cascading from the ceiling as the very walls groan in protest.\n"
+        "\nThe ground splits. The walls scream——\n"
+    );
+    wait(500);
+    setDelay(500);
+    type(". . .\n");
+    wait(400);
+    setDelay(20);
+    type (
+        "\nA chilling laughter echoes through the darkness."
+        "\nThe ashes swirl violently, coalescing into a monstrous form."
+        "\nA jagged crown rises from within. Two burning eyes snap open beneath it.\n"
+    );
+    wait(500);
+    setDelay(50);
+    type("\nYou didn't kill him.\n");
+    wait(200);
+    setDelay(50);
+    type("\nYou woke him up.\n");
+    setDelay(30);
+    if (!events.combat(events.initEnemy(Enemy::ENRAGED_KING, true), false, true,
+    "\nThe Revenant King rises once again, not as a man, but as vengeance made flesh!\n"))
+        return;
+    setDelay(25);
+    type (
+        "\nThe creature lets out a final, guttural roar that rattles your bones."
+        "\nIts form collapses, not into ash this time, but into nothing"
+        "\nas if the world itself refuses to remember it ever existed.\n"
+        "\nThe sepulcher trembles, more violently than before."
         "\nYou sprint back through the halls, the walls closing in around you."
         "\nYou emerge into the light, gasping for breath, the weight of the sepulcher's curse lifted from your shoulders."
         "\nBehind you the ancient structure crumbles, sealing its secrets away forever.\n"
@@ -212,8 +257,11 @@ void EventsD::sepulcher() {
         "\nThe journey is over, but you are no longer the same adventurer who entered that cursed tomb."
         "\nYou are a warrior, a survivor, a legend.\n"
     );
+    wait(800);
+    setDelay(30);
+    type("\nFar below, buried in silence, something waits.\n");
     wait(1000);
-    setOutputSettings(true);
+    setList(true);
     type (
         "\nThanks for playing!\n"
         "\nPress Enter key to continue . . . "

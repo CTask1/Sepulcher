@@ -1,9 +1,6 @@
 //CTask
 #pragma once
-#include<initializer_list>
-#include<string_view>
-#include<vector>
-#include<memory>
+#include"pch.h"
 
 #include"Resources.h"
 #include"Enemy.h"
@@ -75,14 +72,14 @@ public:
     std::vector<Debuff> debuffs;
     Resources resources;
 
-    enum RACE {
+    enum class RACE {
         ELF,
         HUMAN,
         DRAKONIAN,
         REVENANT
     };
     
-    enum CLASS {
+    enum class CLASS {
         FIGHTER,
         ROGUE,
         WIZARD
@@ -118,7 +115,7 @@ private:
     std::unique_ptr<PlayerPublic>  pPub;
     std::unique_ptr<PlayerPrivate> pPrv;
     
-    const struct RaceInfo {
+    const struct Race_t {
         RACE Race;
         std::string_view name;
         bool operator==(const RACE compRace) const {
@@ -129,14 +126,14 @@ private:
         }
     };
 
-    inline static constexpr RaceInfo R[] {
-        { ELF,       "Elf"       },
-        { HUMAN,     "Human"     },
-        { DRAKONIAN, "Drakonian" },
-        { REVENANT,  "Revenant"  }
+    inline static constexpr Race_t RaceInfo[] {
+        { RACE::ELF,       "Elf"       },
+        { RACE::HUMAN,     "Human"     },
+        { RACE::DRAKONIAN, "Drakonian" },
+        { RACE::REVENANT,  "Revenant"  }
     };
     
-    const struct ClassInfo {
+    const struct Class_t {
         CLASS Class;
         std::string_view name;
         bool operator==(const CLASS compClass) const {
@@ -147,10 +144,10 @@ private:
         }
     };
     
-    inline static constexpr ClassInfo C[] {
-        { FIGHTER, "Fighter" },
-        { ROGUE,   "Rogue"   },
-        { WIZARD,  "Wizard"  }
+    inline static constexpr Class_t ClassInfo[] {
+        { CLASS::FIGHTER, "Fighter" },
+        { CLASS::ROGUE,   "Rogue"   },
+        { CLASS::WIZARD,  "Wizard"  }
     };
 
     bool initCraftArmor(ItemPtrVec_t& items, uint16_t& i) const;
@@ -165,8 +162,8 @@ private:
 
 public:
 
-    RaceInfo Race;
-    ClassInfo Class;
+    Race_t Race;
+    Class_t Class;
 
     Player(std::string_view, RACE, CLASS, uint16_t, uint16_t, uint16_t);
     ~Player();

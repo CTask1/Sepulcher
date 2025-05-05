@@ -1,10 +1,12 @@
 //CTask
-#include"..\include\Choice.h"
-#include"..\include\EventsR.h"
-#include"..\include\Events.h"
-#include"..\include\Player.h"
-#include"..\include\Enemy.h"
-#include"..\include\util.h"
+#include"pch.h"
+
+#include"Choice.h"
+#include"EventsR.h"
+#include"Events.h"
+#include"Player.h"
+#include"Enemy.h"
+#include"util.h"
 
 void EventsR::lostTraveler() { // Lost Traveler
     type (
@@ -15,7 +17,7 @@ void EventsR::lostTraveler() { // Lost Traveler
     );
     int travelerChoice;
     do travelerChoice = Choice(input(prompt.data())).isChoice({"offer help", "ignore them"});
-    while (!travelerChoice == 0);
+    while (travelerChoice == 0);
     
     if (travelerChoice == 2) {
         type("\nYou choose to ignore the lost traveler.\n");
@@ -25,7 +27,7 @@ void EventsR::lostTraveler() { // Lost Traveler
     int hostile = randint(1, 3); // 33% chance the traveler is hostile and attacks
     if (hostile == 1) {
         type("As you assist the traveler, they turn around and attack you!\n");
-        events.initCombat(Enemy::TRAVELER, true);
+        events.combat(events.initEnemy(Enemy::TRAVELER), true);
     } else {
         uint16_t expGain = (randint(1, 100) == 1) ? randint(35, 75) : randint(10, 20); // 1% chance of extra exp
         type("They are grateful and share a bit of their wisdom.\nYou gained ", expGain, " experience points!\n");
@@ -59,7 +61,7 @@ void EventsR::mountainPass() { // Mountain Pass
     switch (altRouteEvent) {
     case 1: {
         type("As you take the alternate route, you find yourself ambushed by a bandit!\n");
-        events.initCombat(Enemy::BANDIT, true);
+        events.combat(events.initEnemy(Enemy::BANDIT), true);
         break;
     } case 2:
         type (
@@ -102,7 +104,7 @@ void EventsR::mountainPass() { // Mountain Pass
                 player.receiveGift();
                 if (randint(1, 4) == 1) {
                     type("\nAs you are leaving the campsite, you are ambushed by a bandit!\n");
-                    events.initCombat(Enemy::BANDIT, true);
+                    events.combat(events.initEnemy(Enemy::BANDIT), true);
                 }
             }
             return;
@@ -112,7 +114,8 @@ void EventsR::mountainPass() { // Mountain Pass
         if (outcome == 1) {
             type("\nThe right path leads to a dense forest with unique flora.\nYou collect rare herbs with medicinal properties and regain health!\n");
             player.heal(3);
-            if (player.Class == Player::WIZARD && player.mana != player.maxMana)
+            player.resources.addResource("Medicinal Herbs", randint(3, 6));
+            if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
                 player.mana++;
             return;
         }
@@ -159,7 +162,7 @@ void EventsR::mysteriousCave() { // Mysterious Cave
     }
     else {
         type("The cave is home to a hostile creature!\n");
-        events.initCombat(Enemy::CAVE_CREATURE);
+        events.combat(events.initEnemy(Enemy::CAVE_CREATURE));
     }
 }
 

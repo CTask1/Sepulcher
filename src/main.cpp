@@ -1,10 +1,8 @@
 //CTask
-#include<iostream>
-#include<fstream>
-#include<string>
+#include"pch.h"
 
-#include"..\include\game.h"
-#include"..\include\util.h"
+#include"game.h"
+#include"util.h"
 
 #ifdef _WIN32
     #include<Windows.h>

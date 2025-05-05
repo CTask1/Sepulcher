@@ -832,3 +832,47 @@
         -Continued...
         -Updated user input system
         -Changed some messages
+        -Commit master 11fc8ab
+        -Release v0.2.0
+
+
+    -- 04/28/25 --
+
+        -Added more to Sepulcher event
+        -Added dev mode for easy testing
+        -Changed some messages
+
+
+    -- 04/29/25 --
+
+        -Code efficiency
+        -Bug fixes
+        -Items can now level up more than once per turn
+
+
+    -- 04/30/25 --
+
+        -Changed final boss stats
+        -Changed some messages
+
+
+    -- 05/01/25 --
+
+        -Code efficiency
+            -Added setList() and setDelay() functions
+            -Replaced initCombat() with initEnemy()
+            -Replaced player enums with enum classes
+        -Fixed include paths
+
+
+    -- 05/02/25 --
+
+        -Bug fixes
+            -Fixed player being forced out of sepulcher after defeating an enemy
+
+
+    -- 05/05/25 --
+
+        -Bug fixes
+        -Compilation efficiency
+            -Added precompiled header pch.h

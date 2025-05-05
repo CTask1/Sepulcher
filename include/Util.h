@@ -1,11 +1,8 @@
 //CTask
 #pragma once
-#include<iostream>
-#include<string>
-#include<chrono>
-#include<thread>
-#include<random>
+#include"pch.h"
 
+#define DEV_MODE 0
 #define shrt(x) static_cast<short>(x)
 #define ui16(x) static_cast<uint16_t>(x)
 
@@ -99,6 +96,14 @@ inline void wait(const uint16_t milliseconds) {
 
 inline void setOutputSettings(const bool list = defList, const uint16_t delay = defDelay) {
     outputAsList = list;
+    outputDelay = delay;
+}
+
+inline void setList(const bool list) {
+    outputAsList = list;
+}
+
+inline void setDelay(const uint16_t delay) {
     outputDelay = delay;
 }
 

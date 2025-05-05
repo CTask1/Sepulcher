@@ -1,7 +1,6 @@
 //CTask
 #pragma once
-#include<unordered_map>
-#include<string>
+#include"pch.h"
 
 #include"util.h"
 
@@ -31,13 +30,13 @@ public:
         if (showTitle)
             type("\nInventory:\n");
         if (resources.empty()) {
-            setOutputSettings(true);
+            setList(true);
             type("\tNone\n");
         }
         else {
             for (const std::pair<std::string, uint16_t>& stat : resources)
                 if (stat.second != 0) {
-                    setOutputSettings(true);
+                    setList(true);
                     type("\t", stat.first, ": ", stat.second, "\n");
                 }
         }

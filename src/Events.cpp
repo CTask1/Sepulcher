@@ -1,14 +1,16 @@
 //CTask
-#include"..\include\Choice.h"
-#include"..\include\Events.h"
-#include"..\include\Player.h"
-#include"..\include\Enemy.h"
-#include"..\include\Item.h"
-#include"..\include\util.h"
+#include"pch.h"
 
-void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorImage, bool& shadowmeld) {
+#include"Choice.h"
+#include"Events.h"
+#include"Player.h"
+#include"Enemy.h"
+#include"Item.h"
+#include"util.h"
+
+void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorImage, bool& shadowmeld, const bool sepulcher) {
     while (true) {
-        setOutputSettings(true);
+        setList(true);
         type (
             "\nWhat would you like to do?"
             "\n1. Attack"
@@ -25,7 +27,7 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
         switch (choice) {
         case 1: {
             int damage = player.strength + randint(1, 6);  // Player's attack based on strength + a six-sided die–roll
-            if (player.weapon.suffix == Item::Weapon::Suffix::INFERNO) {
+            if (player.weapon.itemType != Item::TYPE::NONE && player.weapon.suffix == Item::Weapon::Suffix::INFERNO) {
                 damage += randint(1, 4);
                 type("\nYour weapon ignites with a fiery glow!\n");
             }
@@ -61,7 +63,7 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
 
             run = true;
             type("You try to run away.\n");
-            if (randint(1, 10) == 1 && player.weapon != Item::TYPE::WPN_ST_SHADOW) {
+            if (randint(1, (sepulcher ? 5 : 10)) == 1 && player.weapon != Item::TYPE::WPN_ST_SHADOW) {
                 run = false;
                 type("The ", enemy.name, " stopped you!\n");
             }
@@ -98,13 +100,15 @@ void enemyTurn(Player& player, Enemy::Enemy& enemy, short& mirrorImage, bool& sh
     }
 }
 
-void Events::initCombat(const Enemy::TYPE eType, const bool surprise) {
-    Enemy::Enemy enemy(eType, player.maxHealth, player.baseStrength, player.level);
-    combat(enemy, surprise);
+Enemy::Enemy Events::initEnemy(const Enemy::TYPE eType, const bool boss) {
+    return Enemy::Enemy(eType, player.maxHealth, player.baseStrength, player.level, boss);
 }
 
-void Events::combat(Enemy::Enemy& enemy, bool surprised) {
-    type("\nYou encounter a ", enemy.name, "!\n");
+bool Events::combat(Enemy::Enemy&& enemy, bool surprised, const bool sepulcher, const char* message) {
+    const char* const defMessage = ("\nYou encounter a " + std::string(enemy.name) + "!\n").c_str();
+    if (message == nullptr)
+        message = defMessage;
+    type(message);
     enemy.displayStats();
     type("\nPrepare for battle!\n");
     bool first = true; // Is it the first round of combat?
@@ -112,9 +116,9 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
     short mirrorImage = 0;
     bool shadowmeld = false;
     uint16_t surprise = 0;
-    if (player.Class == Player::ROGUE)
+    if (player.Class == Player::CLASS::ROGUE)
         surprise = (player.armor == Item::TYPE::ARM_STEEL || player.armor == Item::TYPE::ARM_IRON) ? 1 : randint(1, player.level + 1); // The player cannot surprise if they are wearing heavy armor
-    while (player.health > 0 && enemy.health > 0) {
+    while (true) {
         if (surprised && first) { // If the player is surprised
             if (player.arcaneEye) { // If the player has the Arcane Eye spell active
                 surprised = false;
@@ -124,13 +128,13 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
             type("\nThe enemy surprised you!\n");
             surprise = 1;
         } else
-            playerTurn(player, enemy, run, mirrorImage, shadowmeld);
+            playerTurn(player, enemy, run, mirrorImage, shadowmeld, sepulcher);
 
-        if (player.Class == Player::ROGUE && first && surprise > 1 && enemy.name != Enemy::eType[Enemy::TRAVELER].name && !run)
+        if (player.Class == Player::CLASS::ROGUE && first && surprise > 1 && enemy.name != Enemy::eType[Enemy::TRAVELER].name && !run)
             type("You surprised the enemy!\n");
         else if (run) {
             type("You successfully ran away!\n");
-            break;
+            return 0;
         } else if (enemy.health > 0) {
             // Enemy's turn
             enemyTurn(player, enemy, mirrorImage, shadowmeld);
@@ -145,18 +149,20 @@ void Events::combat(Enemy::Enemy& enemy, bool surprised) {
                     uint16_t expGain = randint(5, player.level * 8);
                     type("\nYou defeated the ", enemy.name, "! You earned ", expGain, " experience points.\n");
                     player.addExp(expGain);
-                    if (enemy.name == Enemy::eType[Enemy::GOBLIN].name && randint(1, 2) == 1)
-                        player.initWeapon(Item::TYPE::WPN_CROSSBOW, Item::Source::DROP, (player.Class == Player::WIZARD ? -1 : 1));
+                    if (enemy == Enemy::GOBLIN && randint(1, 2) == 1)
+                        player.initWeapon(Item::TYPE::WPN_CROSSBOW, Item::Source::DROP, (player.Class == Player::CLASS::WIZARD ? -1 : 1));
+                    return 1;
                 } else {
-                    if (checkDeath(enemy, player))
-                        return;
+                    if (checkDeath(player, enemy))
+                        return 0;
                 }
             }
         }
     }
+    return 1;
 }
 
-bool checkDeath(Enemy::Enemy& enemy, Player& player) {
+bool checkDeath(Player& player, Enemy::Enemy& enemy) {
     if (player.health <= 0) {
         if (player.resurgence) {
             type (
@@ -207,7 +213,7 @@ void explore(Player& player) {
             case 5:
                 type("You discover a peaceful meadow. The serene environment helps you relax.\n");
                 player.heal(3);
-                if (player.Class == Player::WIZARD && player.mana != player.maxMana)
+                if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
                     player.mana++;
                 break;
             case 6:
@@ -217,14 +223,14 @@ void explore(Player& player) {
                 if (randint(1, 2) == 1) {
                     type("You find a small stream. The water is clear and refreshing.\n");
                     player.heal(3);
-                    if (player.Class == Player::WIZARD && player.mana != player.maxMana)
+                    if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
                         player.mana++;
                     break;
                 }
                 type("You find a hidden garden with medicinal herbs. You gather some and regain health.\n");
                 player.resources.addResource("Medicinal Herbs", randint(1, 3));
                 player.heal(3);
-                if (player.Class == Player::WIZARD && player.mana != player.maxMana)
+                if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
                     player.mana++;
                 break;
             }

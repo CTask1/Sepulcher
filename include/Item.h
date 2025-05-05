@@ -1,6 +1,6 @@
 //CTask
 #pragma once
-#include<string_view>
+#include"pch.h"
 
 #include"util.h"
 
@@ -132,9 +132,8 @@ namespace Item {
     
         virtual uint16_t levelUp() {
             level++;
+            exp -= nextLevel;
             nextLevel = 10 + ui16(pow(level, 2)); // 10 + level to the power of 2
-            exp = 0; // reset experience
-            type ("\nYour ", name, " leveled up! It is now level ", level, ".\n");
             return 0;
         }
     
@@ -244,11 +243,23 @@ namespace Item {
 
         uint16_t levelUp() override {
             uint16_t bonus = 0;
-            if (exp >= nextLevel) {
-                bonus = shrt(std::round(pow(level, Data[ui16(itemType)].defMod / 2))); // level to the power of defMod / 2
-                defenseBonus += bonus;
+            uint16_t levels = 0;
+            while (exp >= nextLevel) {
+                bonus += shrt(std::round(pow(level, Data[ui16(itemType)].defMod / 2))); // level to the power of defMod / 2
                 Leveled::levelUp();
+                levels++;
             }
+            if (levels > 0) {
+                type("\nYour ", name, " leveled up");
+                if (levels == 2)
+                    type(" twice");
+                else if (levels == 3)
+                    type(" three times");
+                else if (levels > 3)
+                    type(" many times");
+                type("! It is now level ", level, ".\n");
+            }
+            defenseBonus += bonus;
             return bonus;
         }
     
@@ -367,11 +378,23 @@ namespace Item {
 
         uint16_t levelUp() override {
             uint16_t bonus = 0;
-            if (exp >= nextLevel) {
-                bonus = shrt(std::round(pow(level, Data[ui16(itemType)].strMod / 2))); // level to the power of strMod / 2
-                strengthBonus += bonus;
+            uint16_t levels = 0;
+            while (exp >= nextLevel) {
+                bonus += shrt(std::round(pow(level, Data[ui16(itemType)].strMod / 2))); // level to the power of strMod / 2
                 Leveled::levelUp();
+                levels++;
             }
+            if (levels > 0) {
+                type("\nYour ", name, " leveled up");
+                if (levels == 2)
+                    type(" twice");
+                else if (levels == 3)
+                    type(" three times");
+                else if (levels > 3)
+                    type(" many times");
+                type("! It is now level ", level, ".\n");
+            }
+            strengthBonus += bonus;
             return bonus;
         }
     

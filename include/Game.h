@@ -1,8 +1,6 @@
 //CTask
 #pragma once
-#include<vector>
-#include<string>
-#include<cmath>
+#include"pch.h"
 
 #include"Choice.h"
 #include"Events.h"
@@ -14,7 +12,7 @@
 void rest(Player& player, uint16_t& energy) {
     type("\nYou find a place to rest and gain some health.\n");
     player.heal();
-    if (player.Class == Player::WIZARD && player.mana != player.maxMana)
+    if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
          player.mana++;
     energy++;
 }
@@ -32,14 +30,14 @@ bool useHealthPotion(Player& player) {
 
 void otherOptions(Player& player) {
     while (true) {
-        setOutputSettings(true);
+        setList(true);
         type (
             "\nOther options:\n"
             "\t1. Use a health potion (", player.resources["Health Potion"], ")\n"
             "\t2. Unequip armor\n"
             "\t3. Unequip weapon\n"
             "\t4. Abilities\n",
-            (player.Class == Player::WIZARD ? "\t5. Rituals\n6" : "5"),
+            (player.Class == Player::CLASS::WIZARD ? "\t5. Rituals\n6" : "5"),
             ". (go back)\n"
         );
 
@@ -49,7 +47,7 @@ void otherOptions(Player& player) {
             "unequip weapon",
             "abilities"
         };
-        if (player.Class == Player::WIZARD)
+        if (player.Class == Player::CLASS::WIZARD)
             choices.push_back("rituals");
         choices.push_back("(go back)");
 
@@ -62,7 +60,7 @@ void otherOptions(Player& player) {
             case 2: player.unequipArmor(); continue;
             case 3: player.unequipWeapon(); continue;
             case 4: if (!player.abilities()) continue; break;
-            case 5: if (player.Class == Player::WIZARD && !player.rituals()) continue; break;
+            case 5: if (player.Class == Player::CLASS::WIZARD && !player.rituals()) continue; break;
         }
         break;
     }
@@ -85,9 +83,9 @@ void gameLoop(Player& player, uint16_t hitdie) {
         if (time == 0) [[unlikely]] { // if the day is over
             type (
                 "\nAs the sun dips below the horizon, you find a safe place to make camp and sleep through the night.\n",
-                (player.Race == Player::REVENANT ? "Another restless night passes" : "Your health has been restored"),
+                (player.Race == Player::RACE::REVENANT ? "Another restless night passes" : "Your health has been restored"),
                 (player.hasAbility ? " and your abilites have recharged!" : "!"),
-                (player.Class == Player::WIZARD ? "\nYou also recovered 5 mana points!\n" : "\n")
+                (player.Class == Player::CLASS::WIZARD ? "\nYou also recovered 5 mana points!\n" : "\n")
             );
             /*type (
                 "\nIt's getting late. You should get some sleep...unless you want to challenge the darkness."
@@ -100,7 +98,7 @@ void gameLoop(Player& player, uint16_t hitdie) {
 
             //if (choice.isChoice("sleep", 1)) {
                 //type("\nYou find a place to sleep through the night.\n");
-                if (player.Race == Player::REVENANT) {
+                if (player.Race == Player::RACE::REVENANT) {
                     if (player.bloodMeter < 3) {
                         type ("\nYou were unable to fill your blood meter!\n");
                         player.addDebuff(Debuff::RAVENOUS);
@@ -120,7 +118,7 @@ void gameLoop(Player& player, uint16_t hitdie) {
             //} else 
             //    type("You decide to continue on into the night. Good luck!\n");
         } else {
-            setOutputSettings(true);
+            setList(true);
             type (
                 "\nWhat would you like to do?"
                 "\n1. Explore"
@@ -160,8 +158,8 @@ void gameLoop(Player& player, uint16_t hitdie) {
 }
 
 void start() {
-    Player::RACE pRace = Player::ELF;
-    Player::CLASS pClass = Player::FIGHTER;
+    Player::RACE pRace = Player::RACE::ELF;
+    Player::CLASS pClass = Player::CLASS::FIGHTER;
     uint16_t hitdie = 0;
     uint16_t str = 0, con = 0, def = 0;
     
@@ -180,20 +178,20 @@ void start() {
         
         switch (raceChoice) {
         case 1:
-            pRace = Player::ELF;
+            pRace = Player::RACE::ELF;
             con = 3;
             break;
         case 2:
-            pRace = Player::HUMAN;
+            pRace = Player::RACE::HUMAN;
             con = 3;
             break;
         case 3:
-            pRace = Player::DRAKONIAN;
+            pRace = Player::RACE::DRAKONIAN;
             con = 2;
             def = 1;
             break;
         case 4:
-            pRace = Player::REVENANT;
+            pRace = Player::RACE::REVENANT;
             con = 3;
             break;
         }
@@ -212,17 +210,17 @@ void start() {
         
         switch (classChoice) {
         case 1:
-            pClass = Player::FIGHTER;
+            pClass = Player::CLASS::FIGHTER;
             hitdie = 16;
             str = 4;
             break;
         case 2:
-            pClass = Player::ROGUE;
+            pClass = Player::CLASS::ROGUE;
             hitdie = 14;
             str = 4;
             break;
         case 3:
-            pClass = Player::WIZARD;
+            pClass = Player::CLASS::WIZARD;
             hitdie = 12;
             str = 5;
             break;
@@ -233,6 +231,13 @@ void start() {
     
     type("\nNice to meet you, ", pName, ". Here are your stats:\n");
     Player player(pName, pRace, pClass, hitdie + con, str, con);
+    #if DEV_MODE
+    player.initWeapon(Item::Weapon(Item::TYPE::WPN_GREAT, 10, 1, true), Item::Source::FIND);
+    player.initArmor(Item::Armor(Item::TYPE::ARM_STEEL, 10, 1, true), Item::Source::FIND);
+    player.addExp(500);
+    player.levelUp(hitdie);
+    player.resources.addResource("Health Potion", 10);
+    #endif
     player.defense += def;
     gameLoop(player, hitdie);
 }

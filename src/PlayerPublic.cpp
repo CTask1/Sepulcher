@@ -1,15 +1,12 @@
 //CTask
-#include<iostream>
-#include<memory>
-#include<string>
-#include<vector>
+#include"pch.h"
 
-#include"..\include\Choice.h"
-#include"..\include\PlayerPrivate.h"
-#include"..\include\PlayerPublic.h"
-#include"..\include\Player.h"
-#include"..\include\Enemy.h"
-#include"..\include\util.h"
+#include"Choice.h"
+#include"PlayerPrivate.h"
+#include"PlayerPublic.h"
+#include"Player.h"
+#include"Enemy.h"
+#include"util.h"
 
 void PlayerPublic::addExp(uint16_t exp) {
     player.exp += exp;
@@ -28,7 +25,7 @@ void PlayerPublic::levelUp(uint16_t hitdie) {
         player.health = player.getMaxHealth();
         player.strength += 3;
         player.baseStrength += 3;
-        if (player.Race == Player::DRAKONIAN)
+        if (player.Race == Player::RACE::DRAKONIAN)
             player.defense += 1;
         player.nextLevel = 10 + ui16(pow(player.level, 2));
         levels++;
@@ -39,6 +36,8 @@ void PlayerPublic::levelUp(uint16_t hitdie) {
             type(" twice");
         else if (levels == 3)
             type(" three times");
+        else if (levels > 3)
+            type(" many times");
         type("! You are now level ", player.level, ".\n");
     }
     player.defense += player.armor.levelUp();
@@ -115,12 +114,12 @@ bool PlayerPublic::rituals() {
 }
 
 bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shadowmeld) {
-    if (!player.hasAbility && player.Class != Player::WIZARD) {
+    if (!player.hasAbility && player.Class != Player::CLASS::WIZARD) {
         type("\nYou don't have any abilities.\n");
         return 0;
     }
     if (!player.raceAbilityReady && !player.classAbilityReady && player.mana == 0) {
-        if (player.Race != Player::REVENANT || player.bloodMeter == 3) {
+        if (player.Race != Player::RACE::REVENANT || player.bloodMeter == 3) {
             type("\nYour abilities are currently unavailable.\nYou must sleep first.\n");
             return 0;
         }
@@ -129,10 +128,10 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
     std::vector<const char*> abilities;
     uint16_t abilityNum = 0;
     // Race abilities
-    if (enemy != nullptr && player.Race == Player::DRAKONIAN && player.raceAbilityReady) {
+    if (enemy != nullptr && player.Race == Player::RACE::DRAKONIAN && player.raceAbilityReady) {
         abilities.push_back("Dragon's Breath");
         output += "\t" + std::to_string(++abilityNum) + ". Dragon's Breath (Drakonian)\n";
-    } else if (enemy != nullptr && player.Race == Player::REVENANT) {
+    } else if (enemy != nullptr && player.Race == Player::RACE::REVENANT) {
         if (player.raceAbilityReady) {
             abilities.push_back("Shadowmeld");
             output += "\t" + std::to_string(++abilityNum) + ". Shadowmeld (Revenant)\n";
@@ -143,11 +142,11 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         }
     }
     // Class abilities
-    if (player.Class == Player::FIGHTER && player.classAbilityReady) {
+    if (player.Class == Player::CLASS::FIGHTER && player.classAbilityReady) {
         abilities.push_back("Second Wind");
         output += "\t" + std::to_string(++abilityNum) + ". Second Wind (Fighter)\n";
     }
-    if (player.Class == Player::WIZARD) {
+    if (player.Class == Player::CLASS::WIZARD) {
         output += "Spells (You have " + std::to_string(player.mana) + " mana points):\n";
         if (enemy != nullptr) {
             abilities.push_back("Fire Bolt");
@@ -301,14 +300,14 @@ uint16_t PlayerPublic::heal(float div) {
     h = current health
     r = random number between 1.0 and 1.5
     */
-    if (player.Race == Player::REVENANT)
+    if (player.Race == Player::RACE::REVENANT)
         healing /= 2;
     player.health += healing;
     return healing;
 }
 
 uint16_t PlayerPublic::healMax() {
-    if (player.Race == Player::REVENANT)
+    if (player.Race == Player::RACE::REVENANT)
         player.health += (player.getMaxHealth() - player.health) / 2;
     else
         player.health = player.getMaxHealth();
@@ -351,7 +350,7 @@ void PlayerPublic::updateDebuffs() {
 void PlayerPublic::displayDebuffs() const {
     type("\nDebuffs:\n");
     if (player.debuffs.empty()) {
-        setOutputSettings(true);
+        setList(true);
         type("\tNone\n");
     } else {
         for (const Debuff& debuff : player.debuffs) {

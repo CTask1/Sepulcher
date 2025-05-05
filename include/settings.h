@@ -1,13 +1,13 @@
+//CTask
 #pragma once
-
-#include<fstream>
+#include"pch.h"
 
 #include "Choice.h"
 #include "globals.h"
 #include "util.h"
 
 void changeOutputSpeed() {
-    setOutputSettings(true);
+    setList(true);
     type (
         "\nWhat would you like the output speed to be?"
         "\n1. Instant",            (defDelay == 0  ? " (current)" : ""),
@@ -30,7 +30,7 @@ void changeOutputSpeed() {
 }
 
 void changeOutputMode() {
-    setOutputSettings(true);
+    setList(true);
     type (
         "\nWhat would you like the output mode to be?"
         "\n1. Text (default)", (defList ? "" : " (current)"),
@@ -49,7 +49,7 @@ void changeOutputMode() {
 }
 
 void changePrompt() {
-    setOutputSettings(true);
+    setList(true);
     type (
         "\nWhat would you like the prompt to be?"
         "\n1. Enter choice: (default)", (prompt == "Enter choice: " ? " (current)" : ""),
@@ -95,7 +95,7 @@ void resetToDefaults() {
 
 void settings() {
     while (true) {
-        setOutputSettings(true);
+        setList(true);
         type (
             "\nWhat would you like to do?"
             "\n1. Change output speed"

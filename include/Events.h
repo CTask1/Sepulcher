@@ -12,9 +12,9 @@ public:
 
     Events(Player& p) : player(p), eS(*this, p), eR(*this, p), eD(*this, p) {}
 
-    void initCombat(const Enemy::TYPE, const bool = false);
+    Enemy::Enemy initEnemy(const Enemy::TYPE eType, const bool boss = false);
     
-    void combat(Enemy::Enemy&, bool);
+    bool combat(Enemy::Enemy&& enemy, bool surprised = false, const bool sepulcher = false, const char* message = nullptr);
     
     
     /* ----- SAFE EVENTS ----- */
@@ -41,6 +41,6 @@ private:
     EventsD eD;
 };
 
-bool checkDeath(Enemy::Enemy&, Player&);
+bool checkDeath(Player&, Enemy::Enemy&);
 
 void explore(Player&);

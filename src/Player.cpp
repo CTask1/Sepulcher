@@ -1,27 +1,22 @@
 //CTask
-#include<initializer_list>
-#include<iostream>
-#include<vector>
-#include<memory>
-#include<string>
-#include<cmath>
+#include"pch.h"
 
-#include"..\include\PlayerPrivate.h"
-#include"..\include\PlayerPublic.h"
-#include"..\include\Player.h"
-#include"..\include\util.h"
+#include"PlayerPrivate.h"
+#include"PlayerPublic.h"
+#include"Player.h"
+#include"util.h"
 
 Player::Player(std::string_view n, RACE ra, CLASS cl, uint16_t h, uint16_t s, uint16_t co) :
   pPub(std::make_unique<PlayerPublic>(*this)),
   pPrv(std::make_unique<PlayerPrivate>(*this)),
   name(n),
   Race ( {
-    R[ra].Race,
-    R[ra].name
+    RaceInfo[ui16(ra)].Race,
+    RaceInfo[ui16(ra)].name
   } ),
   Class ( {
-    C[cl].Class,
-    C[cl].name
+    ClassInfo[ui16(cl)].Class,
+    ClassInfo[ui16(cl)].name
   } ),
   maxHealth(h),
   health(h),
@@ -41,18 +36,18 @@ Player::Player(std::string_view n, RACE ra, CLASS cl, uint16_t h, uint16_t s, ui
   classAbilityReady(false),
   resurgence(false),
   arcaneEye(false) {
-    if (Race == DRAKONIAN) {
+    if (Race == RACE::DRAKONIAN) {
         hasAbility = true;
         raceAbilityReady = true;
-    } else if (Race == REVENANT) {
+    } else if (Race == RACE::REVENANT) {
         hasAbility = true;
         raceAbilityReady = true;
         resurgence = true;
     }
-    if (Class == FIGHTER) {
+    if (Class == CLASS::FIGHTER) {
         hasAbility = true;
         classAbilityReady = true;
-    } else if (Class == WIZARD) {
+    } else if (Class == CLASS::WIZARD) {
         hasAbility = true;
         classAbilityReady = true;
         maxMana = 15;
@@ -65,14 +60,14 @@ Player::Player(std::string_view n, RACE ra, CLASS cl, uint16_t h, uint16_t s, ui
 Player::~Player() = default;
 
 void Player::displayStats(const bool showResources) const {
-    setOutputSettings(true);
+    setList(true);
     std::cout << "\n-------------------------";
     type (
         "\nName: ", name,
         "\nRace: ", Race.name,
-        (Race == REVENANT ? "\nBlood Meter: " + std::to_string(bloodMeter) + "/3" : ""),
+        (Race == RACE::REVENANT ? "\nBlood Meter: " + std::to_string(bloodMeter) + "/3" : ""),
         "\nClass: ", Class.name,
-        (Class == WIZARD ? "\nMana Points: " + std::to_string(mana) + '/' + std::to_string(maxMana) : ""),
+        (Class == CLASS::WIZARD ? "\nMana Points: " + std::to_string(mana) + '/' + std::to_string(maxMana) : ""),
         "\nHealth: ", health, "/", getMaxHealth(),
         "\nStrength: ", strength,
         "\nConstitution: ", CON,
@@ -84,7 +79,7 @@ void Player::displayStats(const bool showResources) const {
         "\nExperience: ", exp, "/", nextLevel
     );
     std::cout << "\n-------------------------\n";
-    if (Race == REVENANT)
+    if (Race == RACE::REVENANT)
         displayDebuffs();
     if (showResources)
         resources.displayResources();

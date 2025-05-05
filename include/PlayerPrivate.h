@@ -1,10 +1,6 @@
 //CTask
 #pragma once
-#include<initializer_list>
-#include<vector>
-#include<string>
-#include<memory>
-#include<cmath>
+#include"pch.h"
 
 #include"Player.h"
 #include"Item.h"

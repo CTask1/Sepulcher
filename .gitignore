@@ -2,7 +2,7 @@
 !*/
 !.vscode/*
 !include/*
-!src/*
+!src/**
 !docs/changelog.txt
 !*.md
 !*.gitkeep

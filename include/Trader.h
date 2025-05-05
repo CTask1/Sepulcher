@@ -1,7 +1,6 @@
 //CTask
 #pragma once
-#include<unordered_map>
-#include<string>
+#include"pch.h"
 
 #include"Resources.h"
 #include"util.h"
@@ -34,7 +33,7 @@ public:
         type("\nTrader's resources:\n");
         for (const std::pair<std::string, uint16_t>& stat : resources)
             if (stat.second != 0) {
-                setOutputSettings(true);
+                setList(true);
                 type("\t", stat.first, ": ", stat.second, " -- Price: ", prices.at(stat.first), "\n");
             }
     }

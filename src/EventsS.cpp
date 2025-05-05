@@ -1,28 +1,31 @@
 //CTask
-#include"..\include\Choice.h"
-#include"..\include\EventsS.h"
-#include"..\include\Events.h"
-#include"..\include\Trader.h"
-#include"..\include\Player.h"
-#include"..\include\Enemy.h"
-#include"..\include\util.h"
+#include"pch.h"
+
+#include"Choice.h"
+#include"EventsS.h"
+#include"Events.h"
+#include"Trader.h"
+#include"Player.h"
+#include"Enemy.h"
+#include"util.h"
 
 void EventsS::oldChest() { // Old Chest
     type("You find an old chest. Let's see what's inside...\n");
     int itemType = randint(1, 2);
     if (itemType == 1)
-        player.initArmor(Item::TYPE::ARM_IRON, Item::Source::FIND, (player.Race == Player::HUMAN ? 2 : 1));
+        player.initArmor(Item::TYPE::ARM_IRON, Item::Source::FIND, (player.Race == Player::RACE::HUMAN ? 2 : 1));
     else
-        player.initWeapon(Item::TYPE::WPN_MAGIC, Item::Source::FIND, (player.Race == Player::ELF ? 2 : 1));
+        player.initWeapon(Item::TYPE::WPN_MAGIC, Item::Source::FIND, (player.Race == Player::RACE::ELF ? 2 : 1));
 }
 
 void EventsS::hiddenArmory() { // Hidden Armory
     type("You find a hidden armory. Let's see what equipment is available...\n");
     int itemType = randint(1, 2);
     if (itemType == 1)
-        player.initArmor(Item::TYPE::ARM_STEEL, Item::Source::FIND, (player.Race == Player::HUMAN ? 2 : 1));
+        player.initArmor(Item::TYPE::ARM_STEEL, Item::Source::FIND, (player.Race == Player::RACE::HUMAN ? 2 : 1));
     else
-        player.initWeapon(Item::TYPE::WPN_GREAT, Item::Source::FIND, (player.Class == Player::FIGHTER ? 2 : (player.Class == Player::WIZARD ? -1 : 1)));
+        player.initWeapon(Item::TYPE::WPN_GREAT, Item::Source::FIND,
+            (player.Class == Player::CLASS::FIGHTER ? 2 : (player.Class == Player::CLASS::WIZARD ? -1 : 1)));
 }
 
 void EventsS::friendlyTraveler() { // Friendly Traveler

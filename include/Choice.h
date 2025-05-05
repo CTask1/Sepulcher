@@ -1,7 +1,6 @@
+//CTask
 #pragma once
-
-#include<initializer_list>
-#include<string>
+#include"pch.h"
 
 #include"util.h"
 
