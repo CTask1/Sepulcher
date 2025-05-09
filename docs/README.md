@@ -239,9 +239,22 @@ You can only have one amulet at a time, and amulets are equipped automatically w
         - Decreases defense and strength
 
 
+## Debuffs
+
+There are currently 2 debuffs the player can be affected with.
+- Ravenous (Revenant only)
+    - Affected when the player fails to fill their blood meter in a day
+    - Decreased health by 10%
+    - Lasts one day
+- Exhausted
+    - Affected when the player runs out of energy at night
+    - Decreased strength by 10%
+    - Decreased defense by 10%
+    - Lasts until the player rests
+
 ## Events
 
-There are 13 events that can occur each time the player explores.  
+There are 15 events that can occur each time the player explores.  
 These events will not be explained. Play the game to see what they are!  
 Events are split into three types. Here is a list of them:
 
@@ -268,4 +281,4 @@ Dangerous events happen 10% of the time.
 Combat and/or damage is highly likely.  
     - Enemy Encounter
     - Poacher's Snare
-    - Sepulcher
+    - Sepulcher (only after level 10)
