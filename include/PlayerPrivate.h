@@ -1,9 +1,16 @@
 //CTask
 #pragma once
-#include"pch.h"
+#include<initializer_list>
+#include<memory>
+#include<string>
+#include<vector>
 
-#include"Player.h"
 #include"Item.h"
+#include"util.h"
+
+typedef std::initializer_list<std::pair<std::string, uint16_t>> PairList_t;
+typedef std::unique_ptr<Item::Item> ItemPtr_t;
+typedef std::vector<ItemPtr_t> ItemPtrVec_t;
 
 class Player;
 

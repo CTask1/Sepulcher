@@ -876,3 +876,38 @@
         -Bug fixes
         -Compilation efficiency
             -Added precompiled header pch.h
+        -Commit master f717ca3
+
+
+    -- 05/06/25 --
+
+        -Code efficiency
+        -Added night (WIP)
+            -Added Exhaustion debuff
+        -Added Player::removeDebuff() method
+        -Added more to Sepulcher event
+        -Compiling optimizations
+        -Added unity files uEvents.cpp and uPlayer.cpp
+        -Reduced unnecessary includes
+
+
+    -- 05/07/25 --
+
+        -Bug fixes
+        -Removed precompiled header
+        -Split some header files
+            -Added Choice.cpp
+            -Added Item.cpp
+            -Added Resources.cpp
+        -Added uOther.cpp unity file
+
+
+    -- 05/08/25 --
+
+        -Completed night
+        -Bug fixes
+
+
+    -- 05/09/25 --
+
+        -Bug fixes

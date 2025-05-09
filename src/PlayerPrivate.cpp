@@ -1,5 +1,8 @@
 //CTask
-#include"pch.h"
+#include<initializer_list>
+#include<memory>
+#include<string>
+#include<vector>
 
 #include"Choice.h"
 #include"PlayerPrivate.h"

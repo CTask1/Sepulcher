@@ -1,11 +1,11 @@
 //CTask
 #pragma once
-#include"Player.h"
 #include"Enemy.h"
-
 #include"EventsS.h"
 #include"EventsR.h"
 #include"EventsD.h"
+
+class Player;
 
 class Events {
 public:
@@ -22,6 +22,10 @@ public:
     void hiddenArmory()     { eS.hiddenArmory     (); } // Hidden Armory
     void travelingTrader()  { eS.travelingTrader  (); } // Traveling Trader
     void friendlyTraveler() { eS.friendlyTraveler (); } // Friendly Traveler
+    void nothing()          { eS.nothing          (); } // Nothing
+    void stream()           { eS.stream           (); } // Stream
+    void garden()           { eS.garden           (); } // Hidden Garden
+    void meadow()           { eS.meadow           (); } // Peaceful Meadow
     
     /* ----- RISKY EVENTS ----- */
     void mountainPass()   { eR.mountainPass   (); } // Mountain Pass

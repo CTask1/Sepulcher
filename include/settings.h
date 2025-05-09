@@ -1,9 +1,8 @@
 //CTask
 #pragma once
-#include"pch.h"
+#include<fstream>
 
 #include "Choice.h"
-#include "globals.h"
 #include "util.h"
 
 void changeOutputSpeed() {
@@ -33,12 +32,12 @@ void changeOutputMode() {
     setList(true);
     type (
         "\nWhat would you like the output mode to be?"
-        "\n1. Text (default)", (defList ? "" : " (current)"),
+        "\n1. Type (default)", (defList ? "" : " (current)"),
         "\n2. List",           (defList ? " (current)" : ""),
         "\n3. (go back)\n"
     );
     int modeChoice;
-    do modeChoice = Choice(input(prompt.data())).isChoice({"text", "list", "(go back)"});
+    do modeChoice = Choice(input(prompt.data())).isChoice({"type", "list", "(go back)"});
     while (modeChoice == 0);
 
     switch (modeChoice) {
@@ -75,14 +74,14 @@ void changePrompt() {
 }
 
 void saveSettings() {
-    std::ofstream settingsFile("settings.txt");
-    if (settingsFile.is_open()) {
-        settingsFile << defList << '\n' << defDelay << '\n' << prompt << '\n';
-        settingsFile.close();
-        type("\nSettings saved.\n");
-    } else {
+    std::ofstream settingsFile("settings.txt", std::ios::trunc);
+    if (!settingsFile.is_open()) {
         type("\nUnable to open settings file.\n");
+        return;
     }
+    settingsFile << defList << '\n' << defDelay << '\n' << prompt << '\n';
+    settingsFile.close();
+    type("\nSettings saved.\n");
 }
 
 void resetToDefaults() {

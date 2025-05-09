@@ -1,6 +1,4 @@
 //CTask
-#include"pch.h"
-
 #include"Choice.h"
 #include"EventsS.h"
 #include"Events.h"
@@ -135,4 +133,30 @@ void EventsS::travelingTrader() { // Traveling Trader
         player.resources[sellChoice] -= ui16(amountSell);
         player.resources[buyChoice] += ui16(amountBuy);
     }
+}
+
+void EventsS::nothing() { // Nothing
+    type("You found nothing worth taking note of.\n");
+}
+
+void EventsS::stream() { // Stream
+    type("You find a small stream. The water is clear and refreshing.\n");
+    player.heal(3);
+    if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
+        player.mana++;
+}
+
+void EventsS::garden() { // Hidden Garden
+    type("You find a hidden garden with medicinal herbs. You gather some and regain health.\n");
+    player.resources.addResource("Medicinal Herbs", randint(1, 3));
+    player.heal(3);
+    if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
+        player.mana++;
+}
+
+void EventsS::meadow() { // Peaceful Meadow
+    type("You discover a peaceful meadow. The serene environment helps you relax.\n");
+    player.heal(3);
+    if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
+        player.mana++;
 }

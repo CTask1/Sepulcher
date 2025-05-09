@@ -1,6 +1,7 @@
 //CTask
 #pragma once
-#include"pch.h"
+#include<string_view>
+#include<cmath>
 
 #include"util.h"
 

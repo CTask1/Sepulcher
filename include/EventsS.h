@@ -1,7 +1,7 @@
 //CTask
 #pragma once
-#include"Player.h"
 
+class Player;
 class Events;
 
 class EventsS {
@@ -13,6 +13,10 @@ public:
     void hiddenArmory(); // Hidden Armory
     void travelingTrader(); // Traveling Trader
     void friendlyTraveler(); // Friendly Traveler
+    void nothing(); // Nothing
+    void stream(); // Stream
+    void garden(); // Hidden Garden
+    void meadow(); // Peaceful Meadow
 
 private:
     Player& player;

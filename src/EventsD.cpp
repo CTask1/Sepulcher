@@ -1,5 +1,5 @@
 //CTask
-#include"pch.h"
+#include<iostream>
 
 #include"Choice.h"
 #include"EventsD.h"
@@ -27,6 +27,13 @@ void EventsD::enemyEncounter() { // Enemy Encounter
 }
 
 void EventsD::hunterTrap() { // Poacher's Snare
+    if (player.arcaneEye) {
+        type (
+            "\nYour arcane eye reveals a trap hidden in the underbrush."
+            "\nYou halt just in time, avoiding danger.\n"
+        );
+        return;
+    }
     int trapType = randint(1, 7);
     switch (trapType) {
     case 1: { // Rope Snare
@@ -132,8 +139,8 @@ void EventsD::sepulcher() {
         "You encounter an ancient sepulcher. A cold wind howls through its ruined archway, carrying whispers in a language long forgotten."
         "\nThe stones beneath your feet are slick with a substance thicker than water, seeping from unseen cracks."
         "\nA silent presence lingers beyond the veil of shadow, watching, waiting."
-        "\nWhat would you like to do?"
-        "\n1. Enter"
+        "\nWill you step into the shadows?"
+        "\n1. Enter the sepulcher"
         "\n2. Turn back\n"
     );
     int enterChoice;
@@ -175,18 +182,18 @@ void EventsD::sepulcher() {
     setDelay(15);
     switch (encounter) {
     case 1:
-        type("Suddenly, a wraith materializes before you, screeching with rage!\n");
-        if (!events.combat(events.initEnemy(Enemy::WRAITH), false, true))
+        if (!events.combat(events.initEnemy(Enemy::WRAITH), false, true,
+        "Suddenly, a wraith materializes before you, screeching with rage!"))
             return;
         break;
     case 2:
-        type("A skeletal warrior rises from the ground, its eyes glowing with a malevolent light!\n");
-        if (!events.combat(events.initEnemy(Enemy::SKELETON), false, true))
+        if (!events.combat(events.initEnemy(Enemy::SKELETON), false, true,
+        "A skeletal warrior rises from the ground, its eyes glowing with a malevolent light!"))
             return;
         break;
     case 3:
-        type("A cursed spirit emerges from the shadows, its form shifting and writhing!\n");
-        if (!events.combat(events.initEnemy(Enemy::SPIRIT), false, true))
+        if (!events.combat(events.initEnemy(Enemy::SPIRIT), false, true,
+        "A cursed spirit emerges from the shadows, its form shifting and writhing!"))
             return;
         break;
     }
@@ -196,10 +203,9 @@ void EventsD::sepulcher() {
     setDelay(25);
     type (
         "\nAs you continue deeper into the sepulcher, you pass a cracked obelisk half-buried in dust and rubble."
-        "\nInscribed in a forgotten tongue, a single line glows faintly."
-        "\nThough the language is ancient, the curse that lingers here seems to whisper its truth to all who dar enter."
-        "\nYou understand the words without knowing how:"
-        "\n\"He sought what spirits have. He found what none should.\"\n"
+        "\nInscribed in an ancient language, a single line glows faintly."
+        "\nThough written in a forgotten tongue, the meaning strikes your mind with unnatural clarity:"
+        "\n\"He sought what spirits have. He found what none should. Bound by his own thirst, he cursed the world to feed his hunger.\"\n"
     );
     
     if (!sepulcherContinue()) return;
@@ -241,7 +247,7 @@ void EventsD::sepulcher() {
     type("\nYou woke him up.\n");
     setDelay(30);
     if (!events.combat(events.initEnemy(Enemy::ENRAGED_KING, true), false, true,
-    "\nThe Revenant King rises once again, not as a man, but as vengeance made flesh!\n"))
+    "The Revenant King rises once again, not as a man, but as vengeance made flesh!"))
         return;
     setDelay(25);
     type (

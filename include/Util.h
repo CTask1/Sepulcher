@@ -1,6 +1,11 @@
 //CTask
 #pragma once
-#include"pch.h"
+#include<initializer_list>
+#include<iostream>
+#include<chrono>
+#include<random>
+#include<string>
+#include<thread>
 
 #define DEV_MODE 0
 #define shrt(x) static_cast<short>(x)

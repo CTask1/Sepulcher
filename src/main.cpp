@@ -1,28 +1,30 @@
 //CTask
-#include"pch.h"
+#include<iostream>
+#include<fstream>
+#include<string>
 
 #include"game.h"
 #include"util.h"
 
 #ifdef _WIN32
-    #include<Windows.h>
-    #define SET_UTF8() SetConsoleOutputCP(CP_UTF8)
+    extern "C" __declspec(dllimport) int __stdcall SetConsoleOutputCP(uint32_t);
+    #define SET_UTF8() SetConsoleOutputCP(65001)
 #else
     #define SET_UTF8() // Got this idea from The Cherno
 #endif
 
 void loadSettings() {
     std::ifstream file("settings.txt");
-    if (file.is_open()) {
-        std::string line;
-        std::getline(file, line);
-        defList = line == "1";
-        std::getline(file, line);
-        defDelay = ui16(std::stoi(line));
-        std::getline(file >> std::ws, line);
-        prompt = line;
-        file.close();
-    }
+    if (!file.is_open())
+        return;
+    std::string line;
+    std::getline(file, line);
+    defList = line == "1";
+    std::getline(file, line);
+    defDelay = ui16(std::stoi(line));
+    std::getline(file >> std::ws, line);
+    prompt = line;
+    file.close();
 }
 
 int main() {

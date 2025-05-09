@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Run RPG (Debug)",
+            "name": "Build (Debug)",
             "type": "cppvsdbg",
             "request": "launch",
             "args": [],
@@ -13,7 +13,7 @@
             "preLaunchTask": "RPG Build Debug"
         },
         {
-            "name": "Run RPG (Release)",
+            "name": "Build (Release)",
             "type": "cppvsdbg",
             "request": "launch",
             "args": [],

@@ -4,7 +4,6 @@
 #include"Enemy.h"
 #include"Item.h"
 
-class Player;
 class PlayerPrivate;
 
 class PlayerPublic {
@@ -24,6 +23,7 @@ public:
     uint16_t heal(float);
     uint16_t healMax();
     void addDebuff(Debuff::TYPE);
+    void removeDebuff(Debuff::TYPE);
     void updateDebuffs();
     void displayDebuffs() const;
     void initArmor(const Item::Armor&, const Item::Source);

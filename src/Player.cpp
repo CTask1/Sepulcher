@@ -1,5 +1,9 @@
 //CTask
-#include"pch.h"
+#include<initializer_list>
+#include<iostream>
+#include<memory>
+#include<string>
+#include<vector>
 
 #include"PlayerPrivate.h"
 #include"PlayerPublic.h"
@@ -79,7 +83,7 @@ void Player::displayStats(const bool showResources) const {
         "\nExperience: ", exp, "/", nextLevel
     );
     std::cout << "\n-------------------------\n";
-    if (Race == RACE::REVENANT)
+    if (!debuffs.empty())
         displayDebuffs();
     if (showResources)
         resources.displayResources();
@@ -97,6 +101,7 @@ bool Player::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shadowmeld
 uint16_t Player::heal(float div)                                                               { return pPub->heal              ( div                                  ); }
 uint16_t Player::healMax()                                                                     { return pPub->healMax           (                                      ); }
 void Player::addDebuff(Debuff::TYPE debuffType)                                                {        pPub->addDebuff         ( debuffType                           ); }
+void Player::removeDebuff(Debuff::TYPE debuffType)                                             {        pPub->removeDebuff      ( debuffType                           ); }
 void Player::updateDebuffs()                                                                   {        pPub->updateDebuffs     (                                      ); }
 void Player::displayDebuffs() const                                                            {        pPub->displayDebuffs    (                                      ); }
 void Player::initGeneral(const Item::General& generalItem, const Item::Source source)          {        pPub->initGeneral       ( generalItem, source                  ); }

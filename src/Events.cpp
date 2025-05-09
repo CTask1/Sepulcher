@@ -1,5 +1,5 @@
 //CTask
-#include"pch.h"
+#include<string>
 
 #include"Choice.h"
 #include"Events.h"
@@ -105,10 +105,10 @@ Enemy::Enemy Events::initEnemy(const Enemy::TYPE eType, const bool boss) {
 }
 
 bool Events::combat(Enemy::Enemy&& enemy, bool surprised, const bool sepulcher, const char* message) {
-    const char* const defMessage = ("\nYou encounter a " + std::string(enemy.name) + "!\n").c_str();
+    const std::string defMessage = "You encounter a " + std::string(enemy.name) + '!';
     if (message == nullptr)
-        message = defMessage;
-    type(message);
+        message = defMessage.c_str();
+    type('\n' + std::string(message) + '\n');
     enemy.displayStats();
     type("\nPrepare for battle!\n");
     bool first = true; // Is it the first round of combat?
@@ -192,88 +192,41 @@ void explore(Player& player) {
         // Generate a random number to determine the exploration event
         eventType = randint(1, 10);
 
-        if (eventType <= 6) { // Safe - 60%
-            event = randint(1, 7);
+        if (eventType <= (day ? 6 : 2)) { // Safe - 60% day, 20% night
+            event = randint((day ? 1 : randint(2, 3)), 8);
             if (event == prevEvent)
                 continue;
             prevEvent = event;
             switch (event) {
-            case 1:
-                events.friendlyTraveler();
-                break;
-            case 2:
-                events.oldChest();
-                break;
-            case 3:
-                events.hiddenArmory();
-                break;
-            case 4:
-                type("You found nothing worth taking note of.\n");
-                break;
-            case 5:
-                type("You discover a peaceful meadow. The serene environment helps you relax.\n");
-                player.heal(3);
-                if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
-                    player.mana++;
-                break;
-            case 6:
-                events.travelingTrader();
-                break;
-            case 7:
-                if (randint(1, 2) == 1) {
-                    type("You find a small stream. The water is clear and refreshing.\n");
-                    player.heal(3);
-                    if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
-                        player.mana++;
-                    break;
-                }
-                type("You find a hidden garden with medicinal herbs. You gather some and regain health.\n");
-                player.resources.addResource("Medicinal Herbs", randint(1, 3));
-                player.heal(3);
-                if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
-                    player.mana++;
-                break;
+                case 1: events.travelingTrader(); break;
+                case 2: events.friendlyTraveler(); break;
+                case 3: events.oldChest(); break;
+                case 4: events.hiddenArmory(); break;
+                case 5: events.nothing(); break;
+                case 6: events.meadow(); break;
+                case 7: events.stream(); break;
+                case 8: events.garden(); break;
             }
-        } else if (eventType <= 9) { // Risky - 30%
+        } else if (eventType <= (day ? 9 : 5)) { // Risky - 30%
             event = randint(1, 4);
             if (event == prevEvent)
                 continue;
             prevEvent = event;
             switch (event) {
-            case 1:
-                events.lostTraveler();
-                break;
-            case 2:
-                events.mountainPass();
-                break;
-            case 3:
-                events.mysteriousCave();
-                break;
-            case 4:
-                events.strangeAmulet();
+                case 1: events.lostTraveler(); break;
+                case 2: events.mountainPass(); break;
+                case 3: events.mysteriousCave(); break;
+                case 4: events.strangeAmulet(); break;
             }
-        } else { // Dangerous - 10%
-            event = randint(1, (player.level >= 10 ? 3 : 2));
+        } else { // Dangerous - 10% day, 50% night
+            event = randint((day ? 1 : randint(1, 2)), (player.level >= 10 ? 3 : 2));
             if (event == prevEvent)
                 continue;
             prevEvent = event;
             switch (event) {
-            case 1:
-                events.enemyEncounter();
-                break;
-            case 2:
-                if (player.arcaneEye) {
-                    type (
-                        "\nYour arcane eye reveals a trap hidden in the underbrush."
-                        "\nYou halt just in time, avoiding danger.\n"
-                    );
-                    break;
-                }
-                events.hunterTrap();
-                break;
-            case 3:
-                events.sepulcher();
-                break;
+                case 1: events.hunterTrap(); break;
+                case 2: events.enemyEncounter(); break;
+                case 3: events.sepulcher(); break;
             }
         }
         break;

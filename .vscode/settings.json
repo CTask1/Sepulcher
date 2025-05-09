@@ -4,9 +4,8 @@
     },
     "C_Cpp.default.cppStandard": "c++20",
     "files.associations": {
-        "*.tpp": "cpp",
-        "random": "cpp",
-        "xstring": "cpp",
+        "type_traits": "cpp",
+        "initializer_list": "cpp",
         "algorithm": "cpp",
         "atomic": "cpp",
         "bit": "cpp",
@@ -27,7 +26,7 @@
         "exception": "cpp",
         "format": "cpp",
         "forward_list": "cpp",
-        "initializer_list": "cpp",
+        "fstream": "cpp",
         "iomanip": "cpp",
         "ios": "cpp",
         "iosfwd": "cpp",
@@ -41,6 +40,7 @@
         "new": "cpp",
         "optional": "cpp",
         "ostream": "cpp",
+        "random": "cpp",
         "ratio": "cpp",
         "sstream": "cpp",
         "stdexcept": "cpp",
@@ -50,7 +50,6 @@
         "system_error": "cpp",
         "thread": "cpp",
         "tuple": "cpp",
-        "type_traits": "cpp",
         "typeinfo": "cpp",
         "unordered_map": "cpp",
         "utility": "cpp",
@@ -66,8 +65,8 @@
         "xlocnum": "cpp",
         "xloctime": "cpp",
         "xmemory": "cpp",
+        "xstring": "cpp",
         "xtr1common": "cpp",
-        "xutility": "cpp",
-        "fstream": "cpp"
+        "xutility": "cpp"
     }
 }

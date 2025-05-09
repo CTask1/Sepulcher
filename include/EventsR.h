@@ -1,7 +1,7 @@
 //CTask
 #pragma once
-#include"Player.h"
 
+class Player;
 class Events;
 
 class EventsR {

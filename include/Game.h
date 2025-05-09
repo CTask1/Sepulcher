@@ -1,6 +1,6 @@
 //CTask
 #pragma once
-#include"pch.h"
+#include<vector>
 
 #include"Choice.h"
 #include"Events.h"
@@ -8,6 +8,16 @@
 #include"settings.h"
 #include"globals.h"
 #include"util.h"
+
+void resetStats(Player& player, uint16_t& time, uint16_t& energy) {
+    player.defense -= player.mageArmorDefense;
+    player.mageArmorDefense = 0;
+    player.raceAbilityReady = true;
+    player.classAbilityReady = true;
+    player.arcaneEye = false;
+    time = DAY_LENGTH;
+    energy = DAY_LENGTH + 1;
+}
 
 void rest(Player& player, uint16_t& energy) {
     type("\nYou find a place to rest and gain some health.\n");
@@ -80,43 +90,77 @@ void gameLoop(Player& player, uint16_t hitdie) {
     uint16_t energy = DAY_LENGTH;
     // Main game loop
     while (true) {
-        if (time == 0) [[unlikely]] { // if the day is over
-            type (
-                "\nAs the sun dips below the horizon, you find a safe place to make camp and sleep through the night.\n",
-                (player.Race == Player::RACE::REVENANT ? "Another restless night passes" : "Your health has been restored"),
-                (player.hasAbility ? " and your abilites have recharged!" : "!"),
-                (player.Class == Player::CLASS::WIZARD ? "\nYou also recovered 5 mana points!\n" : "\n")
-            );
-            /*type (
-                "\nIt's getting late. You should get some sleep...unless you want to challenge the darkness."
-                "\nWhat would you like to do?"
-                "\n1. Sleep"
-                "\n2. Continue", (player.level < 5 || energy < 4) ? " (not recommended)\n" : "\n"
-            );
-            do choice = input("Enter choice: ");
-            while (!choice.isChoice(true, "sleep", 1, "continue", 2));*/
-
-            //if (choice.isChoice("sleep", 1)) {
-                //type("\nYou find a place to sleep through the night.\n");
-                if (player.Race == Player::RACE::REVENANT) {
-                    if (player.bloodMeter < 3) {
-                        type ("\nYou were unable to fill your blood meter!\n");
-                        player.addDebuff(Debuff::RAVENOUS);
-                    }
-                    player.bloodMeter = 0;
-                    type("\nYour blood meter has been emptied.\n");
-                } else
-                    player.healMax();
+        if (day && energy == 0 || !day && energy == 1)
+            type ("\nYour vision blurs. You can't go on much longer...\n");
+        if (!day) {
+            if (energy == 0) {
+                setDelay(20);
+                type (
+                    "\nYour legs give out beneath you."
+                    "\nThe world spins, and your vision narrows to a tunnel of darkness."
+                    "\nYou collapse where you stand, claimed by exhaustion.\n"
+                );
+                player.addDebuff(Debuff::EXHAUSTED);
+                resetStats(player, time, energy);
+                day = true;
+                setDelay(20);
+                type (
+                    "\nYou wake on cold, unforgiving ground, limbs aching and breath shallow."
+                    "\nThe sun has risen, but its warmth does nothing for the weight pressing on your chest."
+                    "\nYou're alive—but just barely. Exhaustion clings to you like a second skin.\n"
+                );
+            }
+        }
+        if (time == 0) [[unlikely]] { // if the day/night is over
+            if (day) {
+                type (
+                    "\nTwilight drapes the land in shadow, and unseen movement whispers in the distance."
+                    "\nNight has fallen. You can sleep now... or face what hunts in the dark."
+                    "\nWhat would you like to do?"
+                    "\n1. Sleep"
+                    "\n2. Continue", (player.level < 5 || energy < 4) ? " (not recommended)\n" : "\n"
+                );
+                int nightChoice = 0;
+                do nightChoice = Choice(input(prompt.data())).isChoice({"sleep", "continue"});
+                while (nightChoice == 0);
+    
+                switch (nightChoice) {
+                case 1:
+                    type (
+                        "\nYou find a safe place to make camp and sleep through the night.\n",
+                        (player.Race == Player::RACE::REVENANT ? "Another restless night passes" : "Your health has been restored"),
+                        (player.hasAbility ? " and your abilities have recharged!" : "!"),
+                        (player.Class == Player::CLASS::WIZARD ? "\nYou also recovered 5 mana points!\n" : "\n")
+                    );
+                    if (player.Race == Player::RACE::REVENANT) {
+                        if (player.bloodMeter < 3) {
+                            type ("\nYou were unable to fill your blood meter!\n");
+                            player.addDebuff(Debuff::RAVENOUS);
+                        }
+                        player.bloodMeter = 0;
+                        type("\nYour blood meter has been emptied.\n");
+                    } else
+                        player.healMax();
                     
-                player.defense -= player.mageArmorDefense;
-                player.mageArmorDefense = 0;
-                player.mana = std::min(player.maxMana, (uint16_t)(player.mana + 5));
-                player.raceAbilityReady = true;
-                player.classAbilityReady = true;
-                player.arcaneEye = false;
-                time = energy = DAY_LENGTH;
-            //} else 
-            //    type("You decide to continue on into the night. Good luck!\n");
+                    player.removeDebuff(Debuff::EXHAUSTED);
+                    resetStats(player, time, energy);
+                    player.mana = std::min(player.maxMana, (uint16_t)(player.mana + 5));
+                    break;
+                case 2:
+                    type("You decide to continue on into the night. Good luck!\n");
+                    day = false;
+                    time = NIGHT_LENGTH;
+                    break;
+                }
+            } else {
+                type (
+                    "\nThe darkness lifts as the first light of dawn touches the horizon."
+                    "\nThe weariness in your limbs fades with the morning light. A new day begins.\n"
+                );
+                resetStats(player, time, energy);
+                day = true;
+            }
+            
         } else {
             setList(true);
             type (
@@ -142,7 +186,7 @@ void gameLoop(Player& player, uint16_t hitdie) {
                 case 5: rest(player, energy); break;
                 case 6: otherOptions(player); continue;
                 case 7: settings(); continue;
-                case 8: if (quit()) return; break;
+                case 8: if (quit()) return;
             }
 
             if (player.health <= 0) {

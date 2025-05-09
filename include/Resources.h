@@ -1,49 +1,18 @@
 //CTask
 #pragma once
-#include"pch.h"
-
-#include"util.h"
+#include<unordered_map>
+#include<string>
 
 class Resources {
 public:
     std::unordered_map<std::string, uint16_t> resources;
 
-    Resources() = default;
+    Resources();
 
-    Resources* addResource(const std::string& resource, const uint16_t amount = 1) {
-        if (amount > 0)
-            resources[resource] += amount;
-        return this;
-    }
-
-    void addResources(const Resources& addedResources) {
-        for (const std::pair<std::string, uint16_t>& pair : addedResources.resources)
-            if (pair.second > 0)
-                resources[pair.first] += pair.second;
-    }
-
-    bool empty() const {
-        return resources.empty();
-    }
-
-    void displayResources(const bool showTitle = true) const {
-        if (showTitle)
-            type("\nInventory:\n");
-        if (resources.empty()) {
-            setList(true);
-            type("\tNone\n");
-        }
-        else {
-            for (const std::pair<std::string, uint16_t>& stat : resources)
-                if (stat.second != 0) {
-                    setList(true);
-                    type("\t", stat.first, ": ", stat.second, "\n");
-                }
-        }
-    }
-
-    uint16_t& operator[](const std::string& resource) {
-        return resources[resource];
-    }
+    Resources* addResource(const std::string& resource, const uint16_t amount = 1);
+    void addResources(const Resources& addedResources);
+    bool empty() const;
+    void displayResources(const bool showTitle = true) const;
+    uint16_t& operator[](const std::string& resource);
     
 };

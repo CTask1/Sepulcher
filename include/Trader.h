@@ -1,6 +1,7 @@
 //CTask
 #pragma once
-#include"pch.h"
+#include<unordered_map>
+#include<string>
 
 #include"Resources.h"
 #include"util.h"

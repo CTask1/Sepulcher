@@ -1,6 +1,4 @@
 //CTask
-#include"pch.h"
-
 #include"Choice.h"
 #include"EventsR.h"
 #include"Events.h"
@@ -57,18 +55,18 @@ void EventsR::mountainPass() { // Mountain Pass
         }
         return;
     }
-    int altRouteEvent = randint(1, 4);
+    int altRouteEvent = randint((day ? 1 : (randint(1, 3) == 1 ? 1 : 2)), 4);
     switch (altRouteEvent) {
     case 1: {
-        type("As you take the alternate route, you find yourself ambushed by a bandit!\n");
-        events.combat(events.initEnemy(Enemy::BANDIT), true);
-        break;
-    } case 2:
         type (
             "You come across a group of friendly travelers along the alternate route."
             "\nThey share supplies and offer valuable information.\n"
         );
         player.receiveGift();
+        break;
+    } case 2:
+        type("As you take the alternate route, you find yourself ambushed by a bandit!\n");
+        events.combat(events.initEnemy(Enemy::BANDIT), true);
         break;
     case 3: {
         type (
@@ -82,7 +80,7 @@ void EventsR::mountainPass() { // Mountain Pass
         
         if (pathChoice == 1) {
             type("\nYou decide to follow the left path, guided by the mysterious markings.\n");
-            int outcome = randint(1, 2);
+            int outcome = randint((day ? 1 : randint(1, 3)), 2);
             if (outcome == 1) {
                 type("The left path leads to a peaceful glade with a group of friendly travelers. They share supplies with you!\n");
                 player.receiveGift();
@@ -110,7 +108,7 @@ void EventsR::mountainPass() { // Mountain Pass
             return;
         }
         type("\nYou choose to follow the right path, intrigued by the mysterious markings.\n");
-        int outcome = randint(1, 2);
+        int outcome = randint((day ? 1 : randint(1, 3)), 2);
         if (outcome == 1) {
             type("\nThe right path leads to a dense forest with unique flora.\nYou collect rare herbs with medicinal properties and regain health!\n");
             player.heal(3);

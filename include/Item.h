@@ -1,12 +1,10 @@
 //CTask
 #pragma once
-#include"pch.h"
-
-#include"util.h"
+#include<string_view>
 
 namespace Item {
 
-    enum Source {
+    enum class Source {
         NONE,
         FIND,
         CRAFT,
@@ -86,39 +84,20 @@ namespace Item {
         std::string name;
         TYPE itemType;
 
-        Item(const TYPE type = TYPE::NONE) : itemType(type), name(Data[ui16(type)].name) {}
-
-        virtual ~Item() = default;
-        
-        virtual void displayInfo(const Source source = Source::NONE) const {
-            if (source == FIND)
-                type("\nYou found an item: ");
-            else if (source == CRAFT)
-                type("\nYou crafted an item: ");
-            else if (source == DROP)
-                type("\nThe enemy dropped an item: ");
-            type(name);
-        }
-        
-        bool operator!=(const TYPE Type) const {
-            return itemType != Type;
-        }
-        
-        bool operator==(const TYPE Type) const {
-            return itemType == Type;
-        }
+        Item(const TYPE type = TYPE::NONE);
+        virtual ~Item();
+        virtual void displayInfo(const Source source = Source::NONE) const;
+        bool operator!=(const TYPE Type) const;
+        bool operator==(const TYPE Type) const;
 
     };
 
     class General : public Item {
     public:
 
-        General(const TYPE t = TYPE::NONE) : Item(t) {}
+        General(const TYPE t = TYPE::NONE);
     
-        void displayInfo(const Source source = Source::NONE) const override {
-            Item::displayInfo(source);
-            type("\n");
-        }
+        void displayInfo(const Source source = Source::NONE) const override;
 
     };
     
@@ -128,14 +107,8 @@ namespace Item {
         uint16_t level;
         uint16_t nextLevel;
 
-        Leveled(const TYPE t = TYPE::NONE) : Item(t), exp(0), level(1), nextLevel(11) {}
-    
-        virtual uint16_t levelUp() {
-            level++;
-            exp -= nextLevel;
-            nextLevel = 10 + ui16(pow(level, 2)); // 10 + level to the power of 2
-            return 0;
-        }
+        Leveled(const TYPE t = TYPE::NONE);
+        virtual uint16_t levelUp();
     
     };
     
@@ -162,12 +135,8 @@ namespace Item {
         Prefix prefix;
         Suffix suffix;
 
-        static short getStats(const TYPE armType, const uint16_t level, const short add = 1) {
-            return shrt(std::round(pow(level + add, Data[ui16(armType)].defMod)));
-        }
-
-        Armor() : defenseBonus(0) {}
-    
+        
+        Armor();
         /**
          * @brief Constructor for the Armor class
          * @param armType The type of armor
@@ -175,98 +144,11 @@ namespace Item {
          * @param add The amount to add to the level when calculating
          * @param crafted Whether the armor is crafted or not
          */
-        Armor(const TYPE armType, const uint16_t level, const short add = 1, const bool crafted = false) :
-            Leveled(armType),
-            defenseBonus (crafted // if the item is crafted
-                ? shrt(std::round(pow(level + add, Data[ui16(armType)].defMod))) // (level + add) to the power of defMod
-                : shrt(randint(1, ui16(std::round(pow(level + add, Data[ui16(armType)].defMod))))) // random number between 1 and the value above
-            ),
-            prefix(Prefix::NONE),
-            suffix(Suffix::NONE) {
-                // Set prefix
-                uint16_t num = randint(1, 100);
-                uint16_t prb = ui16(Prefix::NONE);
-                if (num > prb && num <= prb + ui16(Prefix::RUSTED)) {
-                    name = "Rusted " + name;
-                    prefix = Prefix::RUSTED;
-                    defenseBonus = shrt(defenseBonus * 0.8f);
-                }
-                prb += ui16(Prefix::RUSTED);
-                if (num > prb && num <= prb + ui16(Prefix::WORN)) {
-                    name = "Worn " + name;
-                    prefix = Prefix::WORN;
-                    defenseBonus = shrt(defenseBonus * 0.9f);
-                }
-                prb += ui16(Prefix::WORN);
-                if (num > prb && num <= prb + ui16(Prefix::HEAVY)) {
-                    name = "Heavy " + name;
-                    prefix = Prefix::HEAVY;
-                    defenseBonus = shrt(defenseBonus * 1.1f);
-                }
-                prb += ui16(Prefix::HEAVY);
-                if (num > prb && num <= prb + ui16(Prefix::ENCHANTED)) {
-                    name = "Enchanted " + name;
-                    prefix = Prefix::ENCHANTED;
-                    defenseBonus = shrt(defenseBonus * 1.2f);
-                }
-
-                // Set suffix
-                num = randint(1, 100);
-                prb = ui16(Suffix::NONE);
-                if (num > prb && num <= prb + ui16(Suffix::THORNS)) {
-                    name += " of Thorns";
-                    suffix = Suffix::THORNS;
-                    return;
-                }
-                prb += ui16(Suffix::THORNS);
-                if (num > prb && num <= prb + ui16(Suffix::KNIGHT)) {
-                    name += " of the Knight";
-                    suffix = Suffix::KNIGHT;
-                    defenseBonus = shrt(defenseBonus * 1.1f);
-                    return;
-                }
-                prb += ui16(Suffix::KNIGHT);
-                if (num > prb && num <= prb + ui16(Suffix::FORTITUDE)) {
-                    name += " of Fortitude";
-                    suffix = Suffix::FORTITUDE;
-                    defenseBonus = shrt(defenseBonus * 1.2f);
-                    return;
-                }
-                prb += ui16(Suffix::FORTITUDE);
-                if (num > prb && num <= prb + ui16(Suffix::RESILIENCE)) {
-                    name += " of Resilience";
-                    suffix = Suffix::RESILIENCE;
-                    defenseBonus = shrt(defenseBonus * 1.3f);
-                    return;
-                }
-            }
-
-        uint16_t levelUp() override {
-            uint16_t bonus = 0;
-            uint16_t levels = 0;
-            while (exp >= nextLevel) {
-                bonus += shrt(std::round(pow(level, Data[ui16(itemType)].defMod / 2))); // level to the power of defMod / 2
-                Leveled::levelUp();
-                levels++;
-            }
-            if (levels > 0) {
-                type("\nYour ", name, " leveled up");
-                if (levels == 2)
-                    type(" twice");
-                else if (levels == 3)
-                    type(" three times");
-                else if (levels > 3)
-                    type(" many times");
-                type("! It is now level ", level, ".\n");
-            }
-            defenseBonus += bonus;
-            return bonus;
-        }
-    
-        void displayInfo(const Source source = Source::NONE) const override {
-            Item::displayInfo(source);
-            type(" (Defense Bonus: ", defenseBonus, ")\n");
-        }
+        Armor(const TYPE armType, const uint16_t level, const short add = 1, const bool crafted = false);
+        
+        static short getStats(const TYPE armType, const uint16_t level, const short add = 1);
+        uint16_t levelUp() override;
+        void displayInfo(const Source source = Source::NONE) const override;
     
     };
     
@@ -293,11 +175,7 @@ namespace Item {
         Prefix prefix;
         Suffix suffix;
 
-        static short getStats(const TYPE wpnType, const uint16_t level, const short add = 1) {
-            return shrt(std::abs(std::round(pow(level + add, Data[ui16(wpnType)].strMod))));
-        }
-
-        Weapon() : strengthBonus(0) {}
+        Weapon();
     
         /**
          * @brief Constructor for the Weapon class
@@ -306,102 +184,11 @@ namespace Item {
          * @param add The amount to add to the level when calculating
          * @param crafted Whether the weapon is crafted or not
          */
-        Weapon(const TYPE wpnType, const uint16_t level, const short add = 1, const bool crafted = false) :
-            Leveled(wpnType),
-            strengthBonus (crafted // if the item is crafted
-                ? shrt(std::abs(std::round(pow(level + add, Data[ui16(wpnType)].strMod)))) // (level + add) to the power of strMod
-                : shrt(randint(1, ui16(std::abs(std::round(pow(level + add, Data[ui16(wpnType)].strMod)))))) // random number between 1 and the value above
-            ),
-            prefix(Prefix::NONE),
-            suffix(Suffix::NONE) {
-                uint16_t num;
-                uint16_t prb;
-                // Set prefix
-                if (Data[ui16(wpnType)].canHavePrefix) {
-                    num = randint(1, 100);
-                    prb = ui16(Prefix::NONE);
-                    if (num > prb && num <= prb + ui16(Prefix::CURSED)) {
-                        name = "Cursed " + name;
-                        prefix = Prefix::CURSED;
-                        strengthBonus = shrt(strengthBonus * 0.8f);
-                    }
-                    prb += ui16(Prefix::CURSED);
-                    if (num > prb && num <= prb + ui16(Prefix::DULL)) {
-                        name = "Dull " + name;
-                        prefix = Prefix::DULL;
-                        strengthBonus = shrt(strengthBonus * 0.9f);
-                    }
-                    prb += ui16(Prefix::DULL);
-                    if (num > prb && num <= prb + ui16(Prefix::SHARP)) {
-                        name = "Sharp " + name;
-                        prefix = Prefix::SHARP;
-                        strengthBonus = shrt(strengthBonus * 1.1f);
-                    }
-                    prb += ui16(Prefix::SHARP);
-                    if (num > prb && num <= prb + ui16(Prefix::LEGENDARY)) {
-                        name = "Legendary " + name;
-                        prefix = Prefix::LEGENDARY;
-                        strengthBonus = shrt(strengthBonus * 1.2f);
-                    }
-                }
+        Weapon(const TYPE wpnType, const uint16_t level, const short add = 1, const bool crafted = false);
 
-                // Set suffix
-                num = randint(1, 100);
-                prb = ui16(Suffix::NONE);
-                if (num > prb && num <= prb + ui16(Suffix::INFERNO)) {
-                    name += " of the Inferno";
-                    suffix = Suffix::INFERNO;
-                    return;
-                }
-                prb += ui16(Suffix::INFERNO);
-                if (num > prb && num <= prb + ui16(Suffix::VENGEANCE)) {
-                    name += " of Vengeance";
-                    suffix = Suffix::VENGEANCE;
-                    strengthBonus = shrt(strengthBonus * 1.1f);
-                    return;
-                }
-                prb += ui16(Suffix::VENGEANCE);
-                if (num > prb && num <= prb + ui16(Suffix::SLAYER)) {
-                    name += " of the Slayer";
-                    suffix = Suffix::SLAYER;
-                    strengthBonus = shrt(strengthBonus * 1.2f);
-                    return;
-                }
-                prb += ui16(Suffix::SLAYER);
-                if (num > prb && num <= prb + ui16(Suffix::EXECUTIONER)) {
-                    name += " of the Executioner";
-                    suffix = Suffix::EXECUTIONER;
-                    strengthBonus = shrt(strengthBonus * 1.3f);
-                    return;
-                }
-            }
-
-        uint16_t levelUp() override {
-            uint16_t bonus = 0;
-            uint16_t levels = 0;
-            while (exp >= nextLevel) {
-                bonus += shrt(std::round(pow(level, Data[ui16(itemType)].strMod / 2))); // level to the power of strMod / 2
-                Leveled::levelUp();
-                levels++;
-            }
-            if (levels > 0) {
-                type("\nYour ", name, " leveled up");
-                if (levels == 2)
-                    type(" twice");
-                else if (levels == 3)
-                    type(" three times");
-                else if (levels > 3)
-                    type(" many times");
-                type("! It is now level ", level, ".\n");
-            }
-            strengthBonus += bonus;
-            return bonus;
-        }
-    
-        void displayInfo(const Source source = Source::NONE) const override {
-            Item::displayInfo(source);
-            type(" (Strength Bonus: ", strengthBonus, ")\n");
-        }
+        static short getStats(const TYPE wpnType, const uint16_t level, const short add = 1);
+        uint16_t levelUp() override;
+        void displayInfo(const Source source = Source::NONE) const override;
     
     };
     
@@ -410,46 +197,17 @@ namespace Item {
         short defenseBonus,
               strengthBonus;
 
-        Special() : defenseBonus(0), strengthBonus(0) {}
+        Special();
     
         /**
          * @brief Constructor for the Special class
          * @param splType The type of special item
          * @param level The level of the player
          */
-        Special(const TYPE splType, const uint16_t level) :
-            Item(splType),
-            defenseBonus (Data[ui16(splType)].defMod == 0 // if defMod is 0
-                ? 0
-                : shrt (
-                    randint ( // a random number between 1 and the level to the power of defMod
-                        1,
-                        ui16(std::round(pow(level, Data[ui16(splType)].defMod)))
-                    ) *
-                    (Data[ui16(splType)].nDef // ...multiplied by -1 if nDef is true
-                        ? -1
-                        : 1
-                    )
-                )
-            ),
-            strengthBonus (Data[ui16(splType)].strMod == 0 // if strMod is 0
-                ? 0
-                : shrt (
-                    randint ( // a random number between 1 and the level to the power of strMod
-                        1,
-                        ui16(std::round(pow(level, Data[ui16(splType)].strMod)))
-                    ) *
-                    (Data[ui16(splType)].nStr // ...multiplied by -1 if nStr is true
-                        ? -1
-                        : 1
-                    )
-                )
-            ) {}
+        Special(const TYPE splType, const uint16_t level);
     
-        void displayInfo(const Source source = Source::NONE) const override {
-            Item::displayInfo(source);
-            type(" (Defense Bonus: ", defenseBonus, ", Strength Bonus: ", strengthBonus, ")\n");
-        }
+        void displayInfo(const Source source = Source::NONE) const override;
         
     };
+
 }

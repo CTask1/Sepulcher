@@ -3,27 +3,18 @@
     "tasks": [
         {
             "label": "RPG Build Debug",
-            "type": "cppbuild",
-            "dependsOn": "PCH Build Debug",
+            "type": "shell",
             "command": "cl.exe",
             "args": [
-                "/std:c++20",
-                "/Zi",
-                "/Od",
-                "/RTCsu",
-                "/W4",
-                "/DEBUG",
-                "/EHsc",
-                "/MP",
-                "/nologo",
+                "/std:c++20", "/Zi", "/Od", "/EHsc", "/MDd", "/MP", "/DEBUG", "/RTCsu", "/W4", "/nologo",
                 "/Iinclude\\",
-                "/Yupch.h",
-                "/Fpbin\\debug\\pch.pch",
                 "/Febin\\debug\\Sepulcher.exe",
-                "/Fobin\\debug\\",
+                "/Fobin\\debug\\", 
                 "/Fdbin\\debug\\Sepulcher.pdb",
-                "src\\*.cpp",
-                "bin\\debug\\pch.obj"
+                "src\\main.cpp",
+                "src\\uEvents.cpp",
+                "src\\uPlayer.cpp",
+                "src\\uOther.cpp"
             ],
             "problemMatcher": [
                 "$msCompile"
@@ -31,72 +22,17 @@
         },
         {
             "label": "RPG Build Release",
-            "type": "cppbuild",
-            "dependsOn": "PCH Build Release",
+            "type": "shell",
             "command": "cl.exe",
             "args": [
-                "/std:c++20",
-                "/EHsc",
-                "/O2",
-                "/DNDEBUG",
-                "/MP",
-                "/MT",
-                "/nologo",
+                "/std:c++20", "/O2", "/EHsc", "/MT", "/MP", "/DNDEBUG", "/GL", "/Zc:preprocessor", "/nologo",
                 "/Iinclude\\",
-                "/Yupch.h",
-                "/Fpbin\\release\\pch.pch",
                 "/Febin\\release\\Sepulcher.exe",
                 "/Fobin\\release\\",
-                "src\\*.cpp",
-                "bin\\release\\pch.obj"
-            ],
-            "problemMatcher": [
-                "$msCompile"
-            ]
-        },
-        {
-            "label": "PCH Build Debug",
-            "type": "cppbuild",
-            "command": "cl.exe",
-            "args": [
-                "/std:c++20",
-                "/EHsc",
-                "/Zi",
-                "/Od",
-                "/RTCsu",
-                "/W4",
-                "/DEBUG",
-                "/MT",
-                "/Iinclude\\",
-                "/Ycpch.h",
-                "/Fpbin\\debug\\pch.pch",
-                "/Fobin\\debug\\",
-                "/Fdbin\\debug\\Sepulcher.pdb",
-                "/nologo",
-                "/c",
-                "src\\pch\\pch.cpp"
-            ],
-            "problemMatcher": [
-                "$msCompile"
-            ]
-        },
-        {
-            "label": "PCH Build Release",
-            "type": "cppbuild",
-            "command": "cl.exe",
-            "args": [
-                "/std:c++20",
-                "/EHsc",
-                "/O2",
-                "/DNDEBUG",
-                "/MT",
-                "/Iinclude\\",
-                "/Ycpch.h",
-                "/Fpbin\\release\\pch.pch",
-                "/Fobin\\release\\",
-                "/nologo",
-                "/c",
-                "src\\pch\\pch.cpp"
+                "src\\main.cpp",
+                "src\\uEvents.cpp",
+                "src\\uPlayer.cpp",
+                "src\\uOther.cpp"
             ],
             "problemMatcher": [
                 "$msCompile"

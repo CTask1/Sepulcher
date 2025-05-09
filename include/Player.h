@@ -1,6 +1,9 @@
 //CTask
 #pragma once
-#include"pch.h"
+#include<initializer_list>
+#include<memory>
+#include<string>
+#include<vector>
 
 #include"Resources.h"
 #include"Enemy.h"
@@ -22,7 +25,8 @@ public:
 
     enum TYPE {
         NONE,
-        RAVENOUS
+        RAVENOUS,
+        EXHAUSTED
     };
 
     const struct Info {
@@ -34,8 +38,9 @@ public:
     };
 
     static constexpr Info Data[] {
-        { "None"                        },
-        { "Ravenous", DAY_LENGTH, -0.1f }
+        { "None"                                       },
+        { "Ravenous" , DAY_LENGTH, -0.1f               },
+        { "Exhausted", UINT16_MAX,  0.0f, -0.1f, -0.1f }
     };
 
     Debuff(TYPE debuffType) :
@@ -96,6 +101,7 @@ public:
     uint16_t heal(float = 2);
     uint16_t healMax();
     void addDebuff(Debuff::TYPE);
+    void removeDebuff(Debuff::TYPE);
     void updateDebuffs();
     void displayDebuffs() const;
     void initGeneral(const Item::General&, const Item::Source);

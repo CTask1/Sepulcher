@@ -1,10 +1,12 @@
 # BUILDING
 
-This game can be compiled in release mode with MSVC using the following command in the Developer Command Prompt for VS 2022: `cl.exe /std:c++20 /EHsc /O2 /DNDEBUG /MP /MT /nologo /Febin\release\Sepulcher.exe /Fobin\release\ src\*.cpp`  
-You can then run it with the command: `bin\release\Sepulcher.exe`  
-Alternatively, you can compile it in VSCode in the Run and Debug tab with the `Run RPG (Release)` option
+## Windows
 
-This game should be compatible with every OS, but it has never been tested outside Windows.
+This game can be compiled in release mode with MSVC using the following command in the Developer Command Prompt for VS 2022: `cl.exe /std:c++20 /EHsc /O2 /DNDEBUG /MT /MP /GL /Zc:preprocessor /nologo /Iinclude\ /Febin\release\Sepulcher.exe /Fobin\release\ src\main.cpp src\uEvents.cpp src\uPlayer.cpp src\uOther.cpp`  
+You can then run it with the command: `bin\release\Sepulcher.exe`  
+Alternatively, you can compile it in VSCode in the Run and Debug tab with the `Build (Release)` option.
+
+NOTE: This game should be compatible with every OS, but it has never been tested outside Windows.
 
 
 # Welcome to the game!

@@ -1,5 +1,7 @@
 //CTask
-#include"pch.h"
+#include<string>
+#include<vector>
+#include<cmath>
 
 #include"Choice.h"
 #include"PlayerPrivate.h"
@@ -317,22 +319,42 @@ uint16_t PlayerPublic::healMax() {
 void PlayerPublic::addDebuff(Debuff::TYPE debuffType) {
     player.debuffs.push_back(Debuff(debuffType));
     player.health = std::min(player.health, player.getMaxHealth());
-    type("You are now ", Debuff::Data[debuffType].name, ".\n");
-    type("Your ");
-    if (Debuff::Data[debuffType].hMod < 0) {
-        type("health is decreased by ", std::abs(Debuff::Data[debuffType].hMod * 100), "%");
-    } else if (Debuff::Data[debuffType].hMod > 0) {
-        type("health is increased by ", std::abs(Debuff::Data[debuffType].hMod * 100), "%");
-    } if (Debuff::Data[debuffType].strMod < 0) {
-        type("strength is decreased by ", std::abs(Debuff::Data[debuffType].strMod * 100), "%");
-    } else if (Debuff::Data[debuffType].strMod > 0) {
-        type("strength is increased by ", std::abs(Debuff::Data[debuffType].strMod * 100), "%");
-    } if (Debuff::Data[debuffType].defMod < 0) {
-        type("defense is decreased by ", std::abs(Debuff::Data[debuffType].defMod * 100), "%");
-    } else if (Debuff::Data[debuffType].defMod > 0) {
-        type("defense is increased by ", std::abs(Debuff::Data[debuffType].defMod * 100), "%");
+    const Debuff::Info& debuff = Debuff::Data[debuffType];
+    type("You are now ", debuff.name, ".\n");
+
+    std::vector<std::string> effects;
+
+    auto addEffect = [&](const char* stat, float mod) {
+        if (mod < 0)
+            effects.push_back(std::string(stat) + " is decreased by " + std::to_string((uint16_t)(std::abs(mod * 100))) + '%');
+        else if (mod > 0)
+            effects.push_back(std::string(stat) + " is increased by " + std::to_string((uint16_t)(std::abs(mod * 100))) + '%');
+    };
+
+    addEffect("health", debuff.hMod);
+    addEffect("strength", debuff.strMod);
+    addEffect("defense", debuff.defMod);
+
+    if (!effects.empty()) {
+        type("Your ");
+        for (size_t i = 0; i < effects.size(); i++) {
+            type(effects.at(i));
+            if (i + 1 < effects.size())
+                type(", ");
+        }
+        type("\n");
     }
-    type(" for ", Debuff::Data[debuffType].duration, " turns.\n");
+    type("for ", (debuff.duration < UINT16_MAX ? std::to_string(debuff.duration) : "an indefinite amount of"), " turns.\n");
+}
+
+void PlayerPublic::removeDebuff(Debuff::TYPE debuffType) {
+    for (std::vector<Debuff>::iterator it = player.debuffs.begin(); it != player.debuffs.end(); it++) {
+        if (it->name == Debuff::Data[debuffType].name) {
+            type("\nYou are no longer ", it->name, ".\n");
+            player.debuffs.erase(it);
+            return;
+        }
+    }
 }
 
 void PlayerPublic::updateDebuffs() {
@@ -341,7 +363,8 @@ void PlayerPublic::updateDebuffs() {
             type("\nYou are no longer ", it->name, ".\n");
             it = player.debuffs.erase(it);
         } else {
-            it->duration--;
+            if (it->duration < UINT16_MAX)
+                it->duration--;
             it++;
         }
     }
@@ -352,23 +375,31 @@ void PlayerPublic::displayDebuffs() const {
     if (player.debuffs.empty()) {
         setList(true);
         type("\tNone\n");
-    } else {
-        for (const Debuff& debuff : player.debuffs) {
-            type("\t", debuff.name, " (");
-            if (debuff.hMod < 0)
-                type("Decreased health by ", std::round(player.maxHealth - player.maxHealth * (1 + debuff.hMod)));
-            else if (debuff.hMod > 0)
-                type("Increased health by ", std::round(player.maxHealth - player.maxHealth * (1 + debuff.hMod)));
-            else if (debuff.strMod < 0)
-                type("Decreased strength by ", std::round(player.strength - player.strength * (1 + debuff.strMod)));
-            else if (debuff.strMod > 0)
-                type("Increased strength by ", std::round(player.strength - player.strength * (1 + debuff.strMod)));
-            else if (debuff.defMod < 0)
-                type("Decreased defense by ", std::round(player.defense - player.defense * (1 + debuff.defMod)));
-            else if (debuff.defMod > 0)
-                type("Increased defense by ", std::round(player.defense - player.defense * (1 + debuff.defMod)));
-            type(" for ", debuff.duration, " turns)\n");
+        return;
+    }
+
+    for (const Debuff& debuff : player.debuffs) {
+        type("\t", debuff.name, " (");
+
+        std::vector<std::string> effects;
+
+        auto addEffect = [&](const char* stat, float mod, short base) {
+            if (mod < 0)
+                effects.push_back("decreased " + std::string(stat) + " by " + std::to_string((short)(std::round(base - base * (1 + mod)))));
+            else if (mod > 0)
+                effects.push_back("increased " + std::string(stat) + " by " + std::to_string((short)(std::round(base - base * (1 + mod)))));
+        };
+        
+        addEffect("health", debuff.hMod, player.maxHealth);
+        addEffect("strength", debuff.strMod, player.strength);
+        addEffect("defense", debuff.defMod, player.defense);
+
+        for (size_t i = 0; i < effects.size(); i++) {
+            type(effects.at(i));
+            if (i + 1 < effects.size())
+                type(", ");
         }
+        type(" for ", (debuff.duration < UINT16_MAX ? std::to_string(debuff.duration) : "an indefinite amount of"), " turns)\n");
     }
 }
 
