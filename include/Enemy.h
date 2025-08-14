@@ -3,6 +3,7 @@
 #include<string_view>
 #include<cmath>
 
+#include"TextManager.h"
 #include"util.h"
 
 namespace Enemy {
@@ -75,13 +76,15 @@ namespace Enemy {
 
         void displayStats() {
             setOutputSettings();
-            std::cout << "\n-------------------------";
-            type (
-                "\nEnemy: ", name,
-                "\nHealth: ", health,
-                "\nStrength: ", strength
-            );
-            std::cout << "\n-------------------------\n";
+            std::cout << TM::get("hr", {.end = '\0'});
+            type(TM::get("enemy.stats", {
+                .replacements = {
+                    {"{name}", std::string(name)},
+                    {"{health}", std::to_string(health)},
+                    {"{str}", std::to_string(strength)}
+                }
+            }));
+            std::cout << TM::get("hr");
         }
 
         bool operator==(TYPE enemy) const {

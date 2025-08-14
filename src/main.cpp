@@ -3,6 +3,7 @@
 #include<fstream>
 #include<string>
 
+#include"TextManager.h"
 #include"game.h"
 #include"util.h"
 
@@ -19,7 +20,7 @@ void loadSettings() {
         return;
     std::string line;
     std::getline(file, line);
-    defList = line == "1";
+    defMode = line == "1";
     std::getline(file, line);
     defDelay = ui16(std::stoi(line));
     std::getline(file >> std::ws, line);
@@ -30,6 +31,7 @@ void loadSettings() {
 int main() {
     SET_UTF8();
     loadSettings();
+    TM::load("res\\text.json");
     start();
     std::cout << "\nThanks for playing!\n"
               << "\nPress Enter key to continue . . . ";

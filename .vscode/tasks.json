@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "RPG Build Debug",
+            "label": "RPG Build Debug Unity",
             "type": "shell",
             "command": "cl.exe",
             "args": [
@@ -12,9 +12,23 @@
                 "/Fobin\\debug\\", 
                 "/Fdbin\\debug\\Sepulcher.pdb",
                 "src\\main.cpp",
-                "src\\uEvents.cpp",
-                "src\\uPlayer.cpp",
-                "src\\uOther.cpp"
+                "src\\unity\\*.cpp"
+            ],
+            "problemMatcher": [
+                "$msCompile"
+            ]
+        },
+        {
+            "label": "RPG Build Debug Full",
+            "type": "shell",
+            "command": "cl.exe",
+            "args": [
+                "/std:c++20", "/Zi", "/Od", "/EHsc", "/MDd", "/MP", "/DEBUG", "/RTCsu", "/W4", "/nologo",
+                "/Iinclude\\",
+                "/Febin\\debug\\Sepulcher.exe",
+                "/Fobin\\debug\\", 
+                "/Fdbin\\debug\\Sepulcher.pdb",
+                "src\\*.cpp"
             ],
             "problemMatcher": [
                 "$msCompile"
@@ -25,14 +39,27 @@
             "type": "shell",
             "command": "cl.exe",
             "args": [
-                "/std:c++20", "/O2", "/EHsc", "/MT", "/MP", "/DNDEBUG", "/GL", "/Zc:preprocessor", "/nologo",
+                "/std:c++20", "/O2", "/EHsc", "/MT", "/MP", "/DNDEBUG", "/GL", "/nologo",
                 "/Iinclude\\",
                 "/Febin\\release\\Sepulcher.exe",
                 "/Fobin\\release\\",
                 "src\\main.cpp",
-                "src\\uEvents.cpp",
-                "src\\uPlayer.cpp",
-                "src\\uOther.cpp"
+                "src\\unity\\*.cpp"
+            ],
+            "problemMatcher": [
+                "$msCompile"
+            ]
+        },
+        {
+            "label": "Test Build",
+            "type": "shell",
+            "command": "cl.exe",
+            "args": [
+                "/std:c++20", "/Zi", "/Od", "/EHsc", "/MDd", "/DEBUG", "/RTCsu", "/W4", "/nologo",
+                "/Febin\\test\\test.exe",
+                "/Fobin\\test\\",
+                "/Fdbin\\test\\test.pdb",
+                "src\\test\\test.cpp"
             ],
             "problemMatcher": [
                 "$msCompile"

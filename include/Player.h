@@ -1,14 +1,17 @@
 //CTask
 #pragma once
-#include<initializer_list>
 #include<memory>
 #include<string>
 #include<vector>
 
+#include"Debuff.h"
 #include"Resources.h"
-#include"Enemy.h"
 #include"Item.h"
 #include"globals.h"
+
+namespace Enemy {
+    class Enemy;
+}
 
 typedef std::initializer_list<std::pair<std::string, uint16_t>> PairList_t;
 typedef std::unique_ptr<Item::Item> ItemPtr_t;
@@ -16,41 +19,6 @@ typedef std::vector<ItemPtr_t> ItemPtrVec_t;
 
 class PlayerPublic;
 class PlayerPrivate;
-
-class Debuff {
-public:
-    std::string_view name;
-    uint16_t duration;
-    float hMod, strMod, defMod;
-
-    enum TYPE {
-        NONE,
-        RAVENOUS,
-        EXHAUSTED
-    };
-
-    const struct Info {
-        std::string_view name = "None";
-        uint16_t duration = 1;
-        float hMod   = 0.f,
-              strMod = 0.f,
-              defMod = 0.f;
-    };
-
-    static constexpr Info Data[] {
-        { "None"                                       },
-        { "Ravenous" , DAY_LENGTH, -0.1f               },
-        { "Exhausted", UINT16_MAX,  0.0f, -0.1f, -0.1f }
-    };
-
-    Debuff(TYPE debuffType) :
-        name     (Data[debuffType].name    ),
-        duration (Data[debuffType].duration),
-        hMod     (Data[debuffType].hMod    ),
-        strMod   (Data[debuffType].strMod  ),
-        defMod   (Data[debuffType].defMod  ) {}
-
-};
 
 class Player {
 public:
@@ -76,6 +44,7 @@ public:
          resurgence;
     std::vector<Debuff> debuffs;
     Resources resources;
+    std::vector<std::string> knownWords;
 
     enum class RACE {
         ELF,

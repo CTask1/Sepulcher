@@ -10,7 +10,19 @@
             "cwd": "${workspaceFolder}",
             "environment": [],
             "console": "externalTerminal",
-            "preLaunchTask": "RPG Build Debug"
+            "preLaunchTask": "RPG Build Debug Unity"
+        },
+        {
+            "name": "Build (Debug Full)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "program": "${workspaceFolder}\\bin\\debug\\Sepulcher.exe",
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "console": "externalTerminal",
+            "preLaunchTask": "RPG Build Debug Full"
         },
         {
             "name": "Build (Release)",
@@ -23,6 +35,18 @@
             "environment": [],
             "console": "externalTerminal",
             "preLaunchTask": "RPG Build Release"
+        },
+        {
+            "name": "Build Test",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "program": "${workspaceFolder}\\bin\\test\\test.exe",
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "console": "externalTerminal",
+            "preLaunchTask": "Test Build"
         }
     ]
 }

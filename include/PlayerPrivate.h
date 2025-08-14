@@ -1,12 +1,14 @@
 //CTask
 #pragma once
-#include<initializer_list>
-#include<memory>
 #include<string>
-#include<vector>
 
 #include"Item.h"
-#include"util.h"
+
+namespace std {
+    template<typename T> class initializer_list;
+    template<typename T, typename Alloc> class vector;
+    template<typename T, typename D> class unique_ptr;
+}
 
 typedef std::initializer_list<std::pair<std::string, uint16_t>> PairList_t;
 typedef std::unique_ptr<Item::Item> ItemPtr_t;

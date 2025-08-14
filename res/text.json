@@ -1,0 +1,451 @@
+{
+    "intro": {
+        "welcome": "Hello! Welcome to the game.",
+        "choose_race": "Please select a race for your character:",
+        "races": [
+            "Elf       - Elves are a magical people with strong ties to nature. They are proficient with magical items.",
+            "Human     - Humans are adaptable and resilient, thriving in any environment. They are proficient with heavy weapons and armor.",
+            "Drakonian - Drakonians are a proud, ancient race born from the blood of dragons. They are known for their great strength and fiery breath.",
+            "Revenant  - Revenants are restless souls bound to the mortal plane. They endure with unnatural vitality but must feed on the life force of others."
+        ],
+        "choose_class": "\nNow select a class:",
+        "classes": [
+            "Fighter   - Trained with blades of all sorts      - Difficulty: Medium",
+            "Rogue     - A silent assassin, skilled in stealth - Difficulty: Low",
+            "Wizard    - A scholar in the arcane arts          - Difficulty: High"
+        ],
+        "prompt_name": "Please enter a name for your character:",
+        "greet_name": "\nNice to meet you, {name}. Here are your stats:"
+    },
+    "game": {
+        "main": {
+            "choose_action": "\nWhat would you like to do?",
+            "actions": [
+                "Explore",
+                "Display Stats",
+                "Gather Resources",
+                "Craft",
+                "Rest",
+                "Other options",
+                "Settings",
+                "Quit"
+            ]
+        },
+        "other": {
+            "choose_action": "Other options:",
+            "actions": [
+                "Use a health potion ({potions})",
+                "Unequip armor",
+                "Unequip weapon",
+                "Abilities",
+                "Rituals",
+                "(go back)"
+            ]
+        },
+        "night": {
+            "begin": "Twilight drapes the land in shadow, and unseen movement whispers in the distance.\nNight has fallen. You can sleep now... or face what hunts in the dark.",
+            "choose_action": "What would you like to do?",
+            "actions": [
+               "Sleep",
+               "Continue{recommended}"
+            ],
+            "choice": {
+                "sleep": {
+                    "message": "You find a safe place to make camp and sleep through the night.\n{rev_check}{ability_check}{wiz_check}",
+                    "checks": {
+                        "rev": {
+                            "true": "Another restless night passes",
+                            "false": "Your health has been restored"
+                        },
+                        "ability": {
+                            "true": " and your abilities have recharged!",
+                            "false": "!"
+                        },
+                        "wiz": {
+                            "true": "\nYou also recovered 5 mana points!",
+                            "false": ""
+                        }
+                    },
+                    "blood_meter_not_full": "You were unable to fill your blood meter!",
+                    "blood_meter_emptied": "Your blood meter has been emptied."
+                },
+                "continue": "You decide to continue on into the night. Good luck!"
+            },
+            "end": "The darkness lifts as the first light of dawn touches the horizon.\nThe weariness in your limbs fades with the morning light. A new day begins."
+        },
+        "exhaustion": {
+            "warning": "Your vision blurs. You can't go on much longer...",
+            "collapse": "Your legs give out beneath you.\nThe world spins and your vision narrows to a tunnel of darkness.\nYou collapse where you stand, claimed by exhaustion.",
+            "awake": "You wake on cold, unforgiving ground, limbs aching and breath shallow.\nThe sun has risen, but its warmth does nothing for the weight pressing on your chest.\nYou're alive—but just barely. Exhaustion clings to you like a second skin."
+        },
+        "rest": "You find a place to rest and gain some health.",
+        "death": "You have died. Game over.\n"
+    },
+    "events": {
+        "explore": "\nYou decide to explore the surroundings...",
+        "dangerous": {
+            "encounter": {
+                "shadow": "You stumble upon a dark cave. As you enter, you encounter a fearsome enemy!",
+                "goblin": "You find a lit campfire. As you approach, you encounter a fearsome enemy!",
+                "spirit": "You venture into a cursed forest. Strange occurrences unsettle your senses."
+            },
+            "trap": {
+                "arcane_eye": "\nYour arcane eye reveals a trap hidden in the underbrush.\nYou halt just in time, avoiding danger.",
+                "rope_snare": {
+                    "message": "You suddenly find yourself caught in a rope!\nIt quickly drags you by the foot into the air, hanging from a tree.\nWhile struggling to break free, you spot movement in the bushes.",
+                    "escape": {
+                        "true": "You successfully cut yourself out of the rope!",
+                        "false": "You failed to cut yourself down in time!"
+                    }
+                },
+                "falling_net": {
+                    "message": "You hear a quiet click underfoot.\nBefore you can react, a heavy net drops onto you from above!\nFootsteps approach in the distance...whoever set this trap is nearby!",
+                    "escape": {
+                        "true": "You got out of the net before the trapper arrived!",
+                        "false": "You failed to get out of the net in time!"
+                    }
+                },
+                "swinging_log": {
+                    "message": "You feel a tug at your ankle as a nearly invisible wire pulls taut.\nWith a creaking whine, a log swings down from above, leaving you only a few moments to react!",
+                    "escape": {
+                        "true": "You successfully dodge the log!",
+                        "false": "The log knocks you to the ground, dealing {damage} damage."
+                    }
+                },
+                "rock_avalanche": {
+                    "message": "The ground shifts beneath your feet and a deep rumble fills the air.\nBoulders begin crashing down the broken terrain toward you as dust and debris fills the air.",
+                    "escape": {
+                        "true": "You successfully evade the falling rocks!",
+                        "false": "You are knocked to the ground by a flying rock, taking {damage} damage."
+                    }
+                },
+                "magical_vines": {
+                    "message": "The ground trembles and suddenly thick vines lash out from the underbrush, wrapping around your legs and arms.\nThey pull tight, squeezing with unnatural strength.",
+                    "escape": {
+                        "true": "With some struggle, you are able to break free from the vines.",
+                        "false": "The thorns cut through your skin, dealing {damage} damage."
+                    }
+                },
+                "hidden_assassin": {
+                    "message": "You find a body slumped against a tree, clutching a small satchel.\nAs you approach, an arrow flies past with a sharp whistle and embeds itself into the dirt beside you!\nShadows flicker in the trees...you are not alone."
+                },
+                "carnivore_den": {
+                    "message": "You stumble into a deep pit, landing on something hard...bones—dozens of them.\nA low growl rumbles behind you as a pair of glowing eyes emerge from the darkness.\nWhatever killed the owners of these bones is not done feeding."
+                }
+            },
+            "sepulcher": {
+                "intro": {
+                    "message": "You encounter an ancient sepulcher. A cold wind howls through its ruined archway, carrying whispers in a language long forgotten.\nThe stones beneath your feet are slick with a substance thicker than water, seeping from unseen cracks.\nA silent presence lingers beyond the veil of shadow, watching, waiting.",
+                    "choose_option": "Will you step into the shadows?",
+                    "options": [
+                        "Enter the sepulcher",
+                        "Turn back"
+                    ]
+                },
+                "enter": "\nYou decide to enter the sepulcher...",
+                "continue_check": "\nDo you wish to continue (1. Yes / 2. No)?",
+                "leave": "\nYou decide to turn back, leaving the sepulcher to its slumber.",
+                "stage_1": {
+                    "messages": {
+                        "1": "As you walk through the empty halls, your heartbeat echoes unnaturally, as if something else is beating alongside it.\nA low, guttural sound—too deep to be human—resonates through the walls.\nThe air thickens with an unseen presence. Each step forward is heavier than the last.",
+                        "2": "Faint skeletal hands reach out from the walls as you pass, fingers twitching as if grasping for something long lost.\nTorches flicker with unnatural blue flames, casting shadows that move without their source.\nA voice—your own, yet not—whispers from the darkness: \"Turn back...\""
+                    },
+                    "continue": "\nYou decide to venture deeper into the sepulcher, where the stench of decay grows stronger..."
+                },
+                "stage_2": {
+                    "encounters": {
+                        "1": "Suddenly, a wraith materializes before you, screeching with rage!",
+                        "2": "A skeletal warrior rises from the ground, its eyes glowing with a malevolent light!",
+                        "3": "A cursed spirit emerges from the shadows, its form shifting and writhing!"
+                    },
+                    "continue": "\nAs you continue deeper into the sepulcher, you pass a cracked obelisk half-buried in dust and rubble.\nInscribed in an ancient language, a single line glows faintly.\nThough written in a forgotten tongue, the meaning strikes your mind with unnatural clarity:\n\"He sought what spirits have. He found what none should. Bound by his own thirst, he cursed the world to feed his hunger.\""
+                },
+                "stage_3": {
+                    "intro": "\nYou descend into the lowest chamber. The silence is suffocating.\nCarvings on the walls depict a forgotten kingdom, its people twisted in agony.",
+                    "king_encounter_1": "\nSuddenly, the sarcophagus at the center of the room bursts open.\nA figure, cloaked in shadows, rises from within, its eyes burning with an otherworldly fire.",
+                    "king_death_1": "\nWith an echoing scream, the figure collapses into a pile of ash.\nThe sepulcher begins to tremble, dust cascading from the ceiling as the very walls groan in protest.\n\nThe ground splits. The walls scream——",
+                    "interlude": ". . .",
+                    "king_revive": "\nA chilling laughter echoes through the darkness.\nThe ashes swirl violently, coalescing into a monstrous form.\nA jagged crown rises from within. Two burning eyes snap open beneath it.",
+                    "king_realization_1": "\nYou didn't kill him.",
+                    "king_realization_2": "\nYou woke him up.",
+                    "king_realization_3": "\nHe never wanted life. He wanted forever. And he took it.",
+                    "king_encounter_2": "The Revenant King rises once again, not as a man, but as vengeance made flesh!",
+                    "king_death_2": "\nThe creature lets out a final, guttural roar that rattles your bones.\nIts form collapses, not into ash this time, but into nothing\nas if the world itself refuses to remember it ever existed."
+                },
+                "escape": "\nThe sepulcher trembles, more violently than before.\nYou sprint back through the halls, the walls closing in around you.\nYou emerge into the light, gasping for breath, the weight of the sepulcher's curse lifted from your shoulders.\nBehind you the ancient structure crumbles, sealing its secrets away forever.",
+                "victory": "\nBirdsong returns to the skies above, as if the world itself sighs in relief.\nYou have faced the darkness and emerged victorious, a testament to your strength and resilience.\nThe journey is over, but you are no longer the same adventurer who entered that cursed tomb.\nYou are a warrior, a survivor, a legend.",
+                "mystery": "\nFar below, buried in silence, something waits.",
+                "end": "\nThanks for playing!\n\nPress Enter to continue . . ."
+            }
+        },
+        "risky": {
+            "lost_traveler": {
+                "message": "You encounter a lost traveler who is in need of directions.",
+                "choose_option": "What would you like to do?",
+                "options": [
+                    "Offer help",
+                    "Ignore them"
+                ],
+                "help": "\nYou offer help to the lost traveler.",
+                "ignore": "\nYou choose to ignore the lost traveler.",
+                "outcomes": {
+                    "attack": "As you assist the traveler, they turn around and attack you!",
+                    "thank": "They are grateful and share a bit of their wisdom.\nYou gained {exp} experience points!"
+                }
+            },
+            "mountain_pass": {
+                "message": "You come across a treacherous mountain pass. Climbing it will be challenging.",
+                "choose_option": "What would you like to do?",
+                "options": [
+                    "Attempt the climb",
+                    "Find an alternate route"
+                ],
+                "attempt": {
+                    "message": "\nYou decide to attempt the climb. It's steep and dangerous, but you press on.",
+                    "success": {
+                        "true": "You successfully navigate the mountain pass without incident.",
+                        "false": "The climb proves challenging. You slip and fall, losing some health."
+                    }
+                },
+                "alternate": {
+                    "travelers": "You come across a group of friendly travelers along the alternate route.\nThey share supplies and offer valuable information.",
+                    "ambush": "As you take the alternate route, you find yourself ambushed by a bandit!",
+                    "crossroads": {
+                        "choose_option": "The alternate route leads you to a crossroads with mysterious markings. Choose a path carefully.",
+                        "options": [
+                            "Follow the left path",
+                            "Follow the right path"
+                        ],
+                        "left": {
+                            "message": "\nYou decide to follow the left path, guided by the mysterious markings.",
+                            "travelers": "The left path leads to a peaceful glade with a group of friendly travelers. They share supplies with you!",
+                            "campsite": {
+                                "choose_option": "As you venture down the left path, you stumble upon an abandoned campsite. Investigate or continue?",
+                                "options": [
+                                    "Investigate the campsite",
+                                    "Continue on the path"
+                                ],
+                                "investigate": "\nYou decide to investigate the campsite. It seems abandoned, but you find a hidden stash of supplies!",
+                                "ambush": "\nAs you are leaving the campsite, you are ambushed by a bandit!",
+                                "continue": "You choose to continue on the path, avoiding potential danger at the abandoned campsite."
+                            }
+                        },
+                        "right": {
+                            "message": "\nYou choose to follow the right path, intrigued by the mysterious markings.",
+                            "forest": "\nThe right path leads to a dense forest with unique flora.\nYou collect rare herbs with medicinal properties and regain health!",
+                            "animal": {
+                                "choose_option": "\nAs you venture down the right path, you encounter a wild animal. How will you react?",
+                                "options": [
+                                    "Try to calm the animal",
+                                    "Retreat slowly"
+                                ],
+                                "outcomes": {
+                                    "1": "\nYou attempt to calm the wild animal. Surprisingly, it responds peacefully and leaves.",
+                                    "2": "\nYou choose to retreat slowly, avoiding confrontation with the wild animal."
+                                }
+                            }
+                        }
+                    },
+                    "nothing": "You find nothing noteworthy along the alternate route."
+                }
+            },
+            "cave": {
+                "message": "You discover a mysterious cave entrance. It emanates an eerie glow from within.",
+                "choose_option": "What would you like to do?",
+                "options": [
+                    "Enter the cave",
+                    "Move on"
+                ],
+                "enter": "You decide to enter the mysterious cave, drawn by its allure.",
+                "continue": "You choose to stay cautious and continue exploring.",
+                "outcomes": {
+                    "1": "The cave is filled with valuable crystals. You gain some resources!",
+                    "2": "The cave is home to a hostile creature!"
+                }
+            },
+            "amulet": {
+                "message": "You spot a glimmer beneath a pile of fallen leaves and uncover an ornate amulet.\nIts surface is engraved with swirling patterns and a faint hum resonates from within.\nSomething about it draws you in, but its nature is uncertain.",
+                "choose_option": "What would you like to do?",
+                "options": [
+                    "Pick it up",
+                    "Leave it"
+                ],
+                "get": {
+                    "1": "The amulet pulses with powerful energy.\nYou feel stronger, faster, and ready for anything.",
+                    "2": "A soothing presence envelops you, as if unseen hands are guiding your movements.\nYour reflexes feel sharper, and your stance more solid.",
+                    "3": "Your vision flickers, and for a moment you feel detached from reality.\nThe world seems... quieter.",
+                    "4": "The amulet pulses, filling you with an insatiable hunger.\nYou feel stronger, but your sense of caution wanes.",
+                    "5": "A sharp pain strikes your chest, and a dreadful chill spreads through your body.\nThe weight of unseen sorrow presses against your heart."
+                },
+                "leave": "You decide taking the amulet isn't worth the risk. As you turn away, a whisper drifts through the air.\nWhen you glance back, the amulet is gone."
+            }
+        },
+        "safe": {
+            "chest": {
+                "message": "You find an old chest. Let's see what's inside..."
+            },
+            "armory": {
+                "message": "You find a hidden armory. Let's see what equipment is available..."
+            },
+            "traveler": {
+                "message": "You encounter a friendly traveler. They share some advice and give you a small gift.",
+                "gift": {
+                    "true": "The traveler gives you a health potion!",
+                    "false": "The traveler shares valuable knowledge. You gained {exp} experience points!"
+                }
+            },
+            "trader": {
+                "choose_option": "You encounter a traveling trader!\nWould you like to browse their wares (1. Yes / 2. No)?",
+                "pass": "You pass by the trader.",
+                "approach": "You approach the trader. They have a variety of items for sale.",
+                "trade": {
+                    "choose_option": "\nWhat would you like to do?",
+                    "options": [
+                        "Trade",
+                        "Leave"
+                    ],
+                    "leave": "You leave the trader.",
+                    "buy_res": "Enter the resource you want to trade for {quit_prompt}:",
+                    "buy_amt": "How many do you want?",
+                    "sell_res": "Enter the resource you want to trade {quit_prompt}:",
+                    "sell_amt": "How many do you want to trade?",
+                    "complete": "\nYou got {buy_amt} {buy_res} from the trader for {sell_amt} {sell_res}.",
+                    "warning": {
+                        "trader_no_res": "The trader doesn't have that resource!",
+                        "trader_lim_res": "The trader doesn't have that many resources!",
+                        "player_no_res": "You don't have that resource!",
+                        "player_lim_res": "You don't have that many resources!",
+                        "player_special": "You can't trade your special item!",
+                        "unbalanced": "\nThis trade is unbalanced. Do you want to do it anyway (1. Yes / 2. No)?"
+                    },
+                    "quit_prompt": "(or enter {key} to go back)",
+                    "quit_key": "Q"
+                }
+            },
+            "nothing": "You found nothing worth taking note of.",
+            "stream": "You find a small stream. The water is clear and refreshing.",
+            "garden": "You find a hidden garden with medicinal herbs. You gather some and regain health.",
+            "meadow": "You discover a peaceful meadow. The serene environment helps you relax.",
+            "statue": "You step into a forgotten plaza, the stone beneath your feet cracked and smothered in moss.\nA cracked statue stands at the center—a tall figure cloaked in regal armor.\nOne hand is raised toward the sky, the other clutches a scepter twisted like a spine.\nThe face is worn smooth by time, but something in its stance still commands reverence... or fear.\nAt the statue's base, a corroded plaque clings to the stone, barely legible, and written in Ancient Ruunan:\n\"Þar Ændric, Wensolet Růnanet Tenanek.\nIn nom Λan, nir χatnůlven. In ten Λan, čenkorek noχardren a'eþ.\""
+        }
+    },
+    "combat": {
+        "default_message": "You encounter a {enemy}!",
+        "prepare": "\nPrepare for battle!",
+        "surprise": {
+            "enemy": {
+                "fail": {
+                    "arcane_eye": "\nYour arcane eye spotted the enemy before they could strike!"
+                },
+                "success": "\nThe enemy surprised you!"
+            },
+            "player": "You surprised the enemy!"
+        },
+        "player_turn": {
+            "choose_option": "What would you like to do?",
+            "options": [
+                "Attack",
+                "Display Stats",
+                "Display Enemy Stats",
+                "Abilities",
+                "Use a health poition ({potions})",
+                "Run"
+            ],
+            "damage_enemy": "\nYou dealt {damage} damage to the {enemy}!\nIts health is now {health}.",
+            "run": {
+                "message": "You try to run away.",
+                "fail": "The {enemy} stopped you!",
+                "success": "You successfully ran away!"
+            }
+        },
+        "enemy_turn": {
+            "attack": {
+                "damage_player": "\nThe {enemy} dealt {damage} damage to you!\nYour health is now {health}.",
+                "fail": {
+                    "amulet": "\nAs the enemy swings to attack, their weapon passes through you, as if you weren't even there.\nYour amulet has spared you from harm!",
+                    "mirror_image": "\nThe enemy's precise attack finds its mark, only for the image to shimmer and dissolve.\nThey stare in confusion, momentarily thrown off their attack.",
+                    "shadowmeld": "\nYou remain hidden in the shadows, evading the enemy's attack."
+                },
+                "thorns": "\nThe thorns on your armor dealt {damage} damage to the {enemy}!\nIts health is now {health}."
+            }
+        },
+        "victory": "\nYou defeated the {enemy}! You earned {exp} experience points.",
+        "defeat": "\nYou were defeated by the {enemy}{rev}",
+        "resurgence": {
+            "true": " but your body is not yet ready to perish.\nYou feel a surge of energy as you rise from the ground, ready to fight again!",
+            "false": "."
+        }
+    },
+    "player": {
+        "stats": "Name: {name}\nRace: {race}{blood_meter}\nClass: {class}{mana}\nHealth: {health}/{max_health}\nStrength: {str}\nConstitution: {con}\nDefense: {def}\nWeapon: {weapon} (Level: {weapon_level}, Strength Bonus: {str_bonus})\nArmor: {armor} (Level: {armor_level}, Defense Bonus: {def_bonus})\nSpecial: {special} (Defense Bonus: {special_def_bonus}, Strength Bonus: {special_str_bonus})\nLevel: {level}\nExperience: {exp}/{next}",
+        "health_potion": {
+            "none": "\nYou don't have any health potions!",
+            "use": "You used a health potion!\nYour health is now full ({health})."
+        }
+    },
+    "items": {
+        "weapons": {
+            "infernal": "\nYour weapon ignites with a fiery glow!"
+        }
+    },
+    "settings": {
+        "choose_option": "\nWhat would you like to do?",
+        "options": [
+            "Change output speed",
+            "Change output mode",
+            "Change prompt",
+            "Save settings",
+            "Reset to defaults",
+            "Reload text file",
+            "Go back"
+        ],
+        "speed": {
+            "choose_option": "\nWhat would you like the output speed to be?",
+            "options": [
+                "Instant{cur1}",
+                "Fast{cur2}",
+                "Moderate (default){cur3}",
+                "Slow{cur4}",
+                "(go back)"
+            ]
+        },
+        "mode": {
+            "choose_option": "\nWhat would you like the output mode to be?",
+            "options": [
+                "Type (default){cur1}",
+                "List{cur2}",
+                "(go back)"
+            ]
+        },
+        "prompt": {
+            "choose_option": "\nWhat would you like the prompt to be?",
+            "options": [
+                "Enter choice: (default){cur1}",
+                "What say you?{cur2}",
+                "What is your choice?{cur3}",
+                "->{cur4}",
+                ">{cur5}",
+                "(custom){cur6}",
+                "(go back)"
+            ],
+            "custom": "Enter custom prompt:"
+        },
+        "save_error": "\nUnable to open settings file.",
+        "save": "\nSettings saved.",
+        "reset": "\nSettings reset to defaults.",
+        "reload": "\nText file reloaded.",
+        "current_flag": {
+            "true": " (current)",
+            "false": ""
+        }
+    },
+    "trader": {
+        "display_message": "\nTrader's resources:",
+        "display_resource": "\t{resource}: {count} -- Price: {price}"
+    },
+    "enemy": {
+        "stats": "Enemy: {name}\nHealth: {health}\nStrength {str}"
+    },
+    "confirmation": "Are you sure you want to {action} (1. Yes / 2. No)?",
+    "hr": "\n-------------------------"
+}

@@ -1,8 +1,10 @@
 *
 !*/
 !.vscode/*
+!res/text.json
 !include/*
 !src/**
+src/test
 !docs/changelog.txt
 !*.md
 !*.gitkeep

@@ -14,7 +14,11 @@ struct Choice {
     Choice& operator=(std::string str);
     _NODISCARD operator std::string() const;
     _NODISCARD bool isChoice(const char* const& ch, const int num, const bool showMessage = false) const;
-    _NODISCARD int isChoice(const cstrList_t& choices, const bool showMessage = true) const;
-    _NODISCARD int isChoice(const std::vector<const char*>& choices, const bool showMessage = true) const;
+    _NODISCARD uint16_t isChoice(const cstrList_t& choices, const bool showMessage = true) const;
+    _NODISCARD uint16_t isChoice(const std::vector<const char*>& choices, const bool showMessage = true) const;
+    _NODISCARD uint16_t isChoice(const std::vector<std::string>& choices, const bool showMessage = true) const;
+    _NODISCARD static uint16_t getChoice(const cstrList_t& choices, const char* const& message = nullptr);
+    _NODISCARD static uint16_t getChoice(const std::vector<const char*>& choices, const char* const& message = nullptr);
+    _NODISCARD static uint16_t getChoice(const std::vector<std::string>& choices, const char* const& message = nullptr);
 
 };

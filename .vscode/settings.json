@@ -4,6 +4,7 @@
     },
     "C_Cpp.default.cppStandard": "c++20",
     "files.associations": {
+        "*.tpp": "cpp",
         "type_traits": "cpp",
         "initializer_list": "cpp",
         "algorithm": "cpp",
@@ -67,6 +68,18 @@
         "xmemory": "cpp",
         "xstring": "cpp",
         "xtr1common": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "string_view": "cpp",
+        "any": "cpp",
+        "array": "cpp",
+        "codecvt": "cpp",
+        "filesystem": "cpp",
+        "functional": "cpp",
+        "map": "cpp",
+        "numeric": "cpp",
+        "ranges": "cpp",
+        "span": "cpp",
+        "valarray": "cpp",
+        "xtree": "cpp"
     }
 }

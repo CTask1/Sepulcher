@@ -2,6 +2,7 @@
 #pragma once
 #include<vector>
 
+#include"TextManager.h"
 #include"Choice.h"
 #include"Events.h"
 #include"Player.h"
@@ -20,7 +21,7 @@ void resetStats(Player& player, uint16_t& time, uint16_t& energy) {
 }
 
 void rest(Player& player, uint16_t& energy) {
-    type("\nYou find a place to rest and gain some health.\n");
+    type(TM::get("game.rest"));
     player.heal();
     if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
          player.mana++;
@@ -29,43 +30,28 @@ void rest(Player& player, uint16_t& energy) {
 
 bool useHealthPotion(Player& player) {
     if (player.resources["Health Potion"] < 1) {
-        type("\nYou don't have any health potions!\n");
+        type(TM::get("player.health_potion.none"));
         return false;
     }
     player.resources["Health Potion"]--;
     player.heal(1);
-    type("\nYou used a health potion!\nYour health is now full (", player.health, ").\n");
+    type(TM::get("player.health_potion.use", {.replacements = {{"{health}", std::to_string(player.health)}}}));
     return true;
 }
 
 void otherOptions(Player& player) {
     while (true) {
-        setList(true);
-        type (
-            "\nOther options:\n"
-            "\t1. Use a health potion (", player.resources["Health Potion"], ")\n"
-            "\t2. Unequip armor\n"
-            "\t3. Unequip weapon\n"
-            "\t4. Abilities\n",
-            (player.Class == Player::CLASS::WIZARD ? "\t5. Rituals\n6" : "5"),
-            ". (go back)\n"
-        );
+        type(TM::get("game.other.choose_action"));
+        setMode(LIST_OUT);
+        type(TM::getAllAsStr("game.other.actions", {
+            .replacements = {{"{potions}", std::to_string(player.resources["Health Potion"])}}
+        }));
 
-        std::vector<const char*> choices {
-            "use a health potion",
-            "unequip armor",
-            "unequip weapon",
-            "abilities"
-        };
-        if (player.Class == Player::CLASS::WIZARD)
-            choices.push_back("rituals");
-        choices.push_back("(go back)");
+        std::vector<std::string> options = TM::getAllAsLst("game.other.actions");
+        if (player.Class != Player::CLASS::WIZARD)
+            options.erase(options.begin() + 4);
 
-        int optionsChoice = 0;
-        do optionsChoice = Choice(input(prompt.data())).isChoice(choices);
-        while (optionsChoice == 0);
-        
-        switch (optionsChoice) {
+        switch (Choice::getChoice(options)) {
             case 1: if (!useHealthPotion(player)) continue; break;
             case 2: player.unequipArmor(); continue;
             case 3: player.unequipWeapon(); continue;
@@ -77,12 +63,17 @@ void otherOptions(Player& player) {
 }
 
 bool quit() {
-    int quitChoice;
-    do quitChoice = Choice(input("Are you sure you want to quit (1. Yes / 2. No)? ")).isChoice({"yes", "no"});
-    while (quitChoice == 0);
-    if (quitChoice == 1)
-        return true;
-    return false;
+    return (Choice::getChoice({"yes", "no"}, TM::get("confirmation", {
+        .replacements = {{"{action}", "quit"}},
+        .end = ' '
+    }).c_str()) == 1);
+}
+
+int getAction() {
+    type(TM::get("game.main.choose_action"));
+    setMode(LIST_OUT);
+    type(TM::getAllAsStr("game.main.actions"));
+    return Choice::getChoice(TM::getAllAsLst("game.main.actions"));
 }
 
 void gameLoop(Player& player, uint16_t hitdie) {
@@ -91,54 +82,45 @@ void gameLoop(Player& player, uint16_t hitdie) {
     // Main game loop
     while (true) {
         if (day && energy == 0 || !day && energy == 1)
-            type ("\nYour vision blurs. You can't go on much longer...\n");
+            type(TM::get("game.exhaustion.warning"));
         if (!day) {
             if (energy == 0) {
                 setDelay(20);
-                type (
-                    "\nYour legs give out beneath you."
-                    "\nThe world spins, and your vision narrows to a tunnel of darkness."
-                    "\nYou collapse where you stand, claimed by exhaustion.\n"
-                );
+                type(TM::get("game.exhaustion.collapse"));
                 player.addDebuff(Debuff::EXHAUSTED);
                 resetStats(player, time, energy);
                 day = true;
                 setDelay(20);
-                type (
-                    "\nYou wake on cold, unforgiving ground, limbs aching and breath shallow."
-                    "\nThe sun has risen, but its warmth does nothing for the weight pressing on your chest."
-                    "\nYou're alive—but just barely. Exhaustion clings to you like a second skin.\n"
-                );
+                type (TM::get("game.exhaustion.awake"));
             }
         }
         if (time == 0) [[unlikely]] { // if the day/night is over
             if (day) {
-                type (
-                    "\nTwilight drapes the land in shadow, and unseen movement whispers in the distance."
-                    "\nNight has fallen. You can sleep now... or face what hunts in the dark."
-                    "\nWhat would you like to do?"
-                    "\n1. Sleep"
-                    "\n2. Continue", (player.level < 5 || energy < 4) ? " (not recommended)\n" : "\n"
-                );
-                int nightChoice = 0;
-                do nightChoice = Choice(input(prompt.data())).isChoice({"sleep", "continue"});
-                while (nightChoice == 0);
-    
-                switch (nightChoice) {
-                case 1:
-                    type (
-                        "\nYou find a safe place to make camp and sleep through the night.\n",
-                        (player.Race == Player::RACE::REVENANT ? "Another restless night passes" : "Your health has been restored"),
-                        (player.hasAbility ? " and your abilities have recharged!" : "!"),
-                        (player.Class == Player::CLASS::WIZARD ? "\nYou also recovered 5 mana points!\n" : "\n")
-                    );
+                type(TM::get("game.night.begin"));
+                type(TM::get("game.night.choose_action"));
+                type(TM::getAllAsStr("game.night.actions", {
+                    .replacements = {
+                        {"{recommended}", (player.level < 5 || energy < 4) ? " (not recommended)" : ""}
+                    }
+                }));
+                
+                switch (Choice::getChoice(TM::getAllAsLst("game.night.actions"))) {
+                case 1: {
+                    const std::string ROOT = "game.night.choice.sleep.checks.";
+                    type(TM::get("game.night.choice.sleep.message", {
+                        .replacements = {
+                            {"{rev_check}", TM::getForCondition(ROOT + "rev", player.Race == Player::RACE::REVENANT)},
+                            {"{ability_check}", TM::getForCondition(ROOT + "ability", player.hasAbility)},
+                            {"{wiz_check}", TM::getForCondition(ROOT + "wiz", player.Class == Player::CLASS::WIZARD)}
+                        }
+                    }));
                     if (player.Race == Player::RACE::REVENANT) {
                         if (player.bloodMeter < 3) {
-                            type ("\nYou were unable to fill your blood meter!\n");
+                            type(TM::get("game.night.choice.sleep.blood_meter_not_full"));
                             player.addDebuff(Debuff::RAVENOUS);
                         }
                         player.bloodMeter = 0;
-                        type("\nYour blood meter has been emptied.\n");
+                        type(TM::get("game.night.choice.sleep.blood_meter_emptied"));
                     } else
                         player.healMax();
                     
@@ -146,39 +128,20 @@ void gameLoop(Player& player, uint16_t hitdie) {
                     resetStats(player, time, energy);
                     player.mana = std::min(player.maxMana, (uint16_t)(player.mana + 5));
                     break;
-                case 2:
-                    type("You decide to continue on into the night. Good luck!\n");
+                } case 2:
+                    type(TM::get("game.night.choice.continue"));
                     day = false;
                     time = NIGHT_LENGTH;
                     break;
                 }
             } else {
-                type (
-                    "\nThe darkness lifts as the first light of dawn touches the horizon."
-                    "\nThe weariness in your limbs fades with the morning light. A new day begins.\n"
-                );
+                type (TM::get("game.night.end"));
                 resetStats(player, time, energy);
                 day = true;
             }
             
         } else {
-            setList(true);
-            type (
-                "\nWhat would you like to do?"
-                "\n1. Explore"
-                "\n2. Display Stats"
-                "\n3. Gather Resources"
-                "\n4. Craft"
-                "\n5. Rest"
-                "\n6. Other options"
-                "\n7. Settings"
-                "\n8. Quit\n"
-            );
-            int choice = 0;
-            do choice = Choice(input(prompt.data())).isChoice({"explore", "display stats", "gather resources", "craft", "rest", "other options", "settings", "quit"});
-            while (choice == 0);
-            
-            switch (choice) {
+            switch (getAction()) {
                 case 1: explore(player); break;
                 case 2: player.displayStats(true); continue;
                 case 3: player.gatherResources(); break;
@@ -188,9 +151,8 @@ void gameLoop(Player& player, uint16_t hitdie) {
                 case 7: settings(); continue;
                 case 8: if (quit()) return;
             }
-
             if (player.health <= 0) {
-                type("\nYou have died. Game over.\n\n");
+                type(TM::get("game.death"));
                 return;
             }
             time--;
@@ -209,18 +171,11 @@ void start() {
     
     setOutputSettings();
     { // Get the player's choice of race
-        type (
-            "Hello! Welcome to the game.\nPlease select a race for your character:"
-            "\n1. Elf       - Elves are a magical people with strong ties to nature. They are proficient with magical items."
-            "\n2. Human     - Humans are adaptable and resilient, thriving in any environment. They are proficient with heavy weapons and armor."
-            "\n3. Drakonian - Drakonians are a proud, ancient race born from the blood of dragons. They are known for their great strength and fiery breath."
-            "\n4. Revenant  - Revenants are restless souls bound to the mortal plane. They endure with unnatural vitality but must feed on the life force of others.\n"
-        );
-        int raceChoice = 0;
-        do raceChoice = Choice(input(prompt.data())).isChoice({"elf", "human", "drakonian", "revenant"});
-        while (raceChoice == 0);
-        
-        switch (raceChoice) {
+        type(TM::get("intro.welcome"));
+        type(TM::get("intro.choose_race"));
+        type(TM::getAllAsStr("intro.races"));
+
+        switch (Choice::getChoice({"elf", "human", "drakonian", "revenant"})) {
         case 1:
             pRace = Player::RACE::ELF;
             con = 3;
@@ -242,17 +197,10 @@ void start() {
     }
     
     { // Get the player's choice of class
-        type (
-            "\nNow select a class:"
-            "\n1. Fighter   - Trained with blades of all sorts      - Difficulty: Medium"
-            "\n2. Rogue     - A silent assassin, skilled in stealth - Difficulty: Low"
-            "\n3. Wizard    - A scholar in the arcane arts          - Difficulty: High\n"
-        );
-        int classChoice = 0;
-        do classChoice = Choice(input(prompt.data())).isChoice({"fighter", "rogue", "wizard"});
-        while (classChoice == 0);
+        type(TM::get("intro.choose_class"));
+        type(TM::getAllAsStr("intro.classes"));
         
-        switch (classChoice) {
+        switch (Choice::getChoice({"fighter", "rogue", "wizard"})) {
         case 1:
             pClass = Player::CLASS::FIGHTER;
             hitdie = 16;
@@ -271,9 +219,9 @@ void start() {
         }
     }
 
-    std::string pName = input("\nPlease enter a name for your character: ");
+    std::string pName = input(('\n' + TM::get("intro.prompt_name", {.end = ' '})).c_str());
     
-    type("\nNice to meet you, ", pName, ". Here are your stats:\n");
+    type(TM::get("intro.greet_name", {.replacements = {{"{name}", pName}}}));
     Player player(pName, pRace, pClass, hitdie + con, str, con);
     #if DEV_MODE
     player.initWeapon(Item::Weapon(Item::TYPE::WPN_GREAT, 10, 1, true), Item::Source::FIND);

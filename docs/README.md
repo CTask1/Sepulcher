@@ -1,12 +1,22 @@
 # BUILDING
 
+Sepulcher is compiled using Microsoft Visual C++ (MSVC), which is only available on Windows (as far as I know). At this time, building on other operating systems has not been tested and may require modifications.
+
+
 ## Windows
 
-This game can be compiled in release mode with MSVC using the following command in the Developer Command Prompt for VS 2022: `cl.exe /std:c++20 /EHsc /O2 /DNDEBUG /MT /MP /GL /Zc:preprocessor /nologo /Iinclude\ /Febin\release\Sepulcher.exe /Fobin\release\ src\main.cpp src\uEvents.cpp src\uPlayer.cpp src\uOther.cpp`  
+This game can be compiled in release mode with MSVC using the following command in the Developer Command Prompt for VS 2022: `cl.exe /std:c++20 /EHsc /O2 /DNDEBUG /MT /MP /GL /nologo /Iinclude\ /Febin\release\Sepulcher.exe /Fobin\release\ src\main.cpp src\uEvents.cpp src\uPlayer.cpp src\uOther.cpp`  
 You can then run it with the command: `bin\release\Sepulcher.exe`  
-Alternatively, you can compile it in VSCode in the Run and Debug tab with the `Build (Release)` option.
 
-NOTE: This game should be compatible with every OS, but it has never been tested outside Windows.
+
+### Visual Studio Code
+
+Alternatively, you can compile it in VS Code in the Run and Debug tab.
+There are three options for building to be used in different cases:
+
+- `Build (Debug)` should be used when making frequent changes. This uses unity files to speed up the build process.
+- `Build (Debug Full)` should be used when tracking down specific issues. This does not use unity files so it is slower than the basic debug option but it gives more information.
+- `Build (Release)` should be used when all code works properly. This uses unity files.
 
 
 # Welcome to the game!

@@ -26,7 +26,8 @@ public:
     void stream()           { eS.stream           (); } // Stream
     void garden()           { eS.garden           (); } // Hidden Garden
     void meadow()           { eS.meadow           (); } // Peaceful Meadow
-    
+    void statue()           { eS.statue           (); } // Statue
+
     /* ----- RISKY EVENTS ----- */
     void mountainPass()   { eR.mountainPass   (); } // Mountain Pass
     void mysteriousCave() { eR.mysteriousCave (); } // Mysterious Cave

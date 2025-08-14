@@ -40,7 +40,7 @@ void PlayerPublic::levelUp(uint16_t hitdie) {
             type(" three times");
         else if (levels > 3)
             type(" many times");
-        type("! You are now level ", player.level, ".\n");
+        type("! You are now level " + std::to_string(player.level) + ".\n");
     }
     player.defense += player.armor.levelUp();
     player.strength += player.weapon.levelUp();
@@ -88,8 +88,10 @@ bool PlayerPublic::rituals() {
     }
     std::vector<const char*> rituals;
     uint16_t ritualNum = 0;
-    type("\t", ++ritualNum, ". Mana Restoration\n");
-    type(ritualNum + 1, ". (go back)\n");
+    type (
+        "\t" + std::to_string(++ritualNum) + ". Mana Restoration\n" +
+        std::to_string(ritualNum + 1) + ". (go back)\n"
+    );
 
     rituals.push_back("Mana Restoration");
     rituals.push_back("(go back)");
@@ -172,7 +174,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         type("\nYour abilities are currently unavailable.\n");
         return 0;
     }
-    type(output);
+    type(std::string(output));
 
     int abilityChoice;
     do abilityChoice = Choice(input(prompt.data())).isChoice(abilities);
@@ -183,9 +185,9 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         const uint16_t burn = randint(1, 4);
         enemy->health = ui16(std::max(enemy->health - damage - burn, 0));
         type (
-            "\nYou take a deep breath, and with a powerful exhale, a torrent of searing flames erupts from your mouth, searing the ", enemy->name, " for ", damage, " damage!"
-            "\nThe ", enemy->name, " is burned for an additional ", burn, " damage!"
-            "\nIts health is now ", enemy->health, ".\n"
+            "\nYou take a deep breath, and with a powerful exhale, a torrent of searing flames erupts from your mouth, searing the " + std::string(enemy->name) + " for " + std::to_string(damage) + " damage!"
+            "\nThe " + std::string(enemy->name) + " is burned for an additional " + std::to_string(burn) + " damage!"
+            "\nIts health is now " + std::to_string(enemy->health) + ".\n"
         );
         player.raceAbilityReady = false;
     } else if (streq(abilities.at(abilityChoice), "Shadowmeld")) {
@@ -202,17 +204,17 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         player.health = std::min(ui16(player.health + damage / 2), player.getMaxHealth());
         player.bloodMeter++;
         type (
-            "\nYou drain the life force from the ", enemy->name, ", dealing ", damage, " damage!"
-            "\nIts health is now ", enemy->health, "."
-            "\nYou also fill your blood meter and gain ", damage / 2, " health points!"
-            "\nYour health is now ", player.health, "."
-            "\nYour blood meter is now at ", player.bloodMeter, "/3.\n"
+            "\nYou drain the life force from the " + std::string(enemy->name) + ", dealing " + std::to_string(damage) + " damage!"
+            "\nIts health is now " + std::to_string(enemy->health) + "."
+            "\nYou also fill your blood meter and gain " + std::to_string(damage / 2) + " health points!"
+            "\nYour health is now " + std::to_string(player.health) + "."
+            "\nYour blood meter is now at " + std::to_string(player.bloodMeter) + "/3.\n"
         );
     } else if (streq(abilities.at(abilityChoice), "Second Wind")) {
         const uint16_t healing = player.heal();
         type (
-            "\nYou get a surge of adrenaline and heal ", healing, " points!"
-            "\nYour health is now ", player.health, ".\n"
+            "\nYou get a surge of adrenaline and heal " + std::to_string(healing) + " points!"
+            "\nYour health is now " + std::to_string(player.health) + ".\n"
         );
         player.classAbilityReady = false;
         return 0;
@@ -228,9 +230,9 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         player.health = std::min(ui16(player.health + 1), player.getMaxHealth());
         type (
             "\nYou conjure a blazing ember in your palm and hurl it forward."
-            "\nThe fire bolt streaks through the air, striking the ", enemy->name, " with a burst of flames for ", damage, " damage!"
-            "\nThe ", enemy->name, " is burned for an additional ", burn, " damage!"
-            "\nIts health is now ", enemy->health, ".\n"
+            "\nThe fire bolt streaks through the air, striking the " + std::string(enemy->name) + " with a burst of flames for " + std::to_string(damage) + " damage!"
+            "\nThe " + std::string(enemy->name) + " is burned for an additional " + std::to_string(burn) + " damage!"
+            "\nIts health is now " + std::to_string(enemy->health) + ".\n"
         );
     } else if (streq(abilities.at(abilityChoice), "Mirror Image")) {
         if (player.mana < 2) {
@@ -258,7 +260,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         player.defense += player.mageArmorDefense;
         player.mana -= 5;
         player.health = std::min(ui16(player.health + 5), player.getMaxHealth());
-        type ("\nA protective shielding aura surrounds you, boosting your defense by ", player.mageArmorDefense, "!\n");
+        type("\nA protective shielding aura surrounds you, boosting your defense by " + std::to_string(player.mageArmorDefense) + "!\n");
     } else if (streq(abilities.at(abilityChoice), "Arcane Eye")) {
         if (player.mana < 3) {
             type("\nYou don't have enough mana points!\n");
@@ -281,8 +283,8 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         player.health = std::min(ui16(player.health + 2), player.getMaxHealth());
         type (
             "\nYou channel magical energy into a healing aura, wrapping yourself in a warm, sooting light."
-            "\nYour wounds are mended and you heal ", healing, " points!"
-            "\nYour health is now ", player.health, ".\n"
+            "\nYour wounds are mended and you heal " + std::to_string(healing) + " points!"
+            "\nYour health is now " + std::to_string(player.health) + ".\n"
         );
         return 0;
     } else
@@ -320,7 +322,7 @@ void PlayerPublic::addDebuff(Debuff::TYPE debuffType) {
     player.debuffs.push_back(Debuff(debuffType));
     player.health = std::min(player.health, player.getMaxHealth());
     const Debuff::Info& debuff = Debuff::Data[debuffType];
-    type("You are now ", debuff.name, ".\n");
+    type("You are now " + std::string(debuff.name) + ".\n");
 
     std::vector<std::string> effects;
 
@@ -338,19 +340,18 @@ void PlayerPublic::addDebuff(Debuff::TYPE debuffType) {
     if (!effects.empty()) {
         type("Your ");
         for (size_t i = 0; i < effects.size(); i++) {
-            type(effects.at(i));
+            type(std::string(effects.at(i)));
             if (i + 1 < effects.size())
                 type(", ");
         }
-        type("\n");
     }
-    type("for ", (debuff.duration < UINT16_MAX ? std::to_string(debuff.duration) : "an indefinite amount of"), " turns.\n");
+    type(" for " + (debuff.duration < UINT16_MAX ? std::to_string(debuff.duration) : "an indefinite amount of") + " turns.\n");
 }
 
 void PlayerPublic::removeDebuff(Debuff::TYPE debuffType) {
     for (std::vector<Debuff>::iterator it = player.debuffs.begin(); it != player.debuffs.end(); it++) {
         if (it->name == Debuff::Data[debuffType].name) {
-            type("\nYou are no longer ", it->name, ".\n");
+            type("\nYou are no longer " + std::string(it->name) + ".\n");
             player.debuffs.erase(it);
             return;
         }
@@ -360,7 +361,7 @@ void PlayerPublic::removeDebuff(Debuff::TYPE debuffType) {
 void PlayerPublic::updateDebuffs() {
     for (std::vector<Debuff>::iterator it = player.debuffs.begin(); it != player.debuffs.end(); ) {
         if (it->duration == 1) {
-            type("\nYou are no longer ", it->name, ".\n");
+            type("\nYou are no longer " + std::string(it->name) + ".\n");
             it = player.debuffs.erase(it);
         } else {
             if (it->duration < UINT16_MAX)
@@ -373,13 +374,13 @@ void PlayerPublic::updateDebuffs() {
 void PlayerPublic::displayDebuffs() const {
     type("\nDebuffs:\n");
     if (player.debuffs.empty()) {
-        setList(true);
+        setMode(LIST_OUT);
         type("\tNone\n");
         return;
     }
 
     for (const Debuff& debuff : player.debuffs) {
-        type("\t", debuff.name, " (");
+        type("\t" + std::string(debuff.name) + " (");
 
         std::vector<std::string> effects;
 
@@ -395,11 +396,11 @@ void PlayerPublic::displayDebuffs() const {
         addEffect("defense", debuff.defMod, player.defense);
 
         for (size_t i = 0; i < effects.size(); i++) {
-            type(effects.at(i));
+            type(std::string(effects.at(i)));
             if (i + 1 < effects.size())
                 type(", ");
         }
-        type(" for ", (debuff.duration < UINT16_MAX ? std::to_string(debuff.duration) : "an indefinite amount of"), " turns)\n");
+        type(" for " + (debuff.duration < UINT16_MAX ? std::to_string(debuff.duration) : "an indefinite amount of") + " turns)\n");
     }
 }
 
@@ -451,7 +452,7 @@ void PlayerPublic::unequipArmor(const bool confirmation) {
         while (choice == 0);
         if (choice == 2)
             return;
-        type("You unequip your ", player.armor.name, ".\n");
+        type("You unequip your " + player.armor.name + ".\n");
     }
     player.defense -= player.armor.defenseBonus;
     player.armor = Item::Armor();
@@ -465,7 +466,7 @@ void PlayerPublic::unequipWeapon(const bool confirmation) {
         while (choice == 0);
         if (choice == 2)
             return;
-        type("You unequip your ", player.weapon.name, ".\n");
+        type("You unequip your " + player.weapon.name + ".\n");
     }
     if (player.weapon == Item::TYPE::WPN_ST_WARBORN) {
         player.maxMana -= 3;
@@ -519,7 +520,7 @@ void PlayerPublic::craft() {
             case 2: if (!pPrv.initCraftWeapons(items, i)) continue; break;
             case 3: if (!pPrv.initCraftGeneral(items, i)) continue; break;
         }
-        type(i + 1, ". (go back)\n");
+        type(std::to_string(i + 1) + ". (go back)\n");
 
         while (true) {
             Choice craftChoice;

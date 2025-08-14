@@ -913,3 +913,96 @@
         -Bug fixes
         -Commit master 2546452
         -Updated README
+        -Commit master 9d6588b
+        -Code efficiency
+        -Reduced unnecessary includes
+        -Moved Debuff class to Debuff.h
+
+
+    -- 05/13/25 --
+
+        -Added the ancient language
+
+
+    -- 05/14/25 --
+
+        -Continued...
+        -Continued the Statue event
+
+
+    ...Continued...
+    
+
+    -- 05/20/25 --
+
+        -Continued...
+
+    
+    -- 05/21/25 --
+
+        -Code efficiency
+            -Removed template from type() function
+        -Bug fixes
+
+
+    ...Continued work on the ancient language...
+
+
+    -- 06/25/25 --
+
+        -Changed some messages
+            -Updated statue inscription to match language updates
+            
+
+    -- 07/09/25 --
+
+        -Reduced magic numbers
+
+
+    -- 07/29/25 --
+
+        -Reduced redundancy in Choice.cpp
+
+
+    -- 08/05/25 --
+
+        -Changed some messages
+        -Redesigned output system
+            -Added res/text.json, a new file for all game messages
+            -Added TextManager class
+        
+
+    -- 08/06/25 --
+
+        -Continued...
+        -Redesigned choice system
+            -Added getChoice()
+        -Finished game.h redesign
+    
+
+    -- 08/07/25 --
+
+        -Continued...
+        -File redesigns finished
+            -settings.h
+            -Enemy.h
+            -Trader.h
+            -Events.cpp
+
+
+    -- 08/08/25 --
+
+        -Continued...
+        -File redesigns finished
+            -EventsD.cpp
+            -EventsR.cpp
+        -Made ambush at mountain pass campsite more common
+
+
+    -- 08/13/25 --
+
+        -Continued...
+        -File redesigns finished
+            -EventsS.cpp
+            -Player.cpp
+        -Removed tostring() function

@@ -17,6 +17,7 @@ public:
     void stream(); // Stream
     void garden(); // Hidden Garden
     void meadow(); // Peaceful Meadow
+    void statue(); // Statue
 
 private:
     Player& player;

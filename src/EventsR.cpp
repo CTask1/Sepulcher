@@ -1,4 +1,5 @@
 //CTask
+#include"TextManager.h"
 #include"Choice.h"
 #include"EventsR.h"
 #include"Events.h"
@@ -6,111 +7,91 @@
 #include"Enemy.h"
 #include"util.h"
 
-void EventsR::lostTraveler() { // Lost Traveler
+void EventsR::lostTraveler() {
     type (
-        "You encounter a lost traveler who is in need of directions.\n"
-        "What would you like to do?\n"
-        "1. Offer help\n"
-        "2. Ignore them\n"
+        TM::get("events.risky.lost_traveler.message")       +
+        TM::get("events.risky.lost_traveler.choose_option") +
+        TM::getAllAsStr("events.risky.lost_traveler.options")
     );
-    int travelerChoice;
-    do travelerChoice = Choice(input(prompt.data())).isChoice({"offer help", "ignore them"});
-    while (travelerChoice == 0);
     
-    if (travelerChoice == 2) {
-        type("\nYou choose to ignore the lost traveler.\n");
+    if (Choice::getChoice(TM::getAllAsLst("events.risky.lost_traveler.options")) == 2) {
+        type(TM::get("events.risky.lost_traveler.ignore"));
         return;
     }
-    type("\nYou offer help to the lost traveler. ");
+    type(TM::get("events.risky.lost_traveler.help"));
     int hostile = randint(1, 3); // 33% chance the traveler is hostile and attacks
     if (hostile == 1) {
-        type("As you assist the traveler, they turn around and attack you!\n");
+        type(TM::get("events.risky.lost_traveler.outcomes.attack"));
         events.combat(events.initEnemy(Enemy::TRAVELER), true);
     } else {
         uint16_t expGain = (randint(1, 100) == 1) ? randint(35, 75) : randint(10, 20); // 1% chance of extra exp
-        type("They are grateful and share a bit of their wisdom.\nYou gained ", expGain, " experience points!\n");
+        type(TM::get("events.risky.lost_traveler.outcomes.thank", {
+            .replacements = {{"{exp}", std::to_string(expGain)}}
+        }));
         player.addExp(expGain);
     }
 }
 
-void EventsR::mountainPass() { // Mountain Pass
+void EventsR::mountainPass() {
     type (
-        "You come across a treacherous mountain pass. Climbing it will be challenging."
-        "\nWhat would you like to do?"
-        "\n1. Attempt the climb"
-        "\n2. Find an alternate route\n"
+        TM::get("events.risky.mountain_pass.message")       +
+        TM::get("events.risky.mountain_pass.choose_option") +
+        TM::getAllAsStr("events.risky.mountain_pass.options")
     );
-    int climbChoice;
-    do climbChoice = Choice(input(prompt.data())).isChoice({"attempt the climb", "find an alternate route"});
-    while (climbChoice == 0);
     
-    if (climbChoice == 1) {
-        type("\nYou decide to attempt the climb. It's steep and dangerous, but you press on.\n");
+    if (Choice::getChoice(TM::getAllAsLst("events.risky.mountain_pass.options")) == 1) {
+        type(TM::get("events.risky.mountain_pass.attempt.message"));
         int success = randint(1, 3); // 33% chance of failure
-        if (success != 1)
-            type("You successfully navigate the mountain pass without incident.\n");
-        else {
-            type("The climb proves challenging. You slip and fall, losing some health.\n");
+        type(TM::getForCondition("events.risky.mountain_pass.attempt.success", success));
+        if (success == 1)
             player.health = ui16(std::max(player.health - randint(player.maxHealth / 4, player.maxHealth / 3), 0));
-        }
         return;
     }
     int altRouteEvent = randint((day ? 1 : (randint(1, 3) == 1 ? 1 : 2)), 4);
     switch (altRouteEvent) {
-    case 1: {
-        type (
-            "You come across a group of friendly travelers along the alternate route."
-            "\nThey share supplies and offer valuable information.\n"
-        );
+    case 1:
+        type(TM::get("events.risky.mountain_pass.alternate.travelers"));
         player.receiveGift();
         break;
-    } case 2:
-        type("As you take the alternate route, you find yourself ambushed by a bandit!\n");
+    case 2:
+        type(TM::get("events.risky.mountain_pass.alternate.ambush"));
         events.combat(events.initEnemy(Enemy::BANDIT), true);
         break;
     case 3: {
         type (
-            "The alternate route leads you to a crossroads with mysterious markings. Choose a path carefully."
-            "\n1. Follow the left path"
-            "\n2. Follow the right path\n"
+            TM::get("events.risky.mountain_pass.alternate.crossroads.choose_option") +
+            TM::getAllAsStr("events.risky.mountain_pass.alternate.crossroads.options")
         );
-        int pathChoice;
-        do pathChoice = Choice(input(prompt.data())).isChoice({"follow the left path", "follow the right path"});
-        while (pathChoice == 0);
         
-        if (pathChoice == 1) {
-            type("\nYou decide to follow the left path, guided by the mysterious markings.\n");
+        if (Choice::getChoice(TM::getAllAsLst("events.risky.mountain_pass.alternate.crossroads.options")) == 1) {
+            type(TM::get("events.risky.mountain_pass.alternate.crossroads.left.message"));
             int outcome = randint((day ? 1 : randint(1, 3)), 2);
             if (outcome == 1) {
-                type("The left path leads to a peaceful glade with a group of friendly travelers. They share supplies with you!\n");
+                type(TM::get("events.risky.mountain_pass.alternate.crossroads.left.travelers"));
                 player.receiveGift();
-            } else {
-                type (
-                    "As you venture down the left path, you stumble upon an abandoned campsite. Investigate or continue?"
-                    "\n1. Investigate the campsite"
-                    "\n2. Continue on the path\n"
-                );
-                int campsiteChoice;
-                do campsiteChoice = Choice(input(prompt.data())).isChoice({"investigate the campsite", "continue on the path"});
-                while (campsiteChoice == 0);
-                
-                if (campsiteChoice == 2) {
-                    type("You choose to continue on the path, avoiding potential danger at the abandoned campsite.\n");
-                    return;
-                }
-                type("\nYou decide to investigate the campsite. It seems abandoned, but you find a hidden stash of supplies!\n");
-                player.receiveGift();
-                if (randint(1, 4) == 1) {
-                    type("\nAs you are leaving the campsite, you are ambushed by a bandit!\n");
-                    events.combat(events.initEnemy(Enemy::BANDIT), true);
-                }
+                return;
+            }
+            type (
+                TM::get("events.risky.mountain_pass.alternate.crossroads.left.campsite.choose_option") +
+                TM::getAllAsStr("events.risky.mountain_pass.alternate.crossroads.left.campsite.options")
+            );
+            
+            if (Choice::getChoice(TM::getAllAsLst("events.risky.mountain_pass.alternate.crossroads.left.campsite.options")) == 2) {
+                type(TM::get("events.risky.mountain_pass.alternate.crossroads.left.campsite.continue"));
+                return;
+            }
+            type(TM::get("events.risky.mountain_pass.alternate.crossroads.left.campsite.investigate"));
+            player.receiveGift();
+            if (randint(1, 3) == 1) {
+                type(TM::get("events.risky.mountain_pass.alternate.crossroads.left.campsite.ambush"));
+                events.combat(events.initEnemy(Enemy::BANDIT), true);
             }
             return;
         }
-        type("\nYou choose to follow the right path, intrigued by the mysterious markings.\n");
-        int outcome = randint((day ? 1 : randint(1, 3)), 2);
+        type(TM::get("events.risky.mountain_pass.alternate.crossroads.right.message"));
+        int outcome = randint((day ? 1 : randint(1, 3)), 2); // Forest is rarer at night
         if (outcome == 1) {
-            type("\nThe right path leads to a dense forest with unique flora.\nYou collect rare herbs with medicinal properties and regain health!\n");
+            type(TM::get("events.risky.mountain_pass.alternate.crossroads.right.forest"));
             player.heal(3);
             player.resources.addResource("Medicinal Herbs", randint(3, 6));
             if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
@@ -118,113 +99,75 @@ void EventsR::mountainPass() { // Mountain Pass
             return;
         }
         type (
-            "\nAs you venture down the right path, you encounter a wild animal. How will you react?"
-            "\n1. Try to calm the animal"
-            "\n2. Retreat slowly\n"
+            TM::get("events.risky.mountain_pass.alternate.crossroads.right.animal.choose_option") +
+            TM::getAllAsStr("events.risky.mountain_pass.alternate.crossroads.right.animal.options")
         );
-        int animalChoice;
-        do animalChoice = Choice(input(prompt.data())).isChoice({"try to calm the animal", "retreat slowly"});
-        while (animalChoice == 0);
         
-        if (animalChoice == 1) {
-            type("\nYou attempt to calm the wild animal. Surprisingly, it responds peacefully and leaves.\n");
-        } else
-            type("\nYou choose to retreat slowly, avoiding confrontation with the wild animal.\n");
+        type(TM::getForNumber (
+            "events.risky.mountain_pass.alternate.crossroads.right.animal.outcomes",
+            Choice::getChoice(TM::getAllAsLst("events.risky.mountain_pass.alternate.crossroads.right.animal.options")),
+            {.end = '\n'}
+        ));
         break;
     } case 4:
-        type("You find nothing noteworthy along the alternate route.\n");
+        type(TM::get("events.risky.mountain_pass.alternate.nothing"));
         break;
     }
 }
 
-void EventsR::mysteriousCave() { // Mysterious Cave
+void EventsR::mysteriousCave() {
     type (
-        "You discover a mysterious cave entrance. It emanates an eerie glow from within."
-        "\nWhat would you like to do?"
-        "\n1. Enter the cave"
-        "\n2. Move on\n"
+        TM::get("events.risky.cave.message")       +
+        TM::get("events.risky.cave.choose_option") +
+        TM::getAllAsStr("events.risky.cave.options")
     );
-    int caveChoice;
-    do caveChoice = Choice(input(prompt.data())).isChoice({"enter the cave", "move on"});
-    while (caveChoice == 0);
     
-    if (caveChoice == 2) {
-        type("You choose to stay cautious and continue exploring.\n");
+    if (Choice::getChoice(TM::getAllAsLst("events.risky.cave.options")) == 2) {
+        type(TM::get("events.risky.cave.continue"));
         return;
     }
-    type("You decide to enter the mysterious cave, drawn by its allure.\n");
-    int encounter = randint(1, 2); // 50% chance for each event
-    if (encounter == 1) {
-        type("The cave is filled with valuable crystals. You gain some resources!\n");
+    type(TM::get("events.risky.cave.enter"));
+    uint16_t encounter = randint(1, 2); // 50% chance for each event
+    type(TM::getForNumber("events.risky.cave.outcomes", encounter));
+    if (encounter == 1)
         player.resources["Crystals"] += randint(1, player.level);
-    }
-    else {
-        type("The cave is home to a hostile creature!\n");
+    else
         events.combat(events.initEnemy(Enemy::CAVE_CREATURE));
-    }
 }
 
-void EventsR::strangeAmulet() { // Strange Amulet
+void EventsR::strangeAmulet() {
     type (
-        "You spot a glimmer beneath a pile of fallen leaves and uncover an ornate amulet.\n"
-        "Its surface is engraved with swirling patterns and a faint hum resonates from within.\n"
-        "Something about it draws you in, but its nature is uncertain.\n"
-        "What would you like to do?\n"
-        "1. Pick it up\n"
-        "2. Leave it\n"
+        TM::get("events.risky.amulet.message")       +      
+        TM::get("events.risky.amulet.choose_option") +
+        TM::getAllAsStr("events.risky.amulet.options")
     );
-    int choice;
-    do choice = Choice(input(prompt.data())).isChoice({"pick it up", "leave it"});
-    while (choice == 0);
 
-    if (choice == 2) {
-        type (
-            "You decide taking the amulet isn't worth the risk. As you turn away, a whisper drifts through the air.\n"
-            "When you glance back, the amulet is gone.\n"
-        );
+    if (Choice::getChoice(TM::getAllAsLst("events.risky.amulet.options")) == 2) {
+        type(TM::get("events.risky.amulet.leave"));
         return;
     }
     uint16_t amuletType = randint(1, 5);
+    type(TM::getForNumber("events.risky.amulet.get", amuletType, {.end = '\n'}));
     switch (amuletType) {
-    case 1: {
-        type (
-            "The amulet pulses with powerful energy.\n"
-            "You feel stronger, faster, and ready for anything.\n"
-        );
+    case 1:
         player.initSpecial(Item::TYPE::SPL_AM_WARBORN, Item::Source::FIND);
         player.resources.addResource("Amulet of the Warborn");
         break;
-    } case 2: {
-        type (
-            "A soothing presence envelops you, as if unseen hands are guiding your movements.\n"
-            "Your reflexes feel sharper, and your stance more solid.\n"
-        );
+    case 2:
         player.initSpecial(Item::TYPE::SPL_AM_GUARDIAN, Item::Source::FIND);
         player.resources.addResource("Amulet of the Guardian");
         break;
-    } case 3: {
-        type (
-            "Your vision flickers, and for a moment you feel detached from reality.\n"
-            "The world seems... quieter.\n"
-        );
+    case 3:
         player.initSpecial(Item::TYPE::SPL_AM_SHADOW, Item::Source::FIND);
         player.resources.addResource("Amulet of the Shadow");
         break;
-    } case 4: {
-        type (
-            "The amulet pulses, filling you with an insatiable hunger.\n"
-            "You feel stronger, but your sense of caution wanes.\n"
-        );
+    case 4:
         player.initSpecial(Item::TYPE::SPL_AM_FURY, Item::Source::FIND);
         player.resources.addResource("Amulet of Fury");
         break;
-    } case 5: {
-        type (
-            "A sharp pain strikes your chest, and a dreadful chill spreads through your body.\n"
-            "The weight of unseen sorrow presses against your heart.\n"
-        );
+    case 5:
         player.initSpecial(Item::TYPE::SPL_AM_WEEPING, Item::Source::FIND);
         player.resources.addResource("Amulet of the Weeping Spirit");
         break;
-    }}
+    }
 }

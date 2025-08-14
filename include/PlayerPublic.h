@@ -1,10 +1,13 @@
 //CTask
 #pragma once
-#include"Player.h"
-#include"Enemy.h"
+#include"Debuff.h"
 #include"Item.h"
 
+class Player;
 class PlayerPrivate;
+namespace Enemy {
+    class Enemy;
+}
 
 class PlayerPublic {
 public:

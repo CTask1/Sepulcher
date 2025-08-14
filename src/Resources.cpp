@@ -28,14 +28,14 @@ void Resources::displayResources(const bool showTitle) const {
     if (showTitle)
         type("\nInventory:\n");
     if (resources.empty()) {
-        setList(true);
+        setMode(LIST_OUT);
         type("\tNone\n");
     }
     else {
         for (const std::pair<std::string, uint16_t>& stat : resources)
             if (stat.second != 0) {
-                setList(true);
-                type("\t", stat.first, ": ", stat.second, "\n");
+                setMode(LIST_OUT);
+                type("\t" + stat.first + ": " + std::to_string(stat.second) + "\n");
             }
     }
 }

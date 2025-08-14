@@ -5,6 +5,7 @@
 #include<string>
 #include<vector>
 
+#include"TextManager.h"
 #include"PlayerPrivate.h"
 #include"PlayerPublic.h"
 #include"Player.h"
@@ -64,25 +65,36 @@ Player::Player(std::string_view n, RACE ra, CLASS cl, uint16_t h, uint16_t s, ui
 Player::~Player() = default;
 
 void Player::displayStats(const bool showResources) const {
-    setList(true);
-    std::cout << "\n-------------------------";
-    type (
-        "\nName: ", name,
-        "\nRace: ", Race.name,
-        (Race == RACE::REVENANT ? "\nBlood Meter: " + std::to_string(bloodMeter) + "/3" : ""),
-        "\nClass: ", Class.name,
-        (Class == CLASS::WIZARD ? "\nMana Points: " + std::to_string(mana) + '/' + std::to_string(maxMana) : ""),
-        "\nHealth: ", health, "/", getMaxHealth(),
-        "\nStrength: ", strength,
-        "\nConstitution: ", CON,
-        "\nDefense: ", defense,
-        "\nWeapon: ", weapon.name, " (Level: ", weapon.level, ", Strength Bonus: ", weapon.strengthBonus, ")",
-        "\nArmor: ", armor.name, " (Level: ", armor.level, ", Defense Bonus: ", armor.defenseBonus, ")",
-        "\nSpecial: ", special.name, " (Defense Bonus: ", special.defenseBonus, ", Strength Bonus: ", special.strengthBonus, ")",
-        "\nLevel: ", level,
-        "\nExperience: ", exp, "/", nextLevel
-    );
-    std::cout << "\n-------------------------\n";
+    setMode(LIST_OUT);
+    std::cout << TM::get("hr");
+    type(TM::get("player.stats", {
+        .replacements = {
+            {"{name}"             , std::string(name)                                                                                       },
+            {"{race}"             , std::string(Race.name)                                                                                  },
+            {"{blood_meter}"      , (Race == RACE::REVENANT ? "\nBlood Meter: " + std::to_string(bloodMeter) + "/3" : "")                   },
+            {"{class}"            , std::string(Class.name)                                                                                 },
+            {"{mana}"             , (Class == CLASS::WIZARD ? "\nMana Points: " + std::to_string(mana) + '/' + std::to_string(maxMana) : "")},
+            {"{health}"           , std::to_string(health)                                                                                  },
+            {"{max_health}"       , std::to_string(getMaxHealth())                                                                          },
+            {"{str}"              , std::to_string(strength)                                                                                },
+            {"{con}"              , std::to_string(CON)                                                                                     },
+            {"{def}"              , std::to_string(defense)                                                                                 },
+            {"{weapon}"           , weapon.name                                                                                             },
+            {"{weapon_level}"     , std::to_string(weapon.level)                                                                            },
+            {"{str_bonus}"        , std::to_string(weapon.strengthBonus)                                                                    },
+            {"{armor}"            , armor.name                                                                                              },
+            {"{armor_level}"      , std::to_string(armor.level)                                                                             },
+            {"{def_bonus}"        , std::to_string(armor.defenseBonus)                                                                      },
+            {"{special}"          , special.name                                                                                            },
+            {"{special_def_bonus}", std::to_string(special.defenseBonus)                                                                    },
+            {"{special_str_bonus}", std::to_string(special.strengthBonus)                                                                   },
+            {"{level}"            , std::to_string(level)                                                                                   },
+            {"{exp}"              , std::to_string(exp)                                                                                     },
+            {"{next}"             , std::to_string(nextLevel)                                                                               }
+        },
+        .end = '\0'
+    }));
+    std::cout << TM::get("hr");
     if (!debuffs.empty())
         displayDebuffs();
     if (showResources)

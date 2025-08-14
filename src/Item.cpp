@@ -15,7 +15,7 @@ namespace Item {
             type("\nYou crafted an item: ");
         else if (source == Source::DROP)
             type("\nThe enemy dropped an item: ");
-        type(name);
+        type(std::string(name));
     }
     
     bool Item::operator!=(const TYPE Type) const {
@@ -126,14 +126,14 @@ namespace Item {
             levels++;
         }
         if (levels > 0) {
-            type("\nYour ", name, " leveled up");
+            type("\nYour " + name + " leveled up");
             if (levels == 2)
                 type(" twice");
             else if (levels == 3)
                 type(" three times");
             else if (levels > 3)
                 type(" many times");
-            type("! It is now level ", level, ".\n");
+            type("! It is now level " + std::to_string(level) + ".\n");
         }
         defenseBonus += bonus;
         return bonus;
@@ -141,7 +141,7 @@ namespace Item {
     
     void Armor::displayInfo(const Source source) const {
         Item::displayInfo(source);
-        type(" (Defense Bonus: ", defenseBonus, ")\n");
+        type(" (Defense Bonus: " + std::to_string(defenseBonus) + ")\n");
     }
 
     // ---------- WEAPON ---------- //
@@ -230,14 +230,14 @@ namespace Item {
             levels++;
         }
         if (levels > 0) {
-            type("\nYour ", name, " leveled up");
+            type("\nYour " + name + " leveled up");
             if (levels == 2)
                 type(" twice");
             else if (levels == 3)
                 type(" three times");
             else if (levels > 3)
                 type(" many times");
-            type("! It is now level ", level, ".\n");
+            type("! It is now level " + std::to_string(level) + ".\n");
         }
         strengthBonus += bonus;
         return bonus;
@@ -245,7 +245,7 @@ namespace Item {
     
     void Weapon::displayInfo(const Source source) const {
         Item::displayInfo(source);
-        type(" (Strength Bonus: ", strengthBonus, ")\n");
+        type(" (Strength Bonus: " + std::to_string(strengthBonus) + ")\n");
     }
     
     // ---------- SPECIAL ---------- //
@@ -282,7 +282,7 @@ namespace Item {
     
     void Special::displayInfo(const Source source) const {
         Item::displayInfo(source);
-        type(" (Defense Bonus: ", defenseBonus, ", Strength Bonus: ", strengthBonus, ")\n");
+        type(" (Defense Bonus: " + std::to_string(defenseBonus) + ", Strength Bonus: " + std::to_string(strengthBonus) + ")\n");
     }
 
 }

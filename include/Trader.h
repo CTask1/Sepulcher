@@ -31,11 +31,17 @@ public:
     }
 
     void displayResources() const {
-        type("\nTrader's resources:\n");
+        type(TM::get("trader.display_message"));
         for (const std::pair<std::string, uint16_t>& stat : resources)
             if (stat.second != 0) {
-                setList(true);
-                type("\t", stat.first, ": ", stat.second, " -- Price: ", prices.at(stat.first), "\n");
+                setMode(LIST_OUT);
+                type(TM::get("trader.display_resource", {
+                    .replacements = {
+                        {"{resource}", stat.first},
+                        {"{count}", std::to_string(stat.second)},
+                        {"{price}", std::to_string(prices.at(stat.first))}
+                    }
+                }));
             }
     }
 
