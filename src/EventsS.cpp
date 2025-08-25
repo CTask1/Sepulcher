@@ -185,4 +185,5 @@ void EventsS::statue() {
     // Literally:   King Aendric, the Last Light of the Land of Shadows.
     //              In His name, death was made void. In His shadow, all spirits are not bound by time.
     type(TM::get("events.safe.statue"));
+    statueFound = true;
 }

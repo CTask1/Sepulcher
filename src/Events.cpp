@@ -207,7 +207,9 @@ void explore(Player& player) {
         // Generate a random number to determine the exploration event
         eventType = randint(1, 10);
 
-        if (eventType <= (day ? 6 : 2)) { // Safe - 60% day, 20% night
+        if (eventType <= (day ? 6 : 2)) { // Safe - 60% / 20%
+            // at night, traveling trader is not available, and friendly traveler is less likely
+            // if statue has been found, it cannot be found again
             event = randint((day ? 1 : randint(2, 3)), (statueFound ? 8 : 9));
             if (event == prevEvent)
                 continue;
@@ -234,7 +236,9 @@ void explore(Player& player) {
                 case 3: events.mysteriousCave(); break;
                 case 4: events.strangeAmulet(); break;
             }
-        } else { // Dangerous - 10% day, 50% night
+        } else { // Dangerous - 10% / 50%
+            // at night, hunter's trap is less likely
+            // sepulcher can only be encountered at level 10 or higher
             event = randint((day ? 1 : randint(1, 2)), (player.level >= 10 ? 3 : 2));
             if (event == prevEvent)
                 continue;

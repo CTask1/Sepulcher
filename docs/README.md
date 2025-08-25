@@ -2,6 +2,9 @@
 
 Sepulcher is compiled using Microsoft Visual C++ (MSVC), which is only available on Windows (as far as I know). At this time, building on other operating systems has not been tested and may require modifications.
 
+## Dependencies
+
+This project requires at least version 3.12.0 of nlohmann\json.hpp to be present in the include path to build successfully. On Windows this should be something like `C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include`. The latest version can be found [here](https://github.com/nlohmann/json/releases).
 
 ## Windows
 
@@ -15,7 +18,7 @@ Alternatively, you can compile it in VS Code in the Run and Debug tab.
 There are three options for building to be used in different cases:
 
 - `Build (Debug)` should be used when making frequent changes. This uses unity files to speed up the build process.
-- `Build (Debug Full)` should be used when tracking down specific issues. This does not use unity files so it is slower than the basic debug option but it gives more information.
+- `Build (Debug Full)` should be used when tracking down specific issues. This does not use unity files so it is slower than the basic debug option, but it gives more information.
 - `Build (Release)` should be used when all code works properly. This uses unity files.
 
 
