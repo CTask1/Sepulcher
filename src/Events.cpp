@@ -11,10 +11,11 @@
 
 void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorImage, bool& shadowmeld, const bool sepulcher) {
     while (true) {
-        type(TM::get("combat.player_turn.choose_option"));
+        std::cout << '\n';
+        TM::print("combat.player_turn.choose_option");
         setMode(LIST_OUT);
         type(TM::getAllAsStr("combat.player_turn.options", {
-            .replacements = {{"{potions}", std::to_string(player.resources["Health Potion"])}}
+            .replacements = {{"{potions}", TO_STR(player.resources["Health Potion"])}}
         }));
 
         switch (Choice::getChoice(TM::getAllAsLst("combat.player_turn.options"))) {
@@ -27,9 +28,9 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
             enemy.health = ui16(std::max(enemy.health - damage, 0));
             type(TM::get("combat.player_turn.damage_enemy", {
                 .replacements = {
-                    {"{damage}", std::to_string(damage)},
-                    {"{enemy}", std::string(enemy.name)},
-                    {"{health}", std::to_string(enemy.health)}
+                    {"{damage}", TO_STR(damage)},
+                    {"{enemy}", STR(enemy.name)},
+                    {"{health}", TO_STR(enemy.health)}
                 }
             }));
             break;
@@ -51,7 +52,7 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
             player.resources["Health Potion"]--;
             player.heal(1);
             type(TM::get("player.health_potion.use", {
-                .replacements = {{"{health}", std::to_string(player.health)}}
+                .replacements = {{"{health}", TO_STR(player.health)}}
             }));
             continue;
         case 6:
@@ -66,7 +67,7 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
             if (randint(1, (sepulcher ? 5 : 10)) == 1 && player.weapon != Item::TYPE::WPN_ST_SHADOW) {
                 run = false;
                 type(TM::get("combat.player_turn.run.fail", {
-                    .replacements = {{"{enemy}", std::string(enemy.name)}}
+                    .replacements = {{"{enemy}", STR(enemy.name)}}
                 }));
             }
         }
@@ -89,9 +90,9 @@ void enemyTurn(Player& player, Enemy::Enemy& enemy, short& mirrorImage, bool& sh
         player.health = ui16(std::max(player.health - enemyDamage, 0));
         type(TM::get("combat.enemy_turn.attack.damage_player", {
             .replacements = {
-                {"{enemy}", std::string(enemy.name)},
-                {"{damage}", std::to_string(enemyDamage)},
-                {"{health}", std::to_string(player.health)}
+                {"{enemy}", STR(enemy.name)},
+                {"{damage}", TO_STR(enemyDamage)},
+                {"{health}", TO_STR(player.health)}
             }
         }));
         if (player.armor.suffix == Item::Armor::Suffix::THORNS) {
@@ -99,9 +100,9 @@ void enemyTurn(Player& player, Enemy::Enemy& enemy, short& mirrorImage, bool& sh
             enemy.health = ui16(std::max(enemy.health - thornsDamage, 0));
             type(TM::get("combat.enemy_turn.attack.thorns", {
                 .replacements = {
-                    {"{damage}", std::to_string(thornsDamage)},
-                    {"{enemy}", std::string(enemy.name)},
-                    {"{health}", std::to_string(enemy.health)}
+                    {"{damage}", TO_STR(thornsDamage)},
+                    {"{enemy}", STR(enemy.name)},
+                    {"{health}", TO_STR(enemy.health)}
                 }
             }));
         }
@@ -114,11 +115,11 @@ Enemy::Enemy Events::initEnemy(const Enemy::TYPE eType, const bool boss) {
 
 bool Events::combat(Enemy::Enemy&& enemy, bool surprised, const bool sepulcher, const char* message) {
     const std::string defMessage = TM::get("combat.default_message", {
-        .replacements = {{"{enemy}", std::string(enemy.name)}}
+        .replacements = {{"{enemy}", STR(enemy.name)}}
     });
     if (message == nullptr)
         message = defMessage.c_str();
-    type('\n' + std::string(message) + '\n');
+    type('\n' + STR(message) + '\n');
     enemy.displayStats();
     type(TM::get("combat.prepare"));
     bool first = true; // Is it the first round of combat?
@@ -159,8 +160,8 @@ bool Events::combat(Enemy::Enemy&& enemy, bool surprised, const bool sepulcher, 
                     uint16_t expGain = randint(5, player.level * 8);
                     type(TM::get("combat.victory", {
                         .replacements = {
-                            {"{enemy}", std::string(enemy.name)},
-                            {"{exp}", std::to_string(expGain)}
+                            {"{enemy}", STR(enemy.name)},
+                            {"{exp}", TO_STR(expGain)}
                         }
                     }));
                     player.addExp(expGain);
@@ -181,7 +182,7 @@ bool checkDeath(Player& player, Enemy::Enemy& enemy) {
     if (player.health <= 0) {
         type(TM::get("combat.defeat", {
             .replacements = {
-                {"{enemy}", std::string(enemy.name)},
+                {"{enemy}", STR(enemy.name)},
                 {"{rev}", TM::getForCondition("combat.resurgence", player.resurgence)}
             }
         }));

@@ -19,6 +19,7 @@ private:
 public:
 
     static void load(const char* const& filename);
+    static void print(const char* const& key, const OptionalGetArgs& args = {});
     static std::string get(const char* const& key, const OptionalGetArgs& args = {});
     static std::string getAllAsStr(const char* const& key, const OptionalGetArgs& args = {});
     static std::vector<std::string> getAllAsLst(const char* const& key, const OptionalGetArgs& args = {});

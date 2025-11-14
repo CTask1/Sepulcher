@@ -76,14 +76,14 @@ namespace Enemy {
 
         void displayStats() {
             setOutputSettings();
-            std::cout << TM::get("hr", {.end = '\0'});
-            type(TM::get("enemy.stats", {
+            std::cout << TM::get("hr");
+            TM::print("enemy.stats", {
                 .replacements = {
-                    {"{name}", std::string(name)},
-                    {"{health}", std::to_string(health)},
-                    {"{str}", std::to_string(strength)}
-                }
-            }));
+                    {"{name}", STR(name)},
+                    {"{health}", TO_STR(health)},
+                    {"{str}", TO_STR(strength)}
+                }, .end = '\0'
+            });
             std::cout << TM::get("hr");
         }
 

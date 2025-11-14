@@ -35,7 +35,7 @@ void Resources::displayResources(const bool showTitle) const {
         for (const std::pair<std::string, uint16_t>& stat : resources)
             if (stat.second != 0) {
                 setMode(LIST_OUT);
-                type("\t" + stat.first + ": " + std::to_string(stat.second) + "\n");
+                type("\t" + stat.first + ": " + TO_STR(stat.second) + "\n");
             }
     }
 }

@@ -21,12 +21,12 @@ Choice& Choice::operator=(std::string str) {
     return *this;
 }
 
-_NODISCARD Choice::operator std::string() const {
+_NODISCARD Choice::operator STR() const {
     return choice;
 }
     
 _NODISCARD bool Choice::isChoice(const char* const& ch, const int num, const bool showMessage) const {
-    if (this->choice == ch || this->choice == std::to_string(num))
+    if (this->choice == ch || this->choice == TO_STR(num))
         return true;
     return checkMessage(showMessage);
 }

@@ -2,6 +2,7 @@
 #pragma once
 #include<iostream>
 #include<sstream>
+#include<fstream>
 #include<chrono>
 #include<random>
 #include<string>
@@ -10,6 +11,14 @@
 
 #define DEV_MODE 0
 
+#ifdef _WIN32
+    extern "C" __declspec(dllimport) int __stdcall SetConsoleOutputCP(uint32_t);
+    #define SET_UTF8() SetConsoleOutputCP(65001)
+#else
+    #define SET_UTF8() // Got this idea from The Cherno
+#endif
+
+#define TO_STR(s) std::to_string(s)
 #define shrt(x) static_cast<short>(x)
 #define ui16(x) static_cast<uint16_t>(x)
 #define LIST_OUT true
@@ -20,6 +29,7 @@ namespace std {
     template<typename T> class initializer_list;
 }
 
+typedef std::string STR;
 typedef std::initializer_list<const char* const> cstrList_t;
 typedef std::vector<std::pair<const std::string, const std::string>> strPairVec_t;
 
@@ -31,6 +41,21 @@ constexpr uint16_t DEF_DELAY = DELAY(2);
 inline uint16_t defDelay = DEF_DELAY;
 inline uint16_t outputDelay = defDelay;
 inline std::mt19937 gen(std::random_device{}());
+
+// load output settings from file
+inline void loadSettings() {
+    std::ifstream file("settings.txt");
+    if (!file.is_open())
+        return;
+    std::string line;
+    std::getline(file, line);
+    defMode = line == "1";
+    std::getline(file, line);
+    defDelay = ui16(std::stoi(line));
+    std::getline(file >> std::ws, line);
+    prompt = line;
+    file.close();
+}
 
 // split a string into a vector of strings using a specified delimiter
 _NODISCARD inline std::vector<std::string> split(const char* const& str, const char delim) {
@@ -64,7 +89,7 @@ inline void moveWordBack(std::string& str, const char* const& word) {
 
     // perform the swap
     str.erase(endPrev + 1, pos - endPrev + strlen(word) - 1);
-    str.insert(prevPos, std::string(word) + ' ');
+    str.insert(prevPos, STR(word) + ' ');
 }
 
 // remove leading and trailing whitespace from a string
@@ -91,12 +116,14 @@ _NODISCARD inline std::string capitalize(std::string&& str) {
     return str;
 }
 
+// convert the first letter of a string to uppercase
 _NODISCARD inline std::string sentenceCase(std::string&& str) {
     str = toLower(std::move(str));
     str[0] = (char)std::toupper(str[0]);
     return str;
 }
 
+// convert the first letter of a string to lowercase
 _NODISCARD inline std::string lowerFirst(std::string&& str) {
     str[0] = static_cast<char>(std::tolower(str[0]));
     return str;
@@ -168,7 +195,7 @@ inline void type(std::string&& text) {
 // get user input from a prompt
 _NODISCARD inline std::string input(const char* const& prmpt) {
     std::string entry;
-    type(std::string(prmpt));
+    type(STR(prmpt));
     std::getline(std::cin >> std::ws, entry);
     return entry;
 }
@@ -187,7 +214,7 @@ _NODISCARD inline bool isPos(const std::string& str) {
 inline void wheel(const uint16_t duration = 4) {
     const std::string_view chars = "|/-\\";
     for (uint16_t rep = 0; rep < duration * 5; rep++) {
-        std::cout << chars[rep % 4];
+        std::cout << chars[rep & 3];
         wait(100);
         std::cout << "\r";
     }

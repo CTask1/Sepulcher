@@ -16,7 +16,7 @@ nlohmann::json getData(const char* const& key, nlohmann::json current) {
 
     while (std::getline(iss, str, '.')) {
         if (!current.contains(str))
-            throw std::runtime_error("Missing text key: " + std::string(key));
+            throw std::runtime_error("Missing text key: " + STR(key));
         current = current[str];
     }
 
@@ -26,9 +26,25 @@ nlohmann::json getData(const char* const& key, nlohmann::json current) {
 void TextManager::load(const char* const& filename) {
     std::ifstream file(filename);
     if (!file)
-        throw std::runtime_error("Could not open file: " + std::string(filename));
+        throw std::runtime_error("Could not open file: " + STR(filename));
     file >> textData;
     file.close();
+}
+
+void TextManager::print(const char* const& key, const OptionalGetArgs& args) {
+    nlohmann::json current = getData(key, textData);
+    STR str = "";
+
+    if (current.is_array()) {
+        for (size_t i = 0; i < current.size(); i++)
+            str += TO_STR(i + 1) + ". " + current.at(i).get<STR>() + '\n';
+    } else
+        str = current.get<STR>() + args.end;
+
+    for (const auto& [from, to] : args.replacements)
+        replace(str, from, to);
+
+    type(std::move(str));
 }
 
 std::string TextManager::get(const char* const& key, const OptionalGetArgs& args) {
@@ -46,7 +62,7 @@ std::string TextManager::getAllAsStr(const char* const& key, const OptionalGetAr
     std::string str = "";
 
     for (size_t i = 0; i < current.size(); i++)
-        str += std::to_string(i + 1) + ". " + current.at(i).get<std::string>() + '\n';
+        str += TO_STR(i + 1) + ". " + current.at(i).get<std::string>() + '\n';
 
     for (const auto& [from, to] : args.replacements)
         replace(str, from, to);
@@ -72,7 +88,7 @@ std::string TextManager::getForCondition(const std::string& path, const bool con
 }
 
 std::string TextManager::getForNumber(const std::string& path, const uint16_t num, const OptionalGetArgs& args) {
-    return get((path + '.' + std::to_string(num)).c_str(), args);
+    return get((path + '.' + TO_STR(num)).c_str(), args);
 }
 
 std::string TextManager::trim(std::string& str) {

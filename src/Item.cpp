@@ -15,7 +15,7 @@ namespace Item {
             type("\nYou crafted an item: ");
         else if (source == Source::DROP)
             type("\nThe enemy dropped an item: ");
-        type(std::string(name));
+        type(STR(name));
     }
     
     bool Item::operator!=(const TYPE Type) const {
@@ -133,7 +133,7 @@ namespace Item {
                 type(" three times");
             else if (levels > 3)
                 type(" many times");
-            type("! It is now level " + std::to_string(level) + ".\n");
+            type("! It is now level " + TO_STR(level) + ".\n");
         }
         defenseBonus += bonus;
         return bonus;
@@ -141,7 +141,7 @@ namespace Item {
     
     void Armor::displayInfo(const Source source) const {
         Item::displayInfo(source);
-        type(" (Defense Bonus: " + std::to_string(defenseBonus) + ")\n");
+        type(" (Defense Bonus: " + TO_STR(defenseBonus) + ")\n");
     }
 
     // ---------- WEAPON ---------- //
@@ -237,7 +237,7 @@ namespace Item {
                 type(" three times");
             else if (levels > 3)
                 type(" many times");
-            type("! It is now level " + std::to_string(level) + ".\n");
+            type("! It is now level " + TO_STR(level) + ".\n");
         }
         strengthBonus += bonus;
         return bonus;
@@ -245,7 +245,7 @@ namespace Item {
     
     void Weapon::displayInfo(const Source source) const {
         Item::displayInfo(source);
-        type(" (Strength Bonus: " + std::to_string(strengthBonus) + ")\n");
+        type(" (Strength Bonus: " + TO_STR(strengthBonus) + ")\n");
     }
     
     // ---------- SPECIAL ---------- //
@@ -282,7 +282,7 @@ namespace Item {
     
     void Special::displayInfo(const Source source) const {
         Item::displayInfo(source);
-        type(" (Defense Bonus: " + std::to_string(defenseBonus) + ", Strength Bonus: " + std::to_string(strengthBonus) + ")\n");
+        type(" (Defense Bonus: " + TO_STR(defenseBonus) + ", Strength Bonus: " + TO_STR(strengthBonus) + ")\n");
     }
 
 }

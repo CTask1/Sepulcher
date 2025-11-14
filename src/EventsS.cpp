@@ -39,7 +39,7 @@ void EventsS::friendlyTraveler() {
             player.addExp(expGain);
         }
         type(TM::getForCondition("events.safe.traveler.gift", giftType == 1, {
-            .replacements = {{"{exp}", std::to_string(expGain)}},
+            .replacements = {{"{exp}", TO_STR(expGain)}},
             .end = '\n'
         }));
     }
@@ -56,9 +56,9 @@ void EventsS::travelingTrader() {
         return;
     }
     type(TM::get("events.safe.trader.approach"));
-    const std::string quitKey = TM::get("events.safe.trader.quit_key");
-    const std::string quitPrompt = TM::get("events.safe.trader.quit_prompt", {
-        .replacements = {{"{key}", std::to_string(std::tolower(quitKey[0]))}}
+    const std::string quitKey = TM::get("events.safe.trader.trade.quit_key");
+    const std::string quitPrompt = TM::get("events.safe.trader.trade.quit_prompt", {
+        .replacements = {{"{key}", TO_STR(std::tolower(quitKey[0]))}}
     });
     Trader trader;
     player.resources.displayResources();
@@ -138,9 +138,9 @@ void EventsS::travelingTrader() {
 
         type(TM::get("events.safe.trader.trade.complete", {
             .replacements = {
-                {"{buy_amt}", std::to_string(amountBuy)},
+                {"{buy_amt}", TO_STR(amountBuy)},
                 {"{buy_res}", buyChoice},
-                {"{sell_amt}", std::to_string(amountSell)},
+                {"{sell_amt}", TO_STR(amountSell)},
                 {"{sell_res}", sellChoice}
             }
         }));

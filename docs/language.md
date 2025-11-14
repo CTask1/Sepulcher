@@ -501,3 +501,6 @@ if 1SG PRF-have-wisdom-DEF-PST-IRR
 no-an-dal-şad-ven-vet nul-num
 NEG-PRF-give-speech-PST-IRR zero-thing
 ```
+
+# Modern Růnan
+

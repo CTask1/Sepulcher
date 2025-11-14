@@ -21,7 +21,7 @@ void resetStats(Player& player, uint16_t& time, uint16_t& energy) {
 }
 
 void rest(Player& player, uint16_t& energy) {
-    type(TM::get("game.rest"));
+    TM::print("game.rest");
     player.heal();
     if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
          player.mana++;
@@ -30,22 +30,24 @@ void rest(Player& player, uint16_t& energy) {
 
 bool useHealthPotion(Player& player) {
     if (player.resources["Health Potion"] < 1) {
-        type(TM::get("player.health_potion.none"));
+        TM::print("player.health_potion.none");
         return false;
     }
     player.resources["Health Potion"]--;
     player.heal(1);
-    type(TM::get("player.health_potion.use", {.replacements = {{"{health}", std::to_string(player.health)}}}));
+    TM::print("player.health_potion.use", {.replacements = {{"{health}", TO_STR(player.health)}}});
     return true;
 }
 
 void otherOptions(Player& player) {
     while (true) {
-        type(TM::get("game.other.choose_action"));
+        TM::print("game.other.choose_action");
         setMode(LIST_OUT);
-        type(TM::getAllAsStr("game.other.actions", {
-            .replacements = {{"{potions}", std::to_string(player.resources["Health Potion"])}}
-        }));
+        TM::print("game.other.actions", {
+            .replacements = {
+                {"{potions}", TO_STR(player.resources["Health Potion"])}
+            }
+        });
 
         std::vector<std::string> options = TM::getAllAsLst("game.other.actions");
         if (player.Class != Player::CLASS::WIZARD)

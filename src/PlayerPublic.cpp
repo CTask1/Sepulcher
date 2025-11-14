@@ -33,14 +33,14 @@ void PlayerPublic::levelUp(uint16_t hitdie) {
         levels++;
     }
     if (levels > 0) {
-        type("You leveled up");
+        type("\nYou leveled up");
         if (levels == 2)
             type(" twice");
         else if (levels == 3)
             type(" three times");
         else if (levels > 3)
             type(" many times");
-        type("! You are now level " + std::to_string(player.level) + ".\n");
+        type("! You are now level " + TO_STR(player.level) + ".\n");
     }
     player.defense += player.armor.levelUp();
     player.strength += player.weapon.levelUp();
@@ -89,8 +89,8 @@ bool PlayerPublic::rituals() {
     std::vector<const char*> rituals;
     uint16_t ritualNum = 0;
     type (
-        "\t" + std::to_string(++ritualNum) + ". Mana Restoration\n" +
-        std::to_string(ritualNum + 1) + ". (go back)\n"
+        "\t" + TO_STR(++ritualNum) + ". Mana Restoration\n" +
+        TO_STR(ritualNum + 1) + ". (go back)\n"
     );
 
     rituals.push_back("Mana Restoration");
@@ -134,47 +134,48 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
     // Race abilities
     if (enemy != nullptr && player.Race == Player::RACE::DRAKONIAN && player.raceAbilityReady) {
         abilities.push_back("Dragon's Breath");
-        output += "\t" + std::to_string(++abilityNum) + ". Dragon's Breath (Drakonian)\n";
+        output += "\t" + TO_STR(++abilityNum) + ". Dragon's Breath (Drakonian)\n";
     } else if (enemy != nullptr && player.Race == Player::RACE::REVENANT) {
         if (player.raceAbilityReady) {
             abilities.push_back("Shadowmeld");
-            output += "\t" + std::to_string(++abilityNum) + ". Shadowmeld (Revenant)\n";
+            output += "\t" + TO_STR(++abilityNum) + ". Shadowmeld (Revenant)\n";
         }
         if (player.bloodMeter < 3) {
             abilities.push_back("Necrotic Drain");
-            output += "\t" + std::to_string(++abilityNum) + ". Necrotic Drain " + std::to_string(player.bloodMeter) + "/3 (Revenant)\n";
+            output += "\t" + TO_STR(++abilityNum) + ". Necrotic Drain " + TO_STR(player.bloodMeter) + "/3 (Revenant)\n";
         }
     }
     // Class abilities
     if (player.Class == Player::CLASS::FIGHTER && player.classAbilityReady) {
         abilities.push_back("Second Wind");
-        output += "\t" + std::to_string(++abilityNum) + ". Second Wind (Fighter)\n";
+        output += "\t" + TO_STR(++abilityNum) + ". Second Wind (Fighter)\n";
     }
     if (player.Class == Player::CLASS::WIZARD) {
-        output += "Spells (You have " + std::to_string(player.mana) + " mana points):\n";
+        output += "Spells (You have " + TO_STR(player.mana) + " mana points):\n";
         if (enemy != nullptr) {
             abilities.push_back("Fire Bolt");
-            output += "\t" + std::to_string(++abilityNum) + ". Fire Bolt (Wizard) - 1 MP\n";
+            output += "\t" + TO_STR(++abilityNum) + ". Fire Bolt (Wizard) - 1 MP\n";
             abilities.push_back("Mirror Image");
-            output += "\t" + std::to_string(++abilityNum) + ". Mirror Image (Wizard) - 2 MP\n";
+            output += "\t" + TO_STR(++abilityNum) + ". Mirror Image (Wizard) - 2 MP\n";
         }
         abilities.push_back("Mage Armor");
-        output += "\t" + std::to_string(++abilityNum) + ". Mage Armor (Wizard) - 5 MP\n";
+        output += "\t" + TO_STR(++abilityNum) + ". Mage Armor (Wizard) - 5 MP\n";
         if (enemy == nullptr) {
             abilities.push_back("Arcane Eye");
-            output += "\t" + std::to_string(++abilityNum) + ". Arcane Eye (Wizard) - 3 MP\n";
+            output += "\t" + TO_STR(++abilityNum) + ". Arcane Eye (Wizard) - 3 MP\n";
         }
         if (player.weapon == Item::TYPE::WPN_ST_GUARDIAN) {
             abilities.push_back("Recovery");
-            output += "\t" + std::to_string(++abilityNum) + ". Recovery (Staff of the Guardian) - 2 MP\n";
+            output += "\t" + TO_STR(++abilityNum) + ". Recovery (Staff of the Guardian) - 2 MP\n";
         }
     }
-    output += std::to_string(abilityNum + 1) + ". (go back)\n";
+    abilities.push_back("(go back)");
+    output += TO_STR(abilityNum + 1) + ". (go back)\n";
     if (abilities.size() == 0) {
         type("\nYour abilities are currently unavailable.\n");
         return 0;
     }
-    type(std::string(output));
+    type(STR(output));
 
     int abilityChoice;
     do abilityChoice = Choice(input(prompt.data())).isChoice(abilities);
@@ -185,9 +186,9 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         const uint16_t burn = randint(1, 4);
         enemy->health = ui16(std::max(enemy->health - damage - burn, 0));
         type (
-            "\nYou take a deep breath, and with a powerful exhale, a torrent of searing flames erupts from your mouth, searing the " + std::string(enemy->name) + " for " + std::to_string(damage) + " damage!"
-            "\nThe " + std::string(enemy->name) + " is burned for an additional " + std::to_string(burn) + " damage!"
-            "\nIts health is now " + std::to_string(enemy->health) + ".\n"
+            "\nYou take a deep breath, and with a powerful exhale, a torrent of searing flames erupts from your mouth, searing the " + STR(enemy->name) + " for " + TO_STR(damage) + " damage!"
+            "\nThe " + STR(enemy->name) + " is burned for an additional " + TO_STR(burn) + " damage!"
+            "\nIts health is now " + TO_STR(enemy->health) + ".\n"
         );
         player.raceAbilityReady = false;
     } else if (streq(abilities.at(abilityChoice), "Shadowmeld")) {
@@ -204,17 +205,17 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         player.health = std::min(ui16(player.health + damage / 2), player.getMaxHealth());
         player.bloodMeter++;
         type (
-            "\nYou drain the life force from the " + std::string(enemy->name) + ", dealing " + std::to_string(damage) + " damage!"
-            "\nIts health is now " + std::to_string(enemy->health) + "."
-            "\nYou also fill your blood meter and gain " + std::to_string(damage / 2) + " health points!"
-            "\nYour health is now " + std::to_string(player.health) + "."
-            "\nYour blood meter is now at " + std::to_string(player.bloodMeter) + "/3.\n"
+            "\nYou drain the life force from the " + STR(enemy->name) + ", dealing " + TO_STR(damage) + " damage!"
+            "\nIts health is now " + TO_STR(enemy->health) + "."
+            "\nYou also fill your blood meter and gain " + TO_STR(damage / 2) + " health points!"
+            "\nYour health is now " + TO_STR(player.health) + "."
+            "\nYour blood meter is now at " + TO_STR(player.bloodMeter) + "/3.\n"
         );
     } else if (streq(abilities.at(abilityChoice), "Second Wind")) {
         const uint16_t healing = player.heal();
         type (
-            "\nYou get a surge of adrenaline and heal " + std::to_string(healing) + " points!"
-            "\nYour health is now " + std::to_string(player.health) + ".\n"
+            "\nYou get a surge of adrenaline and heal " + TO_STR(healing) + " points!"
+            "\nYour health is now " + TO_STR(player.health) + ".\n"
         );
         player.classAbilityReady = false;
         return 0;
@@ -230,9 +231,9 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         player.health = std::min(ui16(player.health + 1), player.getMaxHealth());
         type (
             "\nYou conjure a blazing ember in your palm and hurl it forward."
-            "\nThe fire bolt streaks through the air, striking the " + std::string(enemy->name) + " with a burst of flames for " + std::to_string(damage) + " damage!"
-            "\nThe " + std::string(enemy->name) + " is burned for an additional " + std::to_string(burn) + " damage!"
-            "\nIts health is now " + std::to_string(enemy->health) + ".\n"
+            "\nThe fire bolt streaks through the air, striking the " + STR(enemy->name) + " with a burst of flames for " + TO_STR(damage) + " damage!"
+            "\nThe " + STR(enemy->name) + " is burned for an additional " + TO_STR(burn) + " damage!"
+            "\nIts health is now " + TO_STR(enemy->health) + ".\n"
         );
     } else if (streq(abilities.at(abilityChoice), "Mirror Image")) {
         if (player.mana < 2) {
@@ -260,7 +261,7 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         player.defense += player.mageArmorDefense;
         player.mana -= 5;
         player.health = std::min(ui16(player.health + 5), player.getMaxHealth());
-        type("\nA protective shielding aura surrounds you, boosting your defense by " + std::to_string(player.mageArmorDefense) + "!\n");
+        type("\nA protective shielding aura surrounds you, boosting your defense by " + TO_STR(player.mageArmorDefense) + "!\n");
     } else if (streq(abilities.at(abilityChoice), "Arcane Eye")) {
         if (player.mana < 3) {
             type("\nYou don't have enough mana points!\n");
@@ -283,8 +284,8 @@ bool PlayerPublic::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shad
         player.health = std::min(ui16(player.health + 2), player.getMaxHealth());
         type (
             "\nYou channel magical energy into a healing aura, wrapping yourself in a warm, sooting light."
-            "\nYour wounds are mended and you heal " + std::to_string(healing) + " points!"
-            "\nYour health is now " + std::to_string(player.health) + ".\n"
+            "\nYour wounds are mended and you heal " + TO_STR(healing) + " points!"
+            "\nYour health is now " + TO_STR(player.health) + ".\n"
         );
         return 0;
     } else
@@ -322,15 +323,15 @@ void PlayerPublic::addDebuff(Debuff::TYPE debuffType) {
     player.debuffs.push_back(Debuff(debuffType));
     player.health = std::min(player.health, player.getMaxHealth());
     const Debuff::Info& debuff = Debuff::Data[debuffType];
-    type("You are now " + std::string(debuff.name) + ".\n");
+    type("You are now " + STR(debuff.name) + ".\n");
 
     std::vector<std::string> effects;
 
     auto addEffect = [&](const char* stat, float mod) {
         if (mod < 0)
-            effects.push_back(std::string(stat) + " is decreased by " + std::to_string((uint16_t)(std::abs(mod * 100))) + '%');
+            effects.push_back(STR(stat) + " is decreased by " + TO_STR((uint16_t)(std::abs(mod * 100))) + '%');
         else if (mod > 0)
-            effects.push_back(std::string(stat) + " is increased by " + std::to_string((uint16_t)(std::abs(mod * 100))) + '%');
+            effects.push_back(STR(stat) + " is increased by " + TO_STR((uint16_t)(std::abs(mod * 100))) + '%');
     };
 
     addEffect("health", debuff.hMod);
@@ -340,18 +341,18 @@ void PlayerPublic::addDebuff(Debuff::TYPE debuffType) {
     if (!effects.empty()) {
         type("Your ");
         for (size_t i = 0; i < effects.size(); i++) {
-            type(std::string(effects.at(i)));
+            type(STR(effects.at(i)));
             if (i + 1 < effects.size())
                 type(", ");
         }
     }
-    type(" for " + (debuff.duration < UINT16_MAX ? std::to_string(debuff.duration) : "an indefinite amount of") + " turns.\n");
+    type(" for " + (debuff.duration < UINT16_MAX ? TO_STR(debuff.duration) : "an indefinite amount of") + " turns.\n");
 }
 
 void PlayerPublic::removeDebuff(Debuff::TYPE debuffType) {
     for (std::vector<Debuff>::iterator it = player.debuffs.begin(); it != player.debuffs.end(); it++) {
         if (it->name == Debuff::Data[debuffType].name) {
-            type("\nYou are no longer " + std::string(it->name) + ".\n");
+            type("\nYou are no longer " + STR(it->name) + ".\n");
             player.debuffs.erase(it);
             return;
         }
@@ -361,7 +362,7 @@ void PlayerPublic::removeDebuff(Debuff::TYPE debuffType) {
 void PlayerPublic::updateDebuffs() {
     for (std::vector<Debuff>::iterator it = player.debuffs.begin(); it != player.debuffs.end(); ) {
         if (it->duration == 1) {
-            type("\nYou are no longer " + std::string(it->name) + ".\n");
+            type("\nYou are no longer " + STR(it->name) + ".\n");
             it = player.debuffs.erase(it);
         } else {
             if (it->duration < UINT16_MAX)
@@ -380,15 +381,15 @@ void PlayerPublic::displayDebuffs() const {
     }
 
     for (const Debuff& debuff : player.debuffs) {
-        type("\t" + std::string(debuff.name) + " (");
+        type("\t" + STR(debuff.name) + " (");
 
         std::vector<std::string> effects;
 
         auto addEffect = [&](const char* stat, float mod, short base) {
             if (mod < 0)
-                effects.push_back("decreased " + std::string(stat) + " by " + std::to_string((short)(std::round(base - base * (1 + mod)))));
+                effects.push_back("decreased " + STR(stat) + " by " + TO_STR((short)(std::round(base - base * (1 + mod)))));
             else if (mod > 0)
-                effects.push_back("increased " + std::string(stat) + " by " + std::to_string((short)(std::round(base - base * (1 + mod)))));
+                effects.push_back("increased " + STR(stat) + " by " + TO_STR((short)(std::round(base - base * (1 + mod)))));
         };
         
         addEffect("health", debuff.hMod, player.maxHealth);
@@ -396,11 +397,11 @@ void PlayerPublic::displayDebuffs() const {
         addEffect("defense", debuff.defMod, player.defense);
 
         for (size_t i = 0; i < effects.size(); i++) {
-            type(std::string(effects.at(i)));
+            type(STR(effects.at(i)));
             if (i + 1 < effects.size())
                 type(", ");
         }
-        type(" for " + (debuff.duration < UINT16_MAX ? std::to_string(debuff.duration) : "an indefinite amount of") + " turns)\n");
+        type(" for " + (debuff.duration < UINT16_MAX ? TO_STR(debuff.duration) : "an indefinite amount of") + " turns)\n");
     }
 }
 
@@ -520,7 +521,7 @@ void PlayerPublic::craft() {
             case 2: if (!pPrv.initCraftWeapons(items, i)) continue; break;
             case 3: if (!pPrv.initCraftGeneral(items, i)) continue; break;
         }
-        type(std::to_string(i + 1) + ". (go back)\n");
+        type(TO_STR(i + 1) + ". (go back)\n");
 
         while (true) {
             Choice craftChoice;

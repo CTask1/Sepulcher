@@ -1006,7 +1006,7 @@
             -EventsS.cpp
             -Player.cpp
         -Removed tostring() function
-        -Commit 55b72da
+        -Commit master 55b72da
 
     
     -- 08/20/25 --
@@ -1019,3 +1019,18 @@
         -Bug fixes
         -Comments
         -Updated README
+        -Commit master c2df9fb
+
+    
+    -- 09/24/25 --
+
+        -Added TextManager::print() method
+        -Added some macros
+
+
+    --11/14/25 --
+
+        -Bug fixes
+        -Changed some messages
+            -Formatting fixes
+        

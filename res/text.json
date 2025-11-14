@@ -251,7 +251,7 @@
             },
             "cave": {
                 "message": "You discover a mysterious cave entrance. It emanates an eerie glow from within.",
-                "choose_option": "What would you like to do?",
+                "choose_option": "\nWhat would you like to do?",
                 "options": [
                     "Enter the cave",
                     "Move on"
@@ -265,7 +265,7 @@
             },
             "amulet": {
                 "message": "You spot a glimmer beneath a pile of fallen leaves and uncover an ornate amulet.\nIts surface is engraved with swirling patterns and a faint hum resonates from within.\nSomething about it draws you in, but its nature is uncertain.",
-                "choose_option": "What would you like to do?",
+                "choose_option": "\nWhat would you like to do?",
                 "options": [
                     "Pick it up",
                     "Leave it"

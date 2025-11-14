@@ -26,7 +26,7 @@ void EventsR::lostTraveler() {
     } else {
         uint16_t expGain = (randint(1, 100) == 1) ? randint(35, 75) : randint(10, 20); // 1% chance of extra exp
         type(TM::get("events.risky.lost_traveler.outcomes.thank", {
-            .replacements = {{"{exp}", std::to_string(expGain)}}
+            .replacements = {{"{exp}", TO_STR(expGain)}}
         }));
         player.addExp(expGain);
     }

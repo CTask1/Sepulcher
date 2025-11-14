@@ -38,8 +38,8 @@ public:
                 type(TM::get("trader.display_resource", {
                     .replacements = {
                         {"{resource}", stat.first},
-                        {"{count}", std::to_string(stat.second)},
-                        {"{price}", std::to_string(prices.at(stat.first))}
+                        {"{count}", TO_STR(stat.second)},
+                        {"{price}", TO_STR(prices.at(stat.first))}
                     }
                 }));
             }

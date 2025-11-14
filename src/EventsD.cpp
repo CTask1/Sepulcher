@@ -52,7 +52,7 @@ void EventsD::hunterTrap() {
         type(TM::get("events.dangerous.trap.swinging_log.message"));
         wheel(3);
         type(TM::getForCondition("events.dangerous.trap.swinging_log.escape", success, {
-            .replacements = {{"{damage}", std::to_string(damage)}}
+            .replacements = {{"{damage}", TO_STR(damage)}}
         }));
         if (!success)
             player.health -= damage;
@@ -61,7 +61,7 @@ void EventsD::hunterTrap() {
         type(TM::get("events.dangerous.trap.rock_avalanche.message"));
         wheel(3);
         type(TM::getForCondition("events.dangerous.trap.rock_avalanche.escape", success, {
-            .replacements = {{"{damage}", std::to_string(damage)}}
+            .replacements = {{"{damage}", TO_STR(damage)}}
         }));
         if (!success)
             player.health -= damage;
@@ -70,7 +70,7 @@ void EventsD::hunterTrap() {
         type(TM::get("events.dangerous.trap.magical_vines.message"));
         wheel(3);
         type(TM::getForCondition("events.dangerous.trap.magical_vines.escape", success, {
-            .replacements = {{"{damage}", std::to_string(damage)}}
+            .replacements = {{"{damage}", TO_STR(damage)}}
         }));
         if (!success)
             player.health -= damage;

@@ -18,13 +18,13 @@ bool PlayerPrivate::initCraftArmor(ItemPtrVec_t& items, uint16_t& i) const {
     if (player.Race == Player::RACE::DRAKONIAN) {
         items.emplace_back(std::make_unique<Item::Armor>(Item::TYPE::ARM_DRAKONIAN, player.level, shrt(1), true));
         type (
-            std::to_string(++i) + ". Drakonian Armor (Defense Bonus: " + std::to_string(Item::Armor::getStats(Item::TYPE::ARM_DRAKONIAN, player.level)) + ")" +
+            TO_STR(++i) + ". Drakonian Armor (Defense Bonus: " + TO_STR(Item::Armor::getStats(Item::TYPE::ARM_DRAKONIAN, player.level)) + ")" +
             displayComponents({ { "Fiber", ui16(2) }, { "Leather", ui16(6) } }) + "\n"
         );
     } else {
         items.emplace_back(std::make_unique<Item::Armor>(Item::TYPE::ARM_LEATHER, player.level, shrt(1), true));
         type (
-            std::to_string(++i) + ". Leather Armor (Defense Bonus: " + std::to_string(Item::Armor::getStats(Item::TYPE::ARM_LEATHER, player.level)) + ")" +
+            TO_STR(++i) + ". Leather Armor (Defense Bonus: " + TO_STR(Item::Armor::getStats(Item::TYPE::ARM_LEATHER, player.level)) + ")" +
             displayComponents({ { "Fiber", ui16(2) }, { "Leather", ui16(6) } }) + "\n"
         );
     }
@@ -34,33 +34,33 @@ bool PlayerPrivate::initCraftArmor(ItemPtrVec_t& items, uint16_t& i) const {
 bool PlayerPrivate::initCraftWeapons(ItemPtrVec_t& items, uint16_t& i) const {
     items.emplace_back(std::make_unique<Item::Weapon>(Item::TYPE::WPN_LONG, player.level, shrt(player.Class == Player::CLASS::WIZARD ? -1 : 1), true));
     type (
-        std::to_string(++i) + ". Longsword (Strength Bonus: " + std::to_string(Item::Weapon::getStats(Item::TYPE::WPN_LONG, player.level)) + ")" +
+        TO_STR(++i) + ". Longsword (Strength Bonus: " + TO_STR(Item::Weapon::getStats(Item::TYPE::WPN_LONG, player.level)) + ")" +
         displayComponents({ { "Fiber", ui16(2) }, { "Iron", ui16(3) }, { "Wood", ui16(2) } }) + "\n"
     );
     if (player.Class == Player::CLASS::WIZARD) {
         items.emplace_back(std::make_unique<Item::Weapon>(Item::TYPE::WPN_ST_WARBORN, player.level, shrt(player.Race == Player::RACE::ELF ? 2 : 1), true));
         type (
-            std::to_string(++i) + ". Staff of the Warborn (Strength Bonus: " + std::to_string(Item::Weapon::getStats(Item::TYPE::WPN_ST_WARBORN, player.level)) + ")" +
+            TO_STR(++i) + ". Staff of the Warborn (Strength Bonus: " + TO_STR(Item::Weapon::getStats(Item::TYPE::WPN_ST_WARBORN, player.level)) + ")" +
             displayComponents({ { "Amulet of the Warborn", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }) + "\n"
         );
         items.emplace_back(std::make_unique<Item::Weapon>(Item::TYPE::WPN_ST_GUARDIAN, player.level, shrt(player.Race == Player::RACE::ELF ? 2 : 1), true));
         type (
-            std::to_string(++i) + ". Staff of the Guardian (Strength Bonus: " + std::to_string(Item::Weapon::getStats(Item::TYPE::WPN_ST_GUARDIAN, player.level)) + ")" +
+            TO_STR(++i) + ". Staff of the Guardian (Strength Bonus: " + TO_STR(Item::Weapon::getStats(Item::TYPE::WPN_ST_GUARDIAN, player.level)) + ")" +
             displayComponents({ { "Amulet of the Guardian", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }) + "\n"
         );
         items.emplace_back(std::make_unique<Item::Weapon>(Item::TYPE::WPN_ST_SHADOW, player.level, shrt(1), true));
         type (
-            std::to_string(++i) + ". Staff of the Shadow (Strength Bonus: " + std::to_string(Item::Weapon::getStats(Item::TYPE::WPN_ST_SHADOW, player.level)) + ")" +
+            TO_STR(++i) + ". Staff of the Shadow (Strength Bonus: " + TO_STR(Item::Weapon::getStats(Item::TYPE::WPN_ST_SHADOW, player.level)) + ")" +
             displayComponents({ { "Amulet of the Shadow", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }) + "\n"
         );
         items.emplace_back(std::make_unique<Item::Weapon>(Item::TYPE::WPN_ST_FURY, player.level, shrt(player.Race == Player::RACE::ELF ? 2 : 1), true));
         type (
-            std::to_string(++i) + ". Staff of Fury (Strength Bonus: " + std::to_string(Item::Weapon::getStats(Item::TYPE::WPN_ST_FURY, player.level)) + ")" +
+            TO_STR(++i) + ". Staff of Fury (Strength Bonus: " + TO_STR(Item::Weapon::getStats(Item::TYPE::WPN_ST_FURY, player.level)) + ")" +
             displayComponents({ { "Amulet of Fury", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }) + "\n"
         );
         items.emplace_back(std::make_unique<Item::Weapon>(Item::TYPE::WPN_ST_WEEPING, player.level, shrt(player.Race == Player::RACE::ELF ? 2 : 1), true));
         type (
-            std::to_string(++i) + ". Staff of the Weeping Spirit (Strength Bonus: " + std::to_string(Item::Weapon::getStats(Item::TYPE::WPN_ST_WEEPING, player.level)) + ")" +
+            TO_STR(++i) + ". Staff of the Weeping Spirit (Strength Bonus: " + TO_STR(Item::Weapon::getStats(Item::TYPE::WPN_ST_WEEPING, player.level)) + ")" +
             displayComponents({ { "Amulet of the Weeping Spirit", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }) + "\n"
         );
     }
@@ -70,14 +70,14 @@ bool PlayerPrivate::initCraftWeapons(ItemPtrVec_t& items, uint16_t& i) const {
 bool PlayerPrivate::initCraftGeneral(ItemPtrVec_t& items, uint16_t& i) const {
     items.emplace_back(std::make_unique<Item::Item>(Item::TYPE::POTION));
     type (
-        std::to_string(++i) + ". Health Potion" +
+        TO_STR(++i) + ". Health Potion" +
         displayComponents({ { "Medicinal Herbs", ui16(2) } }) + "\n"
     );
     
     if (player.Class == Player::CLASS::WIZARD) {
         items.emplace_back(std::make_unique<Item::Item>(Item::TYPE::FOCUS));
         type (
-            std::to_string(++i) + ". Arcane Focus" +
+            TO_STR(++i) + ". Arcane Focus" +
             displayComponents({ { "Crystals", ui16(4) } }) + "\n"
         );
     }
@@ -126,7 +126,7 @@ void PlayerPrivate::equipArmor(const Item::Armor& armorItem) {
         return;
     }
     if (player.armor != Item::TYPE::NONE)
-        type("Your current " + player.armor.name + " has (Defense Bonus: " + std::to_string(player.armor.defenseBonus) + ")\n");
+        type("Your current " + player.armor.name + " has (Defense Bonus: " + TO_STR(player.armor.defenseBonus) + ")\n");
 
     type("\nDo you want to equip the " + armorItem.name + " (1. Yes / 2. No)?\n");
     int choice;
@@ -145,7 +145,7 @@ void PlayerPrivate::equipArmor(const Item::Armor& armorItem) {
 
 void PlayerPrivate::equipWeapon(const Item::Weapon& weaponItem) {
     if (player.weapon != Item::TYPE::NONE)
-        type("Your current " + player.weapon.name + " has (Strength Bonus: " + std::to_string(player.weapon.strengthBonus) + ")\n");
+        type("Your current " + player.weapon.name + " has (Strength Bonus: " + TO_STR(player.weapon.strengthBonus) + ")\n");
 
     type("\nDo you want to equip the " + weaponItem.name + " (1. Yes / 2. No)?\n");
     int choice;
@@ -185,7 +185,7 @@ const std::string PlayerPrivate::displayComponents(const PairList_t& components)
     std::string result = "\nComponents:";
     for (const std::pair<std::string, uint16_t>& component : components) {
         if (player.resources.resources.count(component.first) != 0)
-            result += "\n\t" + component.first + ": " + std::to_string(player.resources[component.first]) + '/' + std::to_string(component.second);
+            result += "\n\t" + component.first + ": " + TO_STR(player.resources[component.first]) + '/' + TO_STR(component.second);
         else
             result += "\n\t??";
     }
