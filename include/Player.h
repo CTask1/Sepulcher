@@ -17,9 +17,6 @@ typedef std::initializer_list<std::pair<std::string, uint16_t>> PairList_t;
 typedef std::unique_ptr<Item::Item> ItemPtr_t;
 typedef std::vector<ItemPtr_t> ItemPtrVec_t;
 
-class PlayerPublic;
-class PlayerPrivate;
-
 class Player {
 public:
     std::string_view name;
@@ -87,10 +84,8 @@ public:
     void craft();
     
 private:
-    std::unique_ptr<PlayerPublic>  pPub;
-    std::unique_ptr<PlayerPrivate> pPrv;
     
-    const struct Race_t {
+    struct Race_t {
         RACE Race;
         std::string_view name;
         bool operator==(const RACE compRace) const {
@@ -108,7 +103,7 @@ private:
         { RACE::REVENANT,  "Revenant"  }
     };
     
-    const struct Class_t {
+    struct Class_t {
         CLASS Class;
         std::string_view name;
         bool operator==(const CLASS compClass) const {
@@ -129,7 +124,7 @@ private:
     bool initCraftWeapons(ItemPtrVec_t& items, uint16_t& i) const;
     bool initCraftGeneral(ItemPtrVec_t& items, uint16_t& i) const;
     bool useComponents(const PairList_t& components);
-    bool craftItem(const ItemPtr_t& item, const PairList_t& components);
+    bool craftItem(const ItemPtr_t& item);
     void equipArmor(const Item::Armor& armorItem);
     void equipWeapon(const Item::Weapon& weaponItem);
     void equipSpecial(const Item::Special& specialItem);

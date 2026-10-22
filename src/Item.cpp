@@ -15,7 +15,7 @@ namespace Item {
             type("\nYou crafted an item: ");
         else if (source == Source::DROP)
             type("\nThe enemy dropped an item: ");
-        type(STR(name));
+        type((STR)name);
     }
     
     bool Item::operator!=(const TYPE Type) const {
@@ -57,6 +57,7 @@ namespace Item {
             ? shrt(std::round(pow(level + add, Data[ui16(armType)].defMod))) // (level + add) to the power of defMod
             : shrt(randint(1, ui16(std::round(pow(level + add, Data[ui16(armType)].defMod))))) // random number between 1 and the value above
         ),
+        iClass(Data[ui16(armType)].awClass),
         prefix(Prefix::NONE),
         suffix(Suffix::NONE) {
             // Set prefix
@@ -157,6 +158,7 @@ namespace Item {
             ? shrt(std::abs(std::round(pow(level + add, Data[ui16(wpnType)].strMod)))) // (level + add) to the power of strMod
             : shrt(randint(1, ui16(std::abs(std::round(pow(level + add, Data[ui16(wpnType)].strMod)))))) // random number between 1 and the value above
         ),
+        iClass(Data[ui16(wpnType)].awClass),
         prefix(Prefix::NONE),
         suffix(Suffix::NONE) {
             uint16_t num;
@@ -258,7 +260,7 @@ namespace Item {
             : shrt (
                 randint ( // a random number between 1 and the level to the power of defMod
                     1,
-                    ui16(std::round(pow(level, Data[ui16(splType)].defMod)))
+                    ui16(std::round(pow(level, abs(Data[ui16(splType)].defMod))))
                 ) *
                 (Data[ui16(splType)].nDef // ...multiplied by -1 if nDef is true
                     ? -1
@@ -271,7 +273,7 @@ namespace Item {
             : shrt (
                 randint ( // a random number between 1 and the level to the power of strMod
                     1,
-                    ui16(std::round(pow(level, Data[ui16(splType)].strMod)))
+                    ui16(std::round(pow(level, abs(Data[ui16(splType)].strMod))))
                 ) *
                 (Data[ui16(splType)].nStr // ...multiplied by -1 if nStr is true
                     ? -1

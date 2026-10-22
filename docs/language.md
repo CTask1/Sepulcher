@@ -455,7 +455,7 @@ h: χ
 dz: c
 zh: j
 
-Throughout the creation of this language, several philosophical questions were considered, specifically surrounding the true meanings of many words, for example:
+The culture behind this language has certain beliefs about reality, which have influenced the language:
 Belief is desire, not certainty.
 Fear is a form of pain.
 Immortality is a curse.

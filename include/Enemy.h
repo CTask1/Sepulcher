@@ -22,7 +22,8 @@ namespace Enemy {
         SKELETON,
         WRAITH,
         KING,
-        ENRAGED_KING
+        ENRAGED_KING,
+        COUNT
     };
 
     struct Info {
@@ -79,16 +80,23 @@ namespace Enemy {
             std::cout << TM::get("hr");
             TM::print("enemy.stats", {
                 .replacements = {
-                    {"{name}", STR(name)},
+                    {"{name}", (STR)name},
                     {"{health}", TO_STR(health)},
                     {"{str}", TO_STR(strength)}
-                }, .end = '\0'
+                }, .end = "\0"
             });
             std::cout << TM::get("hr");
         }
 
         bool operator==(TYPE enemy) const {
             return name == eType[enemy].name;
+        }
+
+        operator TYPE() {
+            for (uint16_t i = 0; i < TYPE::COUNT; i++) {
+                if (name == eType[i].name)
+                    return (TYPE)i;
+            }
         }
 
     };

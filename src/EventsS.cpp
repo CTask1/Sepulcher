@@ -39,8 +39,7 @@ void EventsS::friendlyTraveler() {
             player.addExp(expGain);
         }
         type(TM::getForCondition("events.safe.traveler.gift", giftType == 1, {
-            .replacements = {{"{exp}", TO_STR(expGain)}},
-            .end = '\n'
+            .replacements = {{"{exp}", TO_STR(expGain)}}
         }));
     }
 }
@@ -56,9 +55,9 @@ void EventsS::travelingTrader() {
         return;
     }
     type(TM::get("events.safe.trader.approach"));
-    const std::string quitKey = TM::get("events.safe.trader.trade.quit_key");
+    const std::string quitKey = TM::get("events.safe.trader.trade.quit_key", { .end = ""});
     const std::string quitPrompt = TM::get("events.safe.trader.trade.quit_prompt", {
-        .replacements = {{"{key}", TO_STR(std::tolower(quitKey[0]))}}
+        .replacements = {{"{key}", quitKey}}, .end = ""
     });
     Trader trader;
     player.resources.displayResources();
@@ -69,7 +68,7 @@ void EventsS::travelingTrader() {
             TM::getAllAsStr("events.safe.trader.trade.options")
         );
 
-        if (Choice::getChoice(TM::getAllAsLst("events.safe.trade.trade.options")) == 2) {
+        if (Choice::getChoice(TM::getAllAsLst("events.safe.trader.trade.options")) == 2) {
             type(TM::get("events.safe.trader.trade.leave"));
             return;
         }
@@ -78,22 +77,20 @@ void EventsS::travelingTrader() {
         std::string buyChoice = "";
         do {
             buyChoice = capitalize(input(TM::get("events.safe.trader.trade.buy_res", {
-                .replacements = {{"{quit_prompt}", TM::get("events.safe.trader.quit_prompt", {
-                    .replacements = {{"{key}", TM::get("events.safe.trader.quit_key")}}
-                })}}
+                .replacements = {{"{quit_prompt}", quitPrompt }}
             }).c_str()));
-            if (buyChoice == quitKey)
+            if (buyChoice[0] == quitKey[0])
                 break;
             if (trader.resources[buyChoice] < 1)
                 type(TM::get("events.safe.trader.trade.warning.trader_no_res"));
         } while (trader.resources[buyChoice] < 1);
-        if (buyChoice == quitKey)
+        if (buyChoice[0] == quitKey[0])
             continue;
 
         bool noResources = true;
         int amountBuy = 0;
         do {
-            std::string strAmount = input(TM::get("events.safe.trader.trade.buy_amt", {.end = ' '}).c_str());
+            std::string strAmount = input(TM::get("events.safe.trader.trade.buy_amt", {.end = " "}).c_str());
             amountBuy = (isInt(strAmount) && isPos(strAmount)) ? stoi(strAmount) : -1;
             noResources = (amountBuy == -1 || trader.resources[buyChoice] < amountBuy);
             if (noResources)
@@ -105,7 +102,7 @@ void EventsS::travelingTrader() {
             sellChoice = capitalize(input(TM::get("events.safe.trader.trade.sell_res", {
                 .replacements = {{"{quit_prompt}", quitPrompt}}
             }).c_str()));
-            if (sellChoice == quitKey)
+            if (sellChoice[0] == quitKey[0])
                 break;
             if (player.resources[sellChoice] < 1)
                 type(TM::get("events.safe.trader.trade.warning.player_no_res"));
@@ -114,12 +111,12 @@ void EventsS::travelingTrader() {
                 sellChoice = "";
             }
         } while (player.resources[sellChoice] < 1);
-        if (sellChoice == quitKey)
+        if (sellChoice[0] == quitKey[0])
             continue;
 
         int amountSell = 0;
         do {
-            std::string strAmount = input(TM::get("events.safe.trader.trade.sell_amt", {.end = ' '}).c_str());
+            std::string strAmount = input(TM::get("events.safe.trader.trade.sell_amt", {.end = " "}).c_str());
             amountSell = (isInt(strAmount) && isPos(strAmount)) ? stoi(strAmount) : -1;
             noResources = (amountSell == -1 || player.resources[sellChoice] < amountSell);
             if (noResources)
@@ -178,12 +175,6 @@ void EventsS::meadow() {
 }
 
 void EventsS::statue() {
-    //              Þar Ændric, Wensolet Růnanet Tenanek.
-    //              In nom Λan, nir χatnůlven. In ten Λan, čenkorek noχardren a'eþ.
-    // Translation: King Aendric, the Last Light of the Land of Shadows.
-    //              In His name, death was undone. In His shadow, all spirits linger.
-    // Literally:   King Aendric, the Last Light of the Land of Shadows.
-    //              In His name, death was made void. In His shadow, all spirits are not bound by time.
     type(TM::get("events.safe.statue"));
     statueFound = true;
 }

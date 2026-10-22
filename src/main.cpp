@@ -8,7 +8,7 @@
 int main() {
     SET_UTF8();
     loadSettings();
-    TM::load("res\\text.json");
+    TM::load("res/text.json");
     start();
     std::cout << "\nThanks for playing!\n"
               << "\nPress Enter key to continue . . . ";

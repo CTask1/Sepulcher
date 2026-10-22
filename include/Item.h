@@ -1,6 +1,9 @@
 //CTask
 #pragma once
+#include<cstdint>
 #include<string>
+
+typedef std::initializer_list<std::pair<std::string, uint16_t>> PairList_t;
 
 namespace Item {
 
@@ -18,18 +21,35 @@ namespace Item {
         SPL  // Special
     };
 
+    enum class AWClass { // Armor/Weapon Class
+        LIGHT,
+        HEAVY,
+        RANGE,
+        MELEE,
+        NONE
+    };
+
     enum class TYPE {
         NONE,
         POTION,
         FOCUS,
+        DRP_CURSED_DST,
+        DRP_BEAST_FANG,
+        DRP_SHADOW_ESS,
+        DRP_CHITIN,
+        DRP_HIDE,
         ARM_LEATHER,
         ARM_DRAKONIAN,
         ARM_IRON,
         ARM_STEEL,
+        ARM_CHITIN,
+        ARM_HIDE,
+        ARM_SHAD_COWL,
         WPN_LONG,
         WPN_MAGIC,
         WPN_GREAT,
         WPN_CROSSBOW,
+        WPN_BEAST_BLADE,
         WPN_ST_WARBORN,
         WPN_ST_GUARDIAN,
         WPN_ST_SHADOW,
@@ -42,9 +62,11 @@ namespace Item {
         SPL_AM_WEEPING
     };
 
-    const struct Info {
+    struct Info {
         ItemClass type;
+        AWClass awClass;
         std::string_view name;
+        PairList_t components = {};
         float defMod = 0.f;
         float strMod = 0.f;
         bool canHavePrefix = true;
@@ -52,32 +74,45 @@ namespace Item {
         bool nStr = false;
     };
 
-    constexpr Info Data[] {
-        { ItemClass::GEN, "None"                                                          },
-        { ItemClass::GEN, "Health Potion"                                                 },
-        { ItemClass::GEN, "Arcane Focus"                                                  },
+    const Info Data[] {
+        { ItemClass::GEN, (AWClass)0    , "None"                                                                                                                                          },
+        { ItemClass::GEN, (AWClass)0    , "Health Potion"               , { { "Medicinal Herbs", ui16(2) } }                                                                              },
+        { ItemClass::GEN, (AWClass)0    , "Arcane Focus"                , { { "Crystals", ui16(4) } }                                                                                     },
+        { ItemClass::GEN, (AWClass)0    , "Cursed Dust"                                                                                                                                   },
+        { ItemClass::GEN, (AWClass)0    , "Beast Fang"                                                                                                                                    },
+        { ItemClass::GEN, (AWClass)0    , "Shadow Essence"                                                                                                                                },
+        { ItemClass::GEN, (AWClass)0    , "Chitin"                                                                                                                                        },
+        { ItemClass::GEN, (AWClass)0    , "Hide"                                                                                                                                          },
 
-        { ItemClass::ARM, "Leather Armor"               , 1.15f                           },
-        { ItemClass::ARM, "Drakonian Armor"             , 1.15f                           },
-        { ItemClass::ARM, "Iron Armor"                  , 1.20f                           },
-        { ItemClass::ARM, "Steel Armor"                 , 1.30f                           },
+        { ItemClass::ARM, AWClass::LIGHT, "Leather Armor"               , { { "Fiber", ui16(2) }, { "Leather", ui16(4) } }, 1.15f                                                         },
+        { ItemClass::ARM, AWClass::LIGHT, "Drakonian Armor"             , { { "Fiber", ui16(2) }, { "Leather", ui16(4) } }, 1.10f                                                         },
+        { ItemClass::ARM, AWClass::HEAVY, "Iron Armor"                  , {}, 1.20f                                                                                                       },
+        { ItemClass::ARM, AWClass::HEAVY, "Steel Armor"                 , {}, 1.30f                                                                                                       },
+        { ItemClass::ARM, AWClass::HEAVY, "Chitin Armor"                , { { "Fiber", ui16(2) }, { "Leather", ui16(2) }, { "Chitin", ui16(2) } }, 1.40f                                  },
+        { ItemClass::ARM, AWClass::LIGHT, "Hide Armor"                  , { { "Fiber", ui16(2) }, { "Hide", ui16(2) } }, 1.25f                                                            },
+        { ItemClass::ARM, AWClass::LIGHT, "Shadow's Cowl"               , { { "Shadow Essence", ui16(2) }, { "Cursed Dust", ui16(1) } }, 1.10f                                            },
 
-        { ItemClass::WPN, "Longsword"                   , 0.00f, 1.25f                    },
-        { ItemClass::WPN, "Magic Sword"                 , 0.00f, 1.25f                    },
-        { ItemClass::WPN, "Greatsword"                  , 0.00f, 1.25f                    },
-        { ItemClass::WPN, "Crossbow"                    , 0.00f, 1.25f                    },
-        { ItemClass::WPN, "Staff of the Warborn"        , 0.00f, 1.25f, false             },
-        { ItemClass::WPN, "Staff of the Guardian"       , 0.00f, 1.25f, false             },
-        { ItemClass::WPN, "Staff of the Shadow"         , 0.00f, 1.25f, false             },
-        { ItemClass::WPN, "Staff of Fury"               , 0.00f, 1.35f, false             },
-        { ItemClass::WPN, "Staff of the Weeping Spirit" , 0.00f, 1.10f, false             },
+        { ItemClass::WPN, AWClass::MELEE, "Longsword"                   , { { "Fiber", ui16(2) }, { "Iron", ui16(3) }, { "Wood", ui16(2) } }, 0.00f, 1.25f                                },
+        { ItemClass::WPN, AWClass::MELEE, "Magic Sword"                 , {}, 0.00f, 1.25f                                                                                                },
+        { ItemClass::WPN, AWClass::MELEE, "Greatsword"                  , {}, 0.00f, 1.25f                                                                                                },
+        { ItemClass::WPN, AWClass::RANGE, "Crossbow"                    , {}, 0.00f, 1.25f                                                                                                },
+        { ItemClass::WPN, AWClass::MELEE, "Beast Blade"                 , { { "Fiber", ui16(2) }, { "Wood", ui16(2) }, { "Beast Fang", ui16(1) } }, 0.00f, 1.40f                          },
+        { ItemClass::WPN, AWClass::MELEE, "Staff of the Warborn"        , { { "Amulet of the Warborn", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }, 0.00f, 1.25f, false        },
+        { ItemClass::WPN, AWClass::MELEE, "Staff of the Guardian"       , { { "Amulet of the Guardian", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }, 0.00f, 1.25f, false       },
+        { ItemClass::WPN, AWClass::MELEE, "Staff of the Shadow"         , { { "Amulet of the Shadow", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }, 0.00f, 1.25f, false         },
+        { ItemClass::WPN, AWClass::MELEE, "Staff of Fury"               , { { "Amulet of Fury", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }, 0.00f, 1.35f, false               },
+        { ItemClass::WPN, AWClass::MELEE, "Staff of the Weeping Spirit" , { { "Amulet of the Weeping Spirit", ui16(1) }, { "Fiber", ui16(2) }, { "Wood", ui16(4) } }, 0.00f, 1.10f, false },
 
-        { ItemClass::SPL, "Amulet of the Warborn"       , 1.20f, 1.20f                    },
-        { ItemClass::SPL, "Amulet of the Guardian"      , 1.30f, 0.00f                    },
-        { ItemClass::SPL, "Amulet of the Shadow"        , 0.00f, 0.00f                    },
-        { ItemClass::SPL, "Amulet of Fury"              , 1.25f, 1.25f, false, true       },
-        { ItemClass::SPL, "Amulet of the Weeping Spirit", 1.20f, 1.20f, false, true, true }
+        { ItemClass::SPL, (AWClass)0    , "Amulet of the Warborn"       , {}, 1.20f, 1.20f                                                                                                },
+        { ItemClass::SPL, (AWClass)0    , "Amulet of the Guardian"      , {}, 1.30f, 0.00f                                                                                                },
+        { ItemClass::SPL, (AWClass)0    , "Amulet of the Shadow"        , {}, 0.00f, 0.00f                                                                                                },
+        { ItemClass::SPL, (AWClass)0    , "Amulet of Fury"              , {}, 1.25f, 1.25f, false, true                                                                                   },
+        { ItemClass::SPL, (AWClass)0    , "Amulet of the Weeping Spirit", {}, 1.20f, 1.20f, false, true, true                                                                             }
     };
+
+    constexpr std::size_t toIdx(TYPE type) {
+        return static_cast<std::size_t>(type);
+    }
 
     class Item {
     public:
@@ -115,6 +150,7 @@ namespace Item {
     class Armor : public Leveled {
     public:
         short defenseBonus;
+        AWClass iClass;
 
         enum class Prefix {
             NONE      = 50,
@@ -155,6 +191,7 @@ namespace Item {
     class Weapon : public Leveled {
     public:
         short strengthBonus;
+        AWClass iClass;
 
         enum class Prefix {
             NONE      = 50,

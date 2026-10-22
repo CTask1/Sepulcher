@@ -13,6 +13,8 @@ public:
     Events(Player& p) : player(p), eS(*this, p), eR(*this, p), eD(*this, p) {}
 
     Enemy::Enemy initEnemy(const Enemy::TYPE eType, const bool boss = false);
+
+    void enemyDrop(const Enemy::TYPE eType);
     
     bool combat(Enemy::Enemy&& enemy, bool surprised = false, const bool sepulcher = false, const char* message = nullptr);
     

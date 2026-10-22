@@ -1,0 +1,88 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "RPG Build Debug Unity",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++20",
+                "-g",
+                "-O0",
+                "-w",
+                "-Iinclude",
+                "-o",
+                "bin/debug/Sepulcher",
+                "src/main.cpp",
+                "src/unity/*.cpp"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "RPG Build Debug Full",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++20",
+                "-g",
+                "-O0",
+                "-w",
+                //"-Wall",
+                //"-Wextra",
+                //"-Wpedantic",
+                //"-Wno-error",
+                "-Iinclude",
+                "-o",
+                "bin/debug/Sepulcher",
+                "src/*.cpp"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "RPG Build Release",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++20",
+                "-O2",
+                "-DNDEBUG",
+                "-flto",
+                "-Wall",
+                "-Wextra",
+                "-Wpedantic",
+                "-Iinclude",
+                "-o",
+                "bin/release/Sepulcher",
+                "src/main.cpp",
+                "src/unity/*.cpp"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Test Build",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++20",
+                "-g",
+                "-O0",
+                "-Wall",
+                "-Wextra",
+                "-Wpedantic",
+                "-Iinclude",
+                "-o",
+                "bin/test/test",
+                "src/test/test.cpp"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
+    ]
+}

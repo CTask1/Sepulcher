@@ -62,7 +62,7 @@ void changePrompt() {
 
     int choice = Choice::getChoice(options);
     if (choice != 7)
-        prompt = sentenceCase(choice == 6 ? trim(input(TM::get("settings.prompt.custom", {.end = ' '}).c_str())) : options.at(choice - 1)) + ' ';
+        prompt = sentenceCase(choice == 6 ? trim(input(TM::get("settings.prompt.custom", {.end = " "}).c_str())) : options.at(choice - 1)) + ' ';
 }
 
 void saveSettings() {
@@ -85,7 +85,7 @@ void resetToDefaults() {
 }
 
 void reloadTextFile() {
-    TM::load("res\\text.json");
+    TM::load("res/text.json");
     type(TM::get("settings.reload"));
 }
 

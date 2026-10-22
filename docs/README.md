@@ -1,6 +1,6 @@
 # BUILDING
 
-Sepulcher is compiled using Microsoft Visual C++ (MSVC), which is only available on Windows (as far as I know). At this time, building on other operating systems has not been tested and may require modifications.
+Sepulcher can be compiled using Microsoft Visual C++ (MSVC) or g++.
 
 ## Dependencies
 
@@ -8,13 +8,17 @@ This project requires at least version 3.12.0 of nlohmann\json.hpp to be present
 
 ## Windows
 
-This game can be compiled in release mode with MSVC using the following command in the Developer Command Prompt for VS 2022: `cl.exe /std:c++20 /EHsc /O2 /DNDEBUG /MT /MP /GL /nologo /Iinclude\ /Febin\release\Sepulcher.exe /Fobin\release\ src\main.cpp src\uEvents.cpp src\uPlayer.cpp src\uOther.cpp`  
-You can then run it with the command: `bin\release\Sepulcher.exe`  
+To compile in release mode with MSVC, use the following command in the Developer Command Prompt for VS 2022 from the root `Sepulcher` directory: `cl.exe /std:c++20 /EHsc /O2 /DNDEBUG /MT /MP /GL /nologo /Iinclude\ /Febin\release\Sepulcher.exe /Fobin\release\ src\main.cpp src\uEvents.cpp src\uPlayer.cpp src\uOther.cpp`.  
+You can then run it with the command: `bin\release\Sepulcher.exe`.
 
+## Linux
 
-### Visual Studio Code
+To compile in release mode with g++, use the following command in your chosen terminal from the root `Sepulcher` directory: `-std=c++20 -O2 -DNDEBUG -flto -w -Iinclude -o bin/release/Sepulcher src/main.cpp src/unity/*.cpp`  
+You can then run it with the command: `bin/release/Sepulcher`.
 
-Alternatively, you can compile it in VS Code in the Run and Debug tab.
+## Visual Studio Code
+
+Alternatively, you can compile it in VS Code in the Run and Debug tab. Before doing so, move the OS-specific files from their folders directly into the `.vscode` folder.
 There are three options for building to be used in different cases:
 
 - `Build (Debug)` should be used when making frequent changes. This uses unity files to speed up the build process.

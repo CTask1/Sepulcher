@@ -78,7 +78,10 @@
             "collapse": "Your legs give out beneath you.\nThe world spins and your vision narrows to a tunnel of darkness.\nYou collapse where you stand, claimed by exhaustion.",
             "awake": "You wake on cold, unforgiving ground, limbs aching and breath shallow.\nThe sun has risen, but its warmth does nothing for the weight pressing on your chest.\nYou're alive—but just barely. Exhaustion clings to you like a second skin."
         },
-        "rest": "You find a place to rest and gain some health.",
+        "rest": {
+            "message": "You find a place to rest and gain some health.{wiz}",
+            "wizard": " You also gain some mana."
+        },
         "death": "You have died. Game over.\n"
     },
     "events": {
@@ -259,7 +262,7 @@
                 "enter": "You decide to enter the mysterious cave, drawn by its allure.",
                 "continue": "You choose to stay cautious and continue exploring.",
                 "outcomes": {
-                    "1": "The cave is filled with valuable crystals. You gain some resources!",
+                    "1": "The cave is filled with valuable crystals. You gain some resources!\n",
                     "2": "The cave is home to a hostile creature!"
                 }
             },
@@ -377,10 +380,29 @@
         }
     },
     "player": {
-        "stats": "Name: {name}\nRace: {race}{blood_meter}\nClass: {class}{mana}\nHealth: {health}/{max_health}\nStrength: {str}\nConstitution: {con}\nDefense: {def}\nWeapon: {weapon} (Level: {weapon_level}, Strength Bonus: {str_bonus})\nArmor: {armor} (Level: {armor_level}, Defense Bonus: {def_bonus})\nSpecial: {special} (Defense Bonus: {special_def_bonus}, Strength Bonus: {special_str_bonus})\nLevel: {level}\nExperience: {exp}/{next}",
+        "stats": "Name: {name}\nRace: {race}{blood_meter}\nClass: {class}{mana}\nHealth: {health}/{max_health}\nStrength: {str}\nConstitution: {con}\nDefense: {def}\nWeapon: {weapon}{weapon_data}\nArmor: {armor}{armor_data}\nSpecial: {special}{special_data}\nLevel: {level}\nExperience: {exp}/{next}",
         "health_potion": {
             "none": "\nYou don't have any health potions!",
-            "use": "You used a health potion!\nYour health is now full ({health})."
+            "use": "You used a health potion!\nYour health has been restored ({health})."
+        },
+        "craft": {
+            "none": "There is no {item} available to craft.",
+            "no_res": "You don't have enough resources!",
+            "armor": "{num}. {type} (Defense Bonus: {def})\n{cmp}",
+            "weapon": "{num}. {type} (Strength Bonus: {str})\n{cmp}",
+            "item": "{num}. {type}\n{cmp}",
+            "craft": "\nCrafting {item}..."
+        },
+        "equip": {
+            "drakonian": "Your unique body shape renders you unable to wear this armor.",
+            "wizard": "The weight and rigidity of this armor would interfere with your connection to the arcane, preventing you from casting spells while wearing it.",
+            "confirmation": "\nDo you want to equip the {item} (1. Yes / 2. No)?",
+            "current": {
+                "armor": "Your current {item} has (Defense Bonus: {def})",
+                "weapon": "Your current {item} has (Strength Bonus: {str})"
+            },
+            "equip": "You equip the {item}.",
+            "no_equip": "You choose to leave the {item}."
         }
     },
     "items": {

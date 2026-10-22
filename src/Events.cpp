@@ -29,7 +29,7 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
             type(TM::get("combat.player_turn.damage_enemy", {
                 .replacements = {
                     {"{damage}", TO_STR(damage)},
-                    {"{enemy}", STR(enemy.name)},
+                    {"{enemy}", (STR)enemy.name},
                     {"{health}", TO_STR(enemy.health)}
                 }
             }));
@@ -58,7 +58,7 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
         case 6:
             if (Choice::getChoice({"yes", "no"}, TM::get("confirmation", {
                 .replacements = {{"{action}", "run"}},
-                .end = ' '
+                .end = " "
             }).c_str()) == 2)
                 continue;
 
@@ -67,7 +67,7 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
             if (randint(1, (sepulcher ? 5 : 10)) == 1 && player.weapon != Item::TYPE::WPN_ST_SHADOW) {
                 run = false;
                 type(TM::get("combat.player_turn.run.fail", {
-                    .replacements = {{"{enemy}", STR(enemy.name)}}
+                    .replacements = {{"{enemy}", (STR)enemy.name}}
                 }));
             }
         }
@@ -90,7 +90,7 @@ void enemyTurn(Player& player, Enemy::Enemy& enemy, short& mirrorImage, bool& sh
         player.health = ui16(std::max(player.health - enemyDamage, 0));
         type(TM::get("combat.enemy_turn.attack.damage_player", {
             .replacements = {
-                {"{enemy}", STR(enemy.name)},
+                {"{enemy}", (STR)enemy.name},
                 {"{damage}", TO_STR(enemyDamage)},
                 {"{health}", TO_STR(player.health)}
             }
@@ -101,7 +101,7 @@ void enemyTurn(Player& player, Enemy::Enemy& enemy, short& mirrorImage, bool& sh
             type(TM::get("combat.enemy_turn.attack.thorns", {
                 .replacements = {
                     {"{damage}", TO_STR(thornsDamage)},
-                    {"{enemy}", STR(enemy.name)},
+                    {"{enemy}", (STR)enemy.name},
                     {"{health}", TO_STR(enemy.health)}
                 }
             }));
@@ -113,13 +113,32 @@ Enemy::Enemy Events::initEnemy(const Enemy::TYPE eType, const bool boss) {
     return Enemy::Enemy(eType, player.maxHealth, player.baseStrength, player.level, boss);
 }
 
+void Events::enemyDrop(const Enemy::TYPE eType) {
+    switch (eType) {
+    case Enemy::TYPE::GOBLIN: 
+        if (randint(1, 2) == 1)
+            player.initWeapon(Item::TYPE::WPN_CROSSBOW, Item::Source::DROP, (player.Class == Player::CLASS::WIZARD ? -1 : 1));
+        break;
+    case Enemy::TYPE::CAVE_CREATURE:
+        if (uint16_t i = randint(1, 5); i < 3)
+            player.resources.addResource("Chitin", randint(0, i));
+    case Enemy::TYPE::BEAR:
+        if (uint16_t i = randint(1, 6); i < 3) {
+            player.resources.addResource("Beast Fang", randint(0, 1));
+            if (eType == Enemy::TYPE::BEAR)
+                player.resources.addResource("Hide", randint(0, i));
+        }
+        break;
+    }
+}
+
 bool Events::combat(Enemy::Enemy&& enemy, bool surprised, const bool sepulcher, const char* message) {
     const std::string defMessage = TM::get("combat.default_message", {
-        .replacements = {{"{enemy}", STR(enemy.name)}}
+        .replacements = {{"{enemy}", (STR)enemy.name}}
     });
     if (message == nullptr)
         message = defMessage.c_str();
-    type('\n' + STR(message) + '\n');
+    type('\n' + (STR)message + '\n');
     enemy.displayStats();
     type(TM::get("combat.prepare"));
     bool first = true; // Is it the first round of combat?
@@ -128,7 +147,7 @@ bool Events::combat(Enemy::Enemy&& enemy, bool surprised, const bool sepulcher, 
     bool shadowmeld = false;
     uint16_t surprise = 0;
     if (player.Class == Player::CLASS::ROGUE)
-        surprise = (player.armor == Item::TYPE::ARM_STEEL || player.armor == Item::TYPE::ARM_IRON) ? 1 : randint(1, player.level + 1); // The player cannot surprise if they are wearing heavy armor
+        surprise = (player.armor.iClass == Item::AWClass::HEAVY) ? 1 : randint(1, player.level + 1); // The player cannot surprise if they are wearing heavy armor
     while (true) {
         if (surprised && first) { // If the player is surprised
             if (player.arcaneEye) { // If the player has the Arcane Eye spell active
@@ -160,13 +179,12 @@ bool Events::combat(Enemy::Enemy&& enemy, bool surprised, const bool sepulcher, 
                     uint16_t expGain = randint(5, player.level * 8);
                     type(TM::get("combat.victory", {
                         .replacements = {
-                            {"{enemy}", STR(enemy.name)},
+                            {"{enemy}", (STR)enemy.name},
                             {"{exp}", TO_STR(expGain)}
                         }
                     }));
                     player.addExp(expGain);
-                    if (enemy == Enemy::GOBLIN && randint(1, 2) == 1)
-                        player.initWeapon(Item::TYPE::WPN_CROSSBOW, Item::Source::DROP, (player.Class == Player::CLASS::WIZARD ? -1 : 1));
+                    enemyDrop(enemy);
                     return 1;
                 } else {
                     if (checkDeath(player, enemy))
@@ -182,7 +200,7 @@ bool checkDeath(Player& player, Enemy::Enemy& enemy) {
     if (player.health <= 0) {
         type(TM::get("combat.defeat", {
             .replacements = {
-                {"{enemy}", STR(enemy.name)},
+                {"{enemy}", (STR)enemy.name},
                 {"{rev}", TM::getForCondition("combat.resurgence", player.resurgence)}
             }
         }));

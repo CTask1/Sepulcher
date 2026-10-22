@@ -16,17 +16,17 @@ public:
         EXHAUSTED
     };
 
-    const struct Info {
-        std::string_view name = "None";
-        uint16_t duration = 1;
-        float hMod   = 0.f,
-              strMod = 0.f,
-              defMod = 0.f;
+    struct Info {
+        std::string_view name;
+        uint16_t duration;
+        float hMod  ,
+              strMod,
+              defMod;
     };
 
     static constexpr Info Data[] {
-        { "None"                                       },
-        { "Ravenous" , DAY_LENGTH, -0.1f               },
+        { "None"     ,          1,   0.f,   0.f,   0.f },
+        { "Ravenous" , DAY_LENGTH, -0.1f,   0.f,   0.f },
         { "Exhausted", UINT16_MAX,  0.0f, -0.1f, -0.1f }
     };
 
@@ -38,4 +38,3 @@ public:
         defMod   (Data[debuffType].defMod  ) {}
 
 };
-    

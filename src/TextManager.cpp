@@ -16,7 +16,7 @@ nlohmann::json getData(const char* const& key, nlohmann::json current) {
 
     while (std::getline(iss, str, '.')) {
         if (!current.contains(str))
-            throw std::runtime_error("Missing text key: " + STR(key));
+            throw std::runtime_error("Missing text key: " + (STR)key);
         current = current[str];
     }
 
@@ -26,20 +26,20 @@ nlohmann::json getData(const char* const& key, nlohmann::json current) {
 void TextManager::load(const char* const& filename) {
     std::ifstream file(filename);
     if (!file)
-        throw std::runtime_error("Could not open file: " + STR(filename));
+        throw std::runtime_error("Could not open file: " + (STR)filename);
     file >> textData;
     file.close();
 }
 
 void TextManager::print(const char* const& key, const OptionalGetArgs& args) {
     nlohmann::json current = getData(key, textData);
-    STR str = "";
+    std::string str = "";
 
     if (current.is_array()) {
         for (size_t i = 0; i < current.size(); i++)
-            str += TO_STR(i + 1) + ". " + current.at(i).get<STR>() + '\n';
+            str += TO_STR(i + 1) + ". " + current.at(i).get<std::string>() + '\n';
     } else
-        str = current.get<STR>() + args.end;
+        str = current.get<std::string>() + args.end;
 
     for (const auto& [from, to] : args.replacements)
         replace(str, from, to);

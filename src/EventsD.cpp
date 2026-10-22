@@ -115,7 +115,7 @@ void EventsD::sepulcher() {
     type(TM::get("events.dangerous.sepulcher.enter"));
 
     setDelay(20);
-    type(TM::getForNumber("events.dangerous.sepulcher.stage_1.messages", randint(1, 2), {.end = '\n'}));
+    type(TM::getForNumber("events.dangerous.sepulcher.stage_1.messages", randint(1, 2)));
 
     if (!sepulcherContinue()) return;
 
@@ -172,7 +172,7 @@ void EventsD::sepulcher() {
     type(TM::get("events.dangerous.sepulcher.stage_3.king_realization_3"));
     setDelay(30);
     if (!events.combat(events.initEnemy(Enemy::ENRAGED_KING, true), false, true,
-    TM::get("events.dangerous.sepulcher.stage_3.king_encounter_2", {.end = '\0'}).c_str()))
+    TM::get("events.dangerous.sepulcher.stage_3.king_encounter_2", {.end = "\0"}).c_str()))
         return;
     setDelay(25);
     type (

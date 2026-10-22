@@ -105,8 +105,7 @@ void EventsR::mountainPass() {
         
         type(TM::getForNumber (
             "events.risky.mountain_pass.alternate.crossroads.right.animal.outcomes",
-            Choice::getChoice(TM::getAllAsLst("events.risky.mountain_pass.alternate.crossroads.right.animal.options")),
-            {.end = '\n'}
+            Choice::getChoice(TM::getAllAsLst("events.risky.mountain_pass.alternate.crossroads.right.animal.options"))
         ));
         break;
     } case 4:
@@ -147,7 +146,7 @@ void EventsR::strangeAmulet() {
         return;
     }
     uint16_t amuletType = randint(1, 5);
-    type(TM::getForNumber("events.risky.amulet.get", amuletType, {.end = '\n'}));
+    type(TM::getForNumber("events.risky.amulet.get", amuletType));
     switch (amuletType) {
     case 1:
         player.initSpecial(Item::TYPE::SPL_AM_WARBORN, Item::Source::FIND);

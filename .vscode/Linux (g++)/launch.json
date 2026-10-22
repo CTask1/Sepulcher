@@ -1,0 +1,56 @@
+{
+    "configurations": [
+        {
+            "name": "Build (Debug)",
+            "type": "cppdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "program": "${workspaceFolder}/bin/debug/Sepulcher",
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "preLaunchTask": "RPG Build Debug Unity"
+        },
+        {
+            "name": "Build (Debug Full)",
+            "type": "cppdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "program": "${workspaceFolder}/bin/debug/Sepulcher",
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "preLaunchTask": "RPG Build Debug Full"
+        },
+        {
+            "name": "Build (Release)",
+            "type": "cppdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "program": "${workspaceFolder}/bin/release/Sepulcher",
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "preLaunchTask": "RPG Build Release"
+        },
+        {
+            "name": "Build Test",
+            "type": "cppdbg",
+            "request": "launch",
+            "args": [],
+            "stopAtEntry": false,
+            "program": "${workspaceFolder}/bin/test/test",
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "preLaunchTask": "Test Build"
+        }
+    ]
+}

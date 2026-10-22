@@ -1,6 +1,7 @@
 //CTask
 #pragma once
 #include<unordered_map>
+#include<cstdint>
 #include<string>
 
 class Resources {

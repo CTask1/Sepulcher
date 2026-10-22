@@ -914,6 +914,7 @@
         -Commit master 2546452
         -Updated README
         -Commit master 9d6588b
+        -Release v0.3.0
         -Code efficiency
         -Reduced unnecessary includes
         -Moved Debuff class to Debuff.h
@@ -1007,6 +1008,7 @@
             -Player.cpp
         -Removed tostring() function
         -Commit master 55b72da
+        -Release v0.4.0-alpha
 
     
     -- 08/20/25 --
@@ -1020,6 +1022,7 @@
         -Comments
         -Updated README
         -Commit master c2df9fb
+        -Release v0.4.0-alpha.1
 
     
     -- 09/24/25 --
@@ -1028,9 +1031,42 @@
         -Added some macros
 
 
-    --11/14/25 --
+    -- 11/14/25 --
 
         -Bug fixes
         -Changed some messages
             -Formatting fixes
-        
+        -Commit master 1a3c81a
+        -Release v0.4.0-alpha.2
+
+
+    -- 10/22/26 -- // FROM THIS POINT ON, ALL CHANGES WILL BE GROUPED BY COMMIT //
+
+        -Moved some messages to text.json
+        -Bug fixes
+            -Removed negative exponentiation in Item class
+            -Fixed Strength Bonus not appearing on staves when crafting
+        -Added new enemy drops
+            -Cursed Dust
+            -Beast Fang
+            -Shadow Essence
+            -Chitin
+            -Hide
+        ...and crafted items
+            -Chitin armor
+            -Hide armor
+            -Shadow's Cowl
+            -Beast Blade
+        -Added armor/weapon classes
+        -Added support for Linux through g++
+        -Fixed some crashes in the trader event
+        -Merged Player class
+            -Player.h, PlayerPrivate.h, PlayerPublic.h > Player.h
+            -Player.cpp, PlayerPrivate.cpp, PlayerPublic.cpp > Player.cpp
+            -Old files moved to ./old/ temporarily
+        -User-friendliness and message changes
+            -Changed formatting of crafting menu
+            -Fixed formatting in trader event
+            -Fixed message when healing with a health potion
+            -Stats for weapons, armor, and special items with NONE type are no longer displayed
+        -Reduced redundancy in the crafting process
