@@ -118,7 +118,7 @@ It has many weapons and spells to keep track of, and the player must be smart ab
     - Mage Armor
         - Acts as armor for one day
         - Has the same defense as iron armor
-        - Costs five mana points
+        - Costs four mana points
     - Arcane Eye
         - Only used outside of combat
         - The user cannot be surprised or trapped for one day
@@ -144,20 +144,26 @@ Here is a list of them:
 
 ### Armor (non-Wizards only)
 
-- Drakonian Armor (Drakonians only)
+- Drakonian Armor (Only option for Drakonians)
     - Crafted with six leather, two fiber
     - Low defense
-- Leather Armor (non-Drakonians only)
-    - Crafted with six leather, two fiber
+- Leather Armor
+    - Crafted with two fiber, four leather
     - Low defense
-- Iron Armor (non-Drakonians only)
+- Chitin Armor
+    - Crafted with two fiber, two leather, two chitin
+    - High defense
+- Hide Armor
+    - Crafted with two fiber, two hide
+    - Medium defense
+- Iron Armor
     - Found
     - Heavy armor
-    - Medium Defense
-- Steel Armor (non-Drakonians only)
+    - Medium defense
+- Steel Armor
     - Found
     - Heavy armor
-    - High Defense
+    - High defense
 
 
 #### Prefixes
@@ -181,6 +187,9 @@ Here is a list of them:
 - Longsword
     - Crafted with two wood, two fiber, three iron
     - Medium attack
+- Beast Blade
+    - Crafted with two fiber, two wood, one beast fang
+    - High attack
 - Greatsword
     - Found
     - Heavy weapon

@@ -1043,6 +1043,8 @@
     -- 10/22/26 -- // FROM THIS POINT ON, ALL CHANGES WILL BE GROUPED BY COMMIT //
 
         -Moved some messages to text.json
+        -Renamed Game.h to game.h
+        -Renamed Util.h to util.h
         -Bug fixes
             -Removed negative exponentiation in Item class
             -Fixed Strength Bonus not appearing on staves when crafting
@@ -1070,3 +1072,11 @@
             -Fixed message when healing with a health potion
             -Stats for weapons, armor, and special items with NONE type are no longer displayed
         -Reduced redundancy in the crafting process
+        -Commit master 9b2c121
+        -Commit master 819d2ab
+
+    
+    -- 10/26/26 --
+
+        -Changed Mage Armor cost from 5 mana to 4 mana
+        -Updated README

@@ -454,7 +454,7 @@ bool Player::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shadowmeld
             output += "\t" + TO_STR(++abilityNum) + ". Mirror Image (Wizard) - 2 MP\n";
         }
         abilities.push_back("Mage Armor");
-        output += "\t" + TO_STR(++abilityNum) + ". Mage Armor (Wizard) - 5 MP\n";
+        output += "\t" + TO_STR(++abilityNum) + ". Mage Armor (Wizard) - 4 MP\n";
         if (enemy == nullptr) {
             abilities.push_back("Arcane Eye");
             output += "\t" + TO_STR(++abilityNum) + ". Arcane Eye (Wizard) - 3 MP\n";
@@ -548,13 +548,13 @@ bool Player::abilities(Enemy::Enemy* enemy, short* mirrorImage, bool* shadowmeld
             type("\nThis spell is already active!\n");
             return 0;
         }
-        if (mana < 5) {
+        if (mana < 4) {
             type("\nYou don't have enough mana points!\n");
             return 0;
         }
         mageArmorDefense = ui16(pow(level + 1, 1.2f));
         defense += mageArmorDefense;
-        mana -= 5;
+        mana -= 4;
         health = std::min(ui16(health + 5), getMaxHealth());
         type("\nA protective shielding aura surrounds you, boosting your defense by " + TO_STR(mageArmorDefense) + "!\n");
     } else if (streq(abilities.at(abilityChoice), "Arcane Eye")) {
