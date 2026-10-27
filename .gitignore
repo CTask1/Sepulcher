@@ -3,6 +3,7 @@
 !.vscode/**
 !res/text.json
 !include/*
+!include/nlohmann/json.hpp
 !src/*
 !src/unity/**
 !docs/changelog.txt

@@ -2,10 +2,6 @@
 
 Sepulcher can be compiled using Microsoft Visual C++ (MSVC) or g++.
 
-## Dependencies
-
-This project requires at least version 3.12.0 of nlohmann\json.hpp to be present in the include path to build successfully. On Windows this should be something like `C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include`. The latest version can be found [here](https://github.com/nlohmann/json/releases).
-
 ## Windows
 
 To compile in release mode with MSVC, use the following command in the Developer Command Prompt for VS 2022 from the root `Sepulcher` directory: `cl.exe /std:c++20 /EHsc /O2 /DNDEBUG /MT /MP /GL /nologo /Iinclude\ /Febin\release\Sepulcher.exe /Fobin\release\ src\main.cpp src\uEvents.cpp src\uPlayer.cpp src\uOther.cpp`.  
@@ -13,7 +9,7 @@ You can then run it with the command: `bin\release\Sepulcher.exe`.
 
 ## Linux
 
-To compile in release mode with g++, use the following command in your chosen terminal from the root `Sepulcher` directory: `-std=c++20 -O2 -DNDEBUG -flto -w -Iinclude -o bin/release/Sepulcher src/main.cpp src/unity/*.cpp`  
+To compile in release mode with g++, use the following command in your chosen terminal from the root `Sepulcher` directory: `g++ -std=c++20 -O2 -DNDEBUG -flto -w -Iinclude -o bin/release/Sepulcher src/main.cpp src/unity/*.cpp`  
 You can then run it with the command: `bin/release/Sepulcher`.
 
 ## Visual Studio Code

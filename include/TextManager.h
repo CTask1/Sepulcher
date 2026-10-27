@@ -1,10 +1,10 @@
 //CTask
 #pragma once
-#include<nlohmann/json.hpp>
 #include<initializer_list>
 #include<string>
 #include<vector>
 
+#include "nlohmann/json.hpp"
 #include "util.h"
 
 class TextManager {

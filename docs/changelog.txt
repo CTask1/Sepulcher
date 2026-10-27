@@ -1080,3 +1080,10 @@
 
         -Changed Mage Armor cost from 5 mana to 4 mana
         -Updated README
+        -Commit master cee7742
+
+
+    -- 10/27/26 --
+
+        -Removed nlohmann/json.hpp dependency by moving it into the local directory
+        -Updated README
