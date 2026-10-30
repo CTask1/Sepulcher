@@ -14,7 +14,7 @@
 #define DEV_MODE 0
 
 #ifdef _WIN32
-    extern "C" __declspec(dllimport) int __stdcall SetConsoleOutputCP(uint32_t);
+    #include<windows.h>
     #define SET_UTF8() SetConsoleOutputCP(65001)
 #else
     #ifdef __linux__

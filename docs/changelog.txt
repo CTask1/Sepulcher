@@ -1096,3 +1096,9 @@
         -Moved settings.txt to the executable's local directory
         -text.json is now bundled with the executable (only in release mode)
         -Fixed a compiler error when building in debug mode
+        -Commit master 0587633
+
+
+    -- 10/30/26 --
+
+        -Fixed Windows bundling code
