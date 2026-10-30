@@ -456,6 +456,7 @@
         "save": "\nSettings saved.",
         "reset": "\nSettings reset to defaults.",
         "reload": "\nText file reloaded.",
+        "no_reload": "\nThis feature is disabled in release mode.",
         "current_flag": {
             "true": " (current)",
             "false": ""

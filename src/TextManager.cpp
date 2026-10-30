@@ -8,9 +8,11 @@
 #include"TextManager.h"
 #include"util.h"
 
-nlohmann::json TextManager::textData;
+using json = nlohmann::json;
 
-nlohmann::json getData(const char* const& key, nlohmann::json current) {
+json TextManager::textData;
+
+json getData(const char* const& key, json current) {
     std::istringstream iss(key);
     std::string str;
 
@@ -24,15 +26,22 @@ nlohmann::json getData(const char* const& key, nlohmann::json current) {
 }
 
 void TextManager::load(const char* const& filename) {
+#ifdef NDEBUG
+    const char* GAME_TEXT =
+#include "text.json.h"
+    ;
+    textData = json::parse(GAME_TEXT);
+#else
     std::ifstream file(filename);
     if (!file)
         throw std::runtime_error("Could not open file: " + (STR)filename);
     file >> textData;
     file.close();
+#endif
 }
 
 void TextManager::print(const char* const& key, const OptionalGetArgs& args) {
-    nlohmann::json current = getData(key, textData);
+    json current = getData(key, textData);
     std::string str = "";
 
     if (current.is_array()) {
@@ -48,7 +57,7 @@ void TextManager::print(const char* const& key, const OptionalGetArgs& args) {
 }
 
 std::string TextManager::get(const char* const& key, const OptionalGetArgs& args) {
-    nlohmann::json current = getData(key, textData);
+    json current = getData(key, textData);
     std::string str = current.get<std::string>() + args.end;
 
     for (const auto& [from, to] : args.replacements)
@@ -58,7 +67,7 @@ std::string TextManager::get(const char* const& key, const OptionalGetArgs& args
 }
 
 std::string TextManager::getAllAsStr(const char* const& key, const OptionalGetArgs& args) {
-    nlohmann::json current = getData(key, textData);
+    json current = getData(key, textData);
     std::string str = "";
 
     for (size_t i = 0; i < current.size(); i++)

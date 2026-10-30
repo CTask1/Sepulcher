@@ -1,5 +1,6 @@
 //CTask
 #pragma once
+#include<filesystem>
 #include<iostream>
 #include<cstring>
 #include<sstream>
@@ -16,6 +17,12 @@
     extern "C" __declspec(dllimport) int __stdcall SetConsoleOutputCP(uint32_t);
     #define SET_UTF8() SetConsoleOutputCP(65001)
 #else
+    #ifdef __linux__
+        #include<unistd.h>
+        #include<limits.h>
+    #else
+        #error "Unsupported operating system"
+    #endif
     #define SET_UTF8() // Got this idea from The Cherno
 #endif
 
@@ -43,9 +50,35 @@ inline uint16_t defDelay = DEF_DELAY;
 inline uint16_t outputDelay = defDelay;
 inline std::mt19937 gen(std::random_device{}());
 
+inline std::filesystem::path getExecDir() {
+    std::filesystem::path execDir;
+
+#ifdef _WIN32
+    char buffer[MAX_PATH];
+    DWORD length = GetModuleFileNameA(NULL, buffer, MAX_PATH);
+    if (length == 0 || length == MAX_PATH)
+        execDir = "";
+    return std::filesystem::path(buffer).parent_path();
+#elif defined(__linux__)
+    char buffer[PATH_MAX];
+    ssize_t length = readlink("/proc/self/exe", buffer, sizeof(buffer) - 1);
+    if (length != -1) {
+        buffer[length] = '\0';
+        return std::filesystem::path(buffer).parent_path();
+    }
+    execDir = "";
+#endif
+    if (execDir.empty()) {
+        std::cerr << "Could not resolve the executable directory.";
+        return "";
+    }
+
+    return execDir;
+}
+
 // load output settings from file
 inline void loadSettings() {
-    std::ifstream file("settings.txt");
+    std::ifstream file(getExecDir() / "settings.txt");
     if (!file.is_open())
         return;
     std::string line;

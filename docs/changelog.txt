@@ -1087,3 +1087,12 @@
 
         -Removed nlohmann/json.hpp dependency by moving it into the local directory
         -Updated README
+        -Commit master 3174abd
+        -Release v0.4.0
+
+
+    -- 10/30/26 --
+
+        -Moved settings.txt to the executable's local directory
+        -text.json is now bundled with the executable (only in release mode)
+        -Fixed a compiler error when building in debug mode

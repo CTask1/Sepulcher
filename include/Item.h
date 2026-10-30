@@ -3,6 +3,10 @@
 #include<cstdint>
 #include<string>
 
+#ifndef ui16
+    #define ui16(x) static_cast<uint16_t>(x)
+#endif
+
 typedef std::initializer_list<std::pair<std::string, uint16_t>> PairList_t;
 
 namespace Item {
