@@ -31,17 +31,17 @@ public:
     }
 
     void displayResources() const {
-        type(TM::get("trader.display_message"));
+        TM::print("trader.display_message");
         for (const std::pair<std::string, uint16_t>& stat : resources)
             if (stat.second != 0) {
                 setMode(LIST_OUT);
-                type(TM::get("trader.display_resource", {
+                TM::print("trader.display_resource", {
                     .replacements = {
                         {"{resource}", stat.first},
                         {"{count}", TO_STR(stat.second)},
                         {"{price}", TO_STR(prices.at(stat.first))}
                     }
-                }));
+                });
             }
     }
 

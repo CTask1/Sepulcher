@@ -81,7 +81,7 @@ void resetToDefaults() {
     defDelay = DEF_DELAY;
     prompt = "Enter choice: ";
     setOutputSettings();
-    type(TM::get("settings.reset"));
+    TM::print("settings.reset");
 }
 
 void reloadTextFile() {

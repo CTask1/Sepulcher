@@ -1101,4 +1101,11 @@
 
     -- 10/30/26 --
 
-        -Fixed Windows bundling code
+        -Fixed Windows text bundling code
+        -Commit master efffd8d
+        -Release v0.4.1
+
+
+    -- 10/30/26 --
+
+        -Replaced all occurrences of type(TM::get()) with TM::print()

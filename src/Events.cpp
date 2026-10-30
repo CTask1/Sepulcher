@@ -23,16 +23,16 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
             int damage = player.strength + randint(1, 6);  // Player's attack based on strength + a six-sided die–roll
             if (player.weapon.itemType != Item::TYPE::NONE && player.weapon.suffix == Item::Weapon::Suffix::INFERNO) {
                 damage += randint(1, 4);
-                type(TM::get("items.weapons.infernal"));
+                TM::print("items.weapons.infernal");
             }
             enemy.health = ui16(std::max(enemy.health - damage, 0));
-            type(TM::get("combat.player_turn.damage_enemy", {
+            TM::print("combat.player_turn.damage_enemy", {
                 .replacements = {
                     {"{damage}", TO_STR(damage)},
                     {"{enemy}", (STR)enemy.name},
                     {"{health}", TO_STR(enemy.health)}
                 }
-            }));
+            });
             break;
         } case 2:
             player.displayStats();
@@ -46,14 +46,14 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
             continue;
         case 5:
             if (player.resources["Health Potion"] < 1) {
-                type(TM::get("player.health_potion.none"));
+                TM::print("player.health_potion.none");
                 continue;
             }
             player.resources["Health Potion"]--;
             player.heal(1);
-            type(TM::get("player.health_potion.use", {
+            TM::print("player.health_potion.use", {
                 .replacements = {{"{health}", TO_STR(player.health)}}
-            }));
+            });
             continue;
         case 6:
             if (Choice::getChoice({"yes", "no"}, TM::get("confirmation", {
@@ -63,12 +63,12 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
                 continue;
 
             run = true;
-            type(TM::get("combat.player_turn.run.message"));
+            TM::print("combat.player_turn.run.message");
             if (randint(1, (sepulcher ? 5 : 10)) == 1 && player.weapon != Item::TYPE::WPN_ST_SHADOW) {
                 run = false;
-                type(TM::get("combat.player_turn.run.fail", {
+                TM::print("combat.player_turn.run.fail", {
                     .replacements = {{"{enemy}", (STR)enemy.name}}
-                }));
+                });
             }
         }
         break;
@@ -77,34 +77,34 @@ void playerTurn(Player& player, Enemy::Enemy& enemy, bool& run, short& mirrorIma
 
 void enemyTurn(Player& player, Enemy::Enemy& enemy, short& mirrorImage, bool& shadowmeld) {
     if (player.special == Item::TYPE::SPL_AM_SHADOW && randint(1, 10) == 1) [[unlikely]] {
-        type(TM::get("combat.enemy_turn.attack.fail.amulet"));
+        TM::print("combat.enemy_turn.attack.fail.amulet");
     } else if (mirrorImage > 0 && randint(1, 2) == 1 || mirrorImage == 2) [[unlikely]] {
         mirrorImage--;
-        type(TM::get("combat.enemy_turn.attack.fail.mirror_image"));
+        TM::print("combat.enemy_turn.attack.fail.mirror_image");
     } else if (shadowmeld) [[unlikely]] {
         shadowmeld = false;
-        type(TM::get("combat.enemy_turn.attack.fail.shadowmeld"));
+        TM::print("combat.enemy_turn.attack.fail.shadowmeld");
     } else {
         uint16_t enemyDamage = ui16(std::max(enemy.strength + randint(1, 6) - player.CON - player.defense, 0));  // Enemy's attack based on its attack stat + a six-sided die roll - player's CON and defense
         enemyDamage = (enemyDamage > 0) ? enemyDamage : 0;
         player.health = ui16(std::max(player.health - enemyDamage, 0));
-        type(TM::get("combat.enemy_turn.attack.damage_player", {
+        TM::print("combat.enemy_turn.attack.damage_player", {
             .replacements = {
                 {"{enemy}", (STR)enemy.name},
                 {"{damage}", TO_STR(enemyDamage)},
                 {"{health}", TO_STR(player.health)}
             }
-        }));
+        });
         if (player.armor.suffix == Item::Armor::Suffix::THORNS) {
             uint16_t thornsDamage = ui16(ceil(enemyDamage / 10.0));
             enemy.health = ui16(std::max(enemy.health - thornsDamage, 0));
-            type(TM::get("combat.enemy_turn.attack.thorns", {
+            TM::print("combat.enemy_turn.attack.thorns", {
                 .replacements = {
                     {"{damage}", TO_STR(thornsDamage)},
                     {"{enemy}", (STR)enemy.name},
                     {"{health}", TO_STR(enemy.health)}
                 }
-            }));
+            });
         }
     }
 }
@@ -140,7 +140,7 @@ bool Events::combat(Enemy::Enemy&& enemy, bool surprised, const bool sepulcher, 
         message = defMessage.c_str();
     type('\n' + (STR)message + '\n');
     enemy.displayStats();
-    type(TM::get("combat.prepare"));
+    TM::print("combat.prepare");
     bool first = true; // Is it the first round of combat?
     bool run   = false; // Is the player trying to run?
     short mirrorImage = 0;
@@ -152,18 +152,18 @@ bool Events::combat(Enemy::Enemy&& enemy, bool surprised, const bool sepulcher, 
         if (surprised && first) { // If the player is surprised
             if (player.arcaneEye) { // If the player has the Arcane Eye spell active
                 surprised = false;
-                type(TM::get("combat.surprise.enemy.fail.arcane_eye"));
+                TM::print("combat.surprise.enemy.fail.arcane_eye");
                 continue;
             }
-            type(TM::get("combat.surprise.enemy.success"));
+            TM::print("combat.surprise.enemy.success");
             surprise = 1;
         } else
             playerTurn(player, enemy, run, mirrorImage, shadowmeld, sepulcher);
 
         if (player.Class == Player::CLASS::ROGUE && first && surprise > 1 && enemy.name != Enemy::eType[Enemy::TRAVELER].name && !run)
-            type(TM::get("combat.surprise.player"));
+            TM::print("combat.surprise.player");
         else if (run) {
-            type(TM::get("combat.player_turn.run.success"));
+            TM::print("combat.player_turn.run.success");
             return 0;
         } else if (enemy.health > 0) {
             // Enemy's turn
@@ -177,12 +177,12 @@ bool Events::combat(Enemy::Enemy&& enemy, bool surprised, const bool sepulcher, 
             if (run == false) {
                 if (player.health > 0) [[likely]] {
                     uint16_t expGain = randint(5, player.level * 8);
-                    type(TM::get("combat.victory", {
+                    TM::print("combat.victory", {
                         .replacements = {
                             {"{enemy}", (STR)enemy.name},
                             {"{exp}", TO_STR(expGain)}
                         }
-                    }));
+                    });
                     player.addExp(expGain);
                     enemyDrop(enemy);
                     return 1;
@@ -198,12 +198,12 @@ bool Events::combat(Enemy::Enemy&& enemy, bool surprised, const bool sepulcher, 
 
 bool checkDeath(Player& player, Enemy::Enemy& enemy) {
     if (player.health <= 0) {
-        type(TM::get("combat.defeat", {
+        TM::print("combat.defeat", {
             .replacements = {
                 {"{enemy}", (STR)enemy.name},
                 {"{rev}", TM::getForCondition("combat.resurgence", player.resurgence)}
             }
-        }));
+        });
         if (player.resurgence) {
             player.health = player.getMaxHealth() / 2;
             player.resurgence = false;
@@ -215,7 +215,7 @@ bool checkDeath(Player& player, Enemy::Enemy& enemy) {
 }
 
 void explore(Player& player) {
-    type(TM::get("events.explore"));
+    TM::print("events.explore");
 
     static Events events(player);
     static uint16_t prevEvent = 0;

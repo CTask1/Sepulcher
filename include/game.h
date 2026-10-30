@@ -81,7 +81,7 @@ bool quit() {
 }
 
 int getAction() {
-    type(TM::get("game.main.choose_action"));
+    TM::print("game.main.choose_action");
     setMode(LIST_OUT);
     type(TM::getAllAsStr("game.main.actions"));
     return Choice::getChoice(TM::getAllAsLst("game.main.actions"));
@@ -93,11 +93,11 @@ void gameLoop(Player& player, uint16_t hitdie) {
     // Main game loop
     while (true) {
         if (day && energy == 0 || !day && energy == 1)
-            type(TM::get("game.exhaustion.warning"));
+            TM::print("game.exhaustion.warning");
         if (!day) {
             if (energy == 0) {
                 setDelay(20);
-                type(TM::get("game.exhaustion.collapse"));
+                TM::print("game.exhaustion.collapse");
                 player.addDebuff(Debuff::EXHAUSTED);
                 resetStats(player, time, energy);
                 day = true;
@@ -107,8 +107,8 @@ void gameLoop(Player& player, uint16_t hitdie) {
         }
         if (time == 0) [[unlikely]] { // if the day/night is over
             if (day) {
-                type(TM::get("game.night.begin"));
-                type(TM::get("game.night.choose_action"));
+                TM::print("game.night.begin");
+                TM::print("game.night.choose_action");
                 type(TM::getAllAsStr("game.night.actions", {
                     .replacements = {
                         {"{recommended}", (player.level < 5 || energy < 4) ? " (not recommended)" : ""}
@@ -118,20 +118,20 @@ void gameLoop(Player& player, uint16_t hitdie) {
                 switch (Choice::getChoice(TM::getAllAsLst("game.night.actions"))) {
                 case 1: {
                     const std::string ROOT = "game.night.choice.sleep.checks.";
-                    type(TM::get("game.night.choice.sleep.message", {
+                    TM::print("game.night.choice.sleep.message", {
                         .replacements = {
                             {"{rev_check}", TM::getForCondition(ROOT + "rev", player.Race == Player::RACE::REVENANT)},
                             {"{ability_check}", TM::getForCondition(ROOT + "ability", player.hasAbility)},
                             {"{wiz_check}", TM::getForCondition(ROOT + "wiz", player.Class == Player::CLASS::WIZARD)}
                         }
-                    }));
+                    });
                     if (player.Race == Player::RACE::REVENANT) {
                         if (player.bloodMeter < 3) {
-                            type(TM::get("game.night.choice.sleep.blood_meter_not_full"));
+                            TM::print("game.night.choice.sleep.blood_meter_not_full");
                             player.addDebuff(Debuff::RAVENOUS);
                         }
                         player.bloodMeter = 0;
-                        type(TM::get("game.night.choice.sleep.blood_meter_emptied"));
+                        TM::print("game.night.choice.sleep.blood_meter_emptied");
                     } else
                         player.healMax();
                     
@@ -140,7 +140,7 @@ void gameLoop(Player& player, uint16_t hitdie) {
                     player.mana = std::min(player.maxMana, (uint16_t)(player.mana + 5));
                     break;
                 } case 2:
-                    type(TM::get("game.night.choice.continue"));
+                    TM::print("game.night.choice.continue");
                     day = false;
                     time = NIGHT_LENGTH;
                     break;
@@ -163,7 +163,7 @@ void gameLoop(Player& player, uint16_t hitdie) {
                 case 8: if (quit()) return;
             }
             if (player.health <= 0) {
-                type(TM::get("game.death"));
+                TM::print("game.death");
                 return;
             }
             time--;
@@ -182,8 +182,8 @@ void start() {
     
     setOutputSettings();
     { // Get the player's choice of race
-        type(TM::get("intro.welcome"));
-        type(TM::get("intro.choose_race"));
+        TM::print("intro.welcome");
+        TM::print("intro.choose_race");
         type(TM::getAllAsStr("intro.races"));
 
         switch (Choice::getChoice({"elf", "human", "drakonian", "revenant"})) {
@@ -208,7 +208,7 @@ void start() {
     }
     
     { // Get the player's choice of class
-        type(TM::get("intro.choose_class"));
+        TM::print("intro.choose_class");
         type(TM::getAllAsStr("intro.classes"));
         
         switch (Choice::getChoice({"fighter", "rogue", "wizard"})) {
@@ -232,7 +232,7 @@ void start() {
 
     std::string pName = input(('\n' + TM::get("intro.prompt_name", {.end = " "})).c_str());
     
-    type(TM::get("intro.greet_name", {.replacements = {{"{name}", pName}}}));
+    TM::print("intro.greet_name", {.replacements = {{"{name}", pName}}});
     Player player(pName, pRace, pClass, hitdie + con, str, con);
     #if DEV_MODE
     player.initWeapon(Item::Weapon(Item::TYPE::WPN_GREAT, 10, 1, true), Item::Source::FIND);

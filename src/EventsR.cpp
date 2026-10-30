@@ -15,19 +15,19 @@ void EventsR::lostTraveler() {
     );
     
     if (Choice::getChoice(TM::getAllAsLst("events.risky.lost_traveler.options")) == 2) {
-        type(TM::get("events.risky.lost_traveler.ignore"));
+        TM::print("events.risky.lost_traveler.ignore");
         return;
     }
-    type(TM::get("events.risky.lost_traveler.help"));
+    TM::print("events.risky.lost_traveler.help");
     int hostile = randint(1, 3); // 33% chance the traveler is hostile and attacks
     if (hostile == 1) {
-        type(TM::get("events.risky.lost_traveler.outcomes.attack"));
+        TM::print("events.risky.lost_traveler.outcomes.attack");
         events.combat(events.initEnemy(Enemy::TRAVELER), true);
     } else {
         uint16_t expGain = (randint(1, 100) == 1) ? randint(35, 75) : randint(10, 20); // 1% chance of extra exp
-        type(TM::get("events.risky.lost_traveler.outcomes.thank", {
+        TM::print("events.risky.lost_traveler.outcomes.thank", {
             .replacements = {{"{exp}", TO_STR(expGain)}}
-        }));
+        });
         player.addExp(expGain);
     }
 }
@@ -40,7 +40,7 @@ void EventsR::mountainPass() {
     );
     
     if (Choice::getChoice(TM::getAllAsLst("events.risky.mountain_pass.options")) == 1) {
-        type(TM::get("events.risky.mountain_pass.attempt.message"));
+        TM::print("events.risky.mountain_pass.attempt.message");
         int success = randint(1, 3); // 33% chance of failure
         type(TM::getForCondition("events.risky.mountain_pass.attempt.success", success));
         if (success == 1)
@@ -50,11 +50,11 @@ void EventsR::mountainPass() {
     int altRouteEvent = randint((day ? 1 : (randint(1, 3) == 1 ? 1 : 2)), 4);
     switch (altRouteEvent) {
     case 1:
-        type(TM::get("events.risky.mountain_pass.alternate.travelers"));
+        TM::print("events.risky.mountain_pass.alternate.travelers");
         player.receiveGift();
         break;
     case 2:
-        type(TM::get("events.risky.mountain_pass.alternate.ambush"));
+        TM::print("events.risky.mountain_pass.alternate.ambush");
         events.combat(events.initEnemy(Enemy::BANDIT), true);
         break;
     case 3: {
@@ -64,10 +64,10 @@ void EventsR::mountainPass() {
         );
         
         if (Choice::getChoice(TM::getAllAsLst("events.risky.mountain_pass.alternate.crossroads.options")) == 1) {
-            type(TM::get("events.risky.mountain_pass.alternate.crossroads.left.message"));
+            TM::print("events.risky.mountain_pass.alternate.crossroads.left.message");
             int outcome = randint((day ? 1 : randint(1, 3)), 2);
             if (outcome == 1) {
-                type(TM::get("events.risky.mountain_pass.alternate.crossroads.left.travelers"));
+                TM::print("events.risky.mountain_pass.alternate.crossroads.left.travelers");
                 player.receiveGift();
                 return;
             }
@@ -77,21 +77,21 @@ void EventsR::mountainPass() {
             );
             
             if (Choice::getChoice(TM::getAllAsLst("events.risky.mountain_pass.alternate.crossroads.left.campsite.options")) == 2) {
-                type(TM::get("events.risky.mountain_pass.alternate.crossroads.left.campsite.continue"));
+                TM::print("events.risky.mountain_pass.alternate.crossroads.left.campsite.continue");
                 return;
             }
-            type(TM::get("events.risky.mountain_pass.alternate.crossroads.left.campsite.investigate"));
+            TM::print("events.risky.mountain_pass.alternate.crossroads.left.campsite.investigate");
             player.receiveGift();
             if (randint(1, 3) == 1) {
-                type(TM::get("events.risky.mountain_pass.alternate.crossroads.left.campsite.ambush"));
+                TM::print("events.risky.mountain_pass.alternate.crossroads.left.campsite.ambush");
                 events.combat(events.initEnemy(Enemy::BANDIT), true);
             }
             return;
         }
-        type(TM::get("events.risky.mountain_pass.alternate.crossroads.right.message"));
+        TM::print("events.risky.mountain_pass.alternate.crossroads.right.message");
         int outcome = randint((day ? 1 : randint(1, 3)), 2); // Forest is rarer at night
         if (outcome == 1) {
-            type(TM::get("events.risky.mountain_pass.alternate.crossroads.right.forest"));
+            TM::print("events.risky.mountain_pass.alternate.crossroads.right.forest");
             player.heal(3);
             player.resources.addResource("Medicinal Herbs", randint(3, 6));
             if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
@@ -109,7 +109,7 @@ void EventsR::mountainPass() {
         ));
         break;
     } case 4:
-        type(TM::get("events.risky.mountain_pass.alternate.nothing"));
+        TM::print("events.risky.mountain_pass.alternate.nothing");
         break;
     }
 }
@@ -122,10 +122,10 @@ void EventsR::mysteriousCave() {
     );
     
     if (Choice::getChoice(TM::getAllAsLst("events.risky.cave.options")) == 2) {
-        type(TM::get("events.risky.cave.continue"));
+        TM::print("events.risky.cave.continue");
         return;
     }
-    type(TM::get("events.risky.cave.enter"));
+    TM::print("events.risky.cave.enter");
     uint16_t encounter = randint(1, 2); // 50% chance for each event
     type(TM::getForNumber("events.risky.cave.outcomes", encounter));
     if (encounter == 1)
@@ -142,7 +142,7 @@ void EventsR::strangeAmulet() {
     );
 
     if (Choice::getChoice(TM::getAllAsLst("events.risky.amulet.options")) == 2) {
-        type(TM::get("events.risky.amulet.leave"));
+        TM::print("events.risky.amulet.leave");
         return;
     }
     uint16_t amuletType = randint(1, 5);

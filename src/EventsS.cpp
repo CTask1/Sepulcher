@@ -9,7 +9,7 @@
 #include"util.h"
 
 void EventsS::oldChest() {
-    type(TM::get("events.safe.chest.message"));
+    TM::print("events.safe.chest.message");
     int itemType = randint(1, 2);
     if (itemType == 1)
         player.initArmor(Item::TYPE::ARM_IRON, Item::Source::FIND, (player.Race == Player::RACE::HUMAN ? 2 : 1));
@@ -18,7 +18,7 @@ void EventsS::oldChest() {
 }
 
 void EventsS::hiddenArmory() {
-    type(TM::get("events.safe.armory.message"));
+    TM::print("events.safe.armory.message");
     int itemType = randint(1, 2);
     if (itemType == 1)
         player.initArmor(Item::TYPE::ARM_STEEL, Item::Source::FIND, (player.Race == Player::RACE::HUMAN ? 2 : 1));
@@ -28,7 +28,7 @@ void EventsS::hiddenArmory() {
 }
 
 void EventsS::friendlyTraveler() {
-    type(TM::get("events.safe.traveler.message"));
+    TM::print("events.safe.traveler.message");
     {
         int giftType = randint(1, 3);
         uint16_t expGain = 0;
@@ -45,16 +45,16 @@ void EventsS::friendlyTraveler() {
 }
 
 void EventsS::travelingTrader() {
-    type(TM::get("events.safe.trader.choose_option"));
+    TM::print("events.safe.trader.choose_option");
     int tradeChoice;
     do tradeChoice = Choice(input(prompt.data())).isChoice({"yes", "no"});
     while (tradeChoice == 0);
 
     if (tradeChoice == 2) {
-        type(TM::get("events.safe.trader.pass"));
+        TM::print("events.safe.trader.pass");
         return;
     }
-    type(TM::get("events.safe.trader.approach"));
+    TM::print("events.safe.trader.approach");
     const std::string quitKey = TM::get("events.safe.trader.trade.quit_key", { .end = ""});
     const std::string quitPrompt = TM::get("events.safe.trader.trade.quit_prompt", {
         .replacements = {{"{key}", quitKey}}, .end = ""
@@ -69,7 +69,7 @@ void EventsS::travelingTrader() {
         );
 
         if (Choice::getChoice(TM::getAllAsLst("events.safe.trader.trade.options")) == 2) {
-            type(TM::get("events.safe.trader.trade.leave"));
+            TM::print("events.safe.trader.trade.leave");
             return;
         }
         player.resources.displayResources();
@@ -82,7 +82,7 @@ void EventsS::travelingTrader() {
             if (buyChoice[0] == quitKey[0])
                 break;
             if (trader.resources[buyChoice] < 1)
-                type(TM::get("events.safe.trader.trade.warning.trader_no_res"));
+                TM::print("events.safe.trader.trade.warning.trader_no_res");
         } while (trader.resources[buyChoice] < 1);
         if (buyChoice[0] == quitKey[0])
             continue;
@@ -94,7 +94,7 @@ void EventsS::travelingTrader() {
             amountBuy = (isInt(strAmount) && isPos(strAmount)) ? stoi(strAmount) : -1;
             noResources = (amountBuy == -1 || trader.resources[buyChoice] < amountBuy);
             if (noResources)
-                type(TM::get("events.safe.trader.trade.warning.trader_lim_res"));
+                TM::print("events.safe.trader.trade.warning.trader_lim_res");
         } while (noResources);
                 
         std::string sellChoice = "";
@@ -105,9 +105,9 @@ void EventsS::travelingTrader() {
             if (sellChoice[0] == quitKey[0])
                 break;
             if (player.resources[sellChoice] < 1)
-                type(TM::get("events.safe.trader.trade.warning.player_no_res"));
+                TM::print("events.safe.trader.trade.warning.player_no_res");
             if (player.special.name == sellChoice) {
-                type(TM::get("events.safe.trader.trade.warning.player_special"));
+                TM::print("events.safe.trader.trade.warning.player_special");
                 sellChoice = "";
             }
         } while (player.resources[sellChoice] < 1);
@@ -120,11 +120,11 @@ void EventsS::travelingTrader() {
             amountSell = (isInt(strAmount) && isPos(strAmount)) ? stoi(strAmount) : -1;
             noResources = (amountSell == -1 || player.resources[sellChoice] < amountSell);
             if (noResources)
-                type(TM::get("events.safe.trader.trade.warning.player_lim_res"));
+                TM::print("events.safe.trader.trade.warning.player_lim_res");
         } while (noResources);
 
         if (trader.resources.prices[buyChoice] * amountBuy < trader.resources.prices[sellChoice] * amountSell) { // If the player is not getting a fair trade
-            type(TM::get("events.safe.trader.trade.warning.unbalanced"));
+            TM::print("events.safe.trader.trade.warning.unbalanced");
             int confirmChoice;
             do confirmChoice = Choice(input(prompt.data())).isChoice({"yes", "no"});
             while (confirmChoice == 0);
@@ -133,14 +133,14 @@ void EventsS::travelingTrader() {
                 continue;
         }
 
-        type(TM::get("events.safe.trader.trade.complete", {
+        TM::print("events.safe.trader.trade.complete", {
             .replacements = {
                 {"{buy_amt}", TO_STR(amountBuy)},
                 {"{buy_res}", buyChoice},
                 {"{sell_amt}", TO_STR(amountSell)},
                 {"{sell_res}", sellChoice}
             }
-        }));
+        });
         trader.resources[sellChoice] += ui16(amountSell);
         trader.resources[buyChoice] -= ui16(amountBuy);
         player.resources[sellChoice] -= ui16(amountSell);
@@ -149,18 +149,18 @@ void EventsS::travelingTrader() {
 }
 
 void EventsS::nothing() {
-    type(TM::get("events.safe.nothing"));
+    TM::print("events.safe.nothing");
 }
 
 void EventsS::stream() {
-    type(TM::get("events.safe.stream"));
+    TM::print("events.safe.stream");
     player.heal(3);
     if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
         player.mana++;
 }
 
 void EventsS::garden() {
-    type(TM::get("events.safe.garden"));
+    TM::print("events.safe.garden");
     player.resources.addResource("Medicinal Herbs", randint(1, 3));
     player.heal(3);
     if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
@@ -168,13 +168,13 @@ void EventsS::garden() {
 }
 
 void EventsS::meadow() {
-    type(TM::get("events.safe.meadow"));
+    TM::print("events.safe.meadow");
     player.heal(3);
     if (player.Class == Player::CLASS::WIZARD && player.mana != player.maxMana)
         player.mana++;
 }
 
 void EventsS::statue() {
-    type(TM::get("events.safe.statue"));
+    TM::print("events.safe.statue");
     statueFound = true;
 }
